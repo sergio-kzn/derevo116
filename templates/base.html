@@ -1,0 +1,102 @@
+<!doctype html>
+{% load static %}
+<html lang="ru">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+    {# font awesome #}
+    <link href="{% static 'css/all.min.css' %}" rel="stylesheet">
+
+    <title>{% block title %}Столярная мастерская Империал - г. Казань{% endblock title %}</title>
+
+{% block custom_head %}
+{% endblock %}
+
+</head>
+<body>
+<div class="container">
+    {# Верхнее меню с контактами #}
+
+    <div class="bg-light bg-gradient p-3">
+        <ul class="list-inline my-0 small position-relative">
+            <li class="list-inline-item "><a href="mailto:support@derevo116.ru" target="_blank"
+                                             class="link-secondary text-decoration-none">
+                <i class="fas fa-envelope"></i> support@derevo116.ru</a></li>
+            <li class="list-inline-item"><a href="tel:88432739196" target="_blank"
+                                            class="link-secondary text-decoration-none">
+                <i class="fas fa-phone"></i> 8-843-273-91-96</a></li>
+            <li class="list-inline-item"><a href="http://wa.me/79655921235" target="_blank"
+                                            class="link-secondary text-decoration-none">
+                <i class="fab fa-whatsapp"></i> WhatsApp</a></li>
+            <li class="list-inline-item"><a href="https://t.me/Biofa16" target="_blank"
+                                            class="link-secondary text-decoration-none">
+                <i class="fab fa-telegram"></i> Telegram</a></li>
+            <li class="list-inline-item position-absolute right-0 dropdown"><a
+                    class="link-secondary text-decoration-none dropdown-toggle"
+                    href="#" role="button" id="dropdownMenuLink"
+                    data-toggle="dropdown"
+                    aria-expanded="false"><i class="fas fa-user"></i> Мой аккаунт</a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="#">Separated link</a></li>
+                </ul>
+            </li>
+        </ul>
+
+    </div>
+
+    {# / Верхнее меню с контактами  #}
+
+    {# Логотип, поиск, корзина #}
+
+    <div class="d-flex align-items-center p-3" style="height: 115px">
+        <img src="{% static 'img/logo-imperial.png' %}" class="h-50" alt="логотип ООО Империал - столярная мастерска">
+        <div class="input-group mx-5">
+            <input type="text" class="form-control" placeholder="Поиск" aria-label="Поиск"
+                   aria-describedby="button-addon2">
+            <button class="btn btn-outline-secondary" type="button" id="button-addon2"><i class="fas fa-search"></i>
+            </button>
+        </div>
+        <div class="row position-relative align-items-center bg-light">
+            <div class="col-5 mr-3">
+                <i class="fas fa-2x fa-shopping-cart text-muted"></i>
+            </div>
+            <div class="col-4">
+                <a class="stretched-link" href="#">
+                    <span class="badge bg-primary">0</span>
+                    <span class="badge bg-secondary">0 руб.</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    {# / Логотип, поиск, корзина #}
+
+{# Меню сайта #}
+Меню
+{# / Меню сайта #}
+
+{# Содержимое страницы. Разное для всех приложений джанго   #}
+{% block content %}
+{% endblock content %}
+{# / Содержимое страницы #}
+
+
+
+
+</div>{% comment %}class="container"{% endcomment %}
+
+<!-- Option 1: Bootstrap Bundle with Popper.js -->
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

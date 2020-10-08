@@ -19,4 +19,14 @@ from django.urls import path, include
 urlpatterns = [
     path('', include('index.urls')),
     path('admin/', admin.site.urls),
+    path('summernote/', include('django_summernote.urls')),
 ]
+
+
+# https://github.com/summernote/django-summernote
+# Когда опция отладки включена ( DEBUG=True), НЕ забудьте добавить шаблоны URL, как показано ниже:
+from django.conf import settings
+from django.conf.urls.static import static
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
