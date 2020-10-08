@@ -7,13 +7,46 @@
         .carousel-control-next, .carousel-control-prev {
             width: 8%;
         }
+
+        @media (max-width: 1200px) {
+            #slider-2 h5 {
+                font-size: 1.1rem;
+            }
+
+            #slider-2 p {
+                font-size: .8rem;
+
+            }
+        }
+
+        @media (max-width: 992px) {
+            #slider-2 h5 {
+                font-size: .7rem;
+            }
+
+            #slider-2 p {
+                font-size: .675rem;
+
+            }
+        }
+
+        @media (max-width: 576px) {
+            #slider-2 h5 {
+                font-size: 1rem;
+            }
+
+            #slider-2 p {
+                display: block;
+            }
+        }
     </style>
 {% endblock %}
 
 {% block content %}
+
     {# Слайды #}
 
-    <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+    <div id="carouselExampleCaptions" class="carousel slide mb-4" data-ride="carousel">
         <ol class="carousel-indicators">
             {% for slide in main_slides %}
                 <li data-target="#carouselExampleCaptions" data-slide-to="{{ forloop.counter0 }}"{% if forloop.first %}
@@ -44,4 +77,40 @@
     </div>
 
     {# / Слайды #}
+
+    {# блок из трех картинок Строительство Реставрация Картины #}
+
+    <div class="row" id="slider-2">
+        {% for slide in slides_2 %}
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="card mb-3 position-relative overflow-hidden">
+                    <img class="card-img" src="{{ slide.slide_img.url }}" alt="{{ slide }}">
+                    <div class="card-img-overlay left-50 px-0 text-center d-flex align-items-center">
+                        <div class="card-body pl-0 py-0">
+                            <div class="card-text">{{ slide.slide_description|safe }}</div>
+                        </div>
+                    </div>
+                    <a href="{{ slide.slide_link_url }}" class="stretched-link"></a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {# / блок из трех картинок Строительство Реставрация Картины #}
+
+    {# блок из Рекламного банера и Новых товаров #}
+
+    <div class="row  align-items-start">
+        <div class="col-xl-4"><img src="{{ banner.slide_img.url }}" class="img-fluid"></div>
+        <div class="row col-xl-8">
+            <h2>Новые <i class="font-weight-normal">товары</i> в шоуруме</h2>
+            <div class="col-xl-3">1</div>
+            <div class="col-xl-3">2</div>
+            <div class="col-xl-3">3</div>
+        </div>
+    </div>
+
+    {# / блок из Рекламного банера и Новых товаров #}
+
+
 {% endblock %}
