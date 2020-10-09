@@ -21,8 +21,7 @@
 <body>
 <div class="container">
     {# Верхнее меню с контактами #}
-
-    <div class="row justify-content-between bg-light bg-gradient p-3 mx-1 text-center small">
+    <div class="row justify-content-between bg-light bg-gradient p-3 mx-0 text-center small">
         <div class="col-12 col-lg mb-3 mb-lg-0">
             <div class="row row-cols-1 row-cols-md-4 row-cols-lg-auto my-0 justify-content-lg-start">
                 <div class="col text-nowrap"><a href="mailto:support@derevo116.ru" target="_blank"
@@ -58,12 +57,10 @@
             </div>
         </div>
     </div>
-
     {# / Верхнее меню с контактами  #}
 
     {# Логотип, поиск, корзина #}
-
-    <div class="row justify-content-between p-3 align-items-center">
+    <div class="row justify-content-between py-3 px-0 align-items-center mx-0">
         <div class="col-12 col-sm-6 col-lg-3">
             <img src="{% static 'img/logo-imperial.png' %}" class="img-fluid"
                  alt="логотип ООО Империал - столярная мастерска">
@@ -92,12 +89,19 @@
             </div>
         </div>
     </div>
-
     {# / Логотип, поиск, корзина #}
 
     {# Меню сайта #}
-    <div class="row">
-        Меню
+    <div class="row px-3 py-2 mx-0 mb-3 bg-gradient bg-light">
+        <nav class="nav nav-pills flex-column flex-sm-row">
+            <a class="flex-sm-fill text-sm-center nav-link {% if request.path == '/' %}btn btn-danger link-light{% else %} link-dark{% endif %}" aria-current="page" href="/">Главная</a>
+            <a class="flex-sm-fill text-sm-center nav-link link-dark" href="#">Краски и масла</a>
+            <a class="flex-sm-fill text-sm-center nav-link link-dark" href="#">Столярные изделия</a>
+            <a class="flex-sm-fill text-sm-center nav-link link-dark" href="#">Услуги</a>
+            <a class="flex-sm-fill text-sm-center nav-link link-dark" href="#">Контакты</a>
+            <a class="flex-sm-fill text-sm-center nav-link link-dark" href="#">Оплата и доставка</a>
+            <a class="flex-sm-fill text-sm-center nav-link link-dark" href="#">Блог</a>
+        </nav>
     </div>
     {# / Меню сайта #}
 

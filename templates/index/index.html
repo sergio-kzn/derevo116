@@ -78,7 +78,7 @@
 
 {% block content %}
     <!-- Слайды -->
-    <div id="carouselExampleCaptions" class="carousel slide mb-4" data-ride="carousel">
+    <div id="carouselExampleCaptions" class="carousel slide mb-4 px-0 mx-0" data-ride="carousel">
         <ol class="carousel-indicators">
             {% for slide in main_slides %}
                 <li data-target="#carouselExampleCaptions" data-slide-to="{{ forloop.counter0 }}"{% if forloop.first %}
