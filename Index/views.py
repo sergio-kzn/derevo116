@@ -1,5 +1,9 @@
 from django.shortcuts import render
+
+from Derevo116 import settings
 from .models import Slide
+from BiofaImportBD.models import ProductProduct, ProductCategoryproduct, ProductVolumepriceproduct
+
 
 def index(request):
     main_slides = Slide.objects.filter(slide_group=1, slide_visible=True)
@@ -18,4 +22,12 @@ def index(request):
         'banner_3': banner_3,
         'brands': brands,
                }
+
+    biofa_products = ProductProduct.objects.using('biofa').all()[:5]
+    biofa_price_data = ProductVolumepriceproduct.objects.using('biofa').all()
+    context.update({
+        'biofa_products': biofa_products,
+        'biofa_prices': biofa_price_data,
+    })
+
     return render(request, 'index/index.html', context)
