@@ -14,7 +14,11 @@
     <link href="{% static 'css/all.min.css' %}" rel="stylesheet">
 
     <title>{% block title %}Столярная мастерская Империал - г. Казань{% endblock title %}</title>
-
+    <style>
+        .ml-n1 {
+            margin-left: -1rem;
+        }
+    </style>
     {% block custom_head %}{% endblock %}
 
 </head>
@@ -92,12 +96,191 @@
     {# / Логотип, поиск, корзина #}
 
     {# Меню сайта #}
-    <div class="row px-3 py-2 mx-0 mb-3 bg-gradient bg-light">
+    <div class="row px-3 py-2 mx-0 mb-3 bg-gradient bg-light position-relative">
         <nav class="nav nav-pills flex-column flex-sm-row">
-            <a class="flex-sm-fill text-sm-center nav-link {% if request.path == '/' %}btn btn-danger link-light{% else %} link-dark{% endif %}" aria-current="page" href="/">Главная</a>
-            <a class="flex-sm-fill text-sm-center nav-link link-dark" href="#">Краски и масла</a>
-            <a class="flex-sm-fill text-sm-center nav-link link-dark" href="#">Столярные изделия</a>
-            <a class="flex-sm-fill text-sm-center nav-link link-dark" href="#">Услуги</a>
+            <a class="flex-sm-fill text-sm-center nav-link {% if request.path == '/' %}btn btn-danger link-light{% else %} link-dark{% endif %}"
+               aria-current="page" href="/">Главная</a>
+            <a class="flex-sm-fill text-sm-center nav-link link-dark dropdown-toggle" data-toggle="dropdown"
+               data-reference="parent" href="#">Краски и масла</a>
+            <div class="dropdown-menu fade w-100 p-3 ml-n1">
+                <div class="row">
+                    <div class="col-6 col-md-4 col-lg-3 mb-3">
+                        <div class="list-group list-group-flush small">
+                            <a href="#" class="list-group-item list-group-item-action list-group-item-danger">Краски для
+                                дерева
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Dapibus
+                                ac facilisis in
+                                <span class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Morbi
+                                leo risus <span
+                                        class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Porta
+                                ac consectetur ac <span
+                                        class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Vestibulum
+                                at eros <span
+                                        class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3 mb-3">
+                        <div class="list-group list-group-flush small">
+                            <a href="#" class="list-group-item list-group-item-action list-group-item-danger"> Краски
+                                для минеральных поверхностей
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Dapibus
+                                ac facilisis in
+                                <span class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Morbi
+                                leo risus <span
+                                        class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Porta
+                                ac consectetur ac <span
+                                        class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Vestibulum
+                                at eros <span
+                                        class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3 mb-3">
+                        <div class="list-group list-group-flush small">
+                            <a href="#" class="list-group-item list-group-item-action list-group-item-danger"> Клей
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Dapibus
+                                ac facilisis in
+                                <span class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Morbi
+                                leo risus <span
+                                        class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Porta
+                                ac consectetur ac <span
+                                        class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Vestibulum
+                                at eros <span
+                                        class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3 mb-3">
+                        <div class="list-group list-group-flush small">
+                            <a href="#" class="list-group-item list-group-item-action list-group-item-danger">
+                        Грунты и антисептики
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Dapibus
+                                ac facilisis in
+                                <span class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Morbi
+                                leo risus <span
+                                        class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Porta
+                                ac consectetur ac <span
+                                        class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Vestibulum
+                                at eros <span
+                                        class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                                                <div class="list-group list-group-flush small">
+                            <a href="#" class="list-group-item list-group-item-action list-group-item-danger">
+                        Малярный инструмент
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Dapibus
+                                ac facilisis in
+                                <span class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Morbi
+                                leo risus <span
+                                        class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Porta
+                                ac consectetur ac <span
+                                        class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Vestibulum
+                                at eros <span
+                                        class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                        </div>
+
+                    </div>
+                    <div class="col-6">
+                        <div class="list-group list-group-flush small">
+                            <a href="#" class="list-group-item list-group-item-action list-group-item-danger">
+                        Средства для ухода
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Dapibus
+                                ac facilisis in
+                                <span class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Morbi
+                                leo risus <span
+                                        class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Porta
+                                ac consectetur ac <span
+                                        class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                            <a href="#"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Vestibulum
+                                at eros <span
+                                        class="badge bg-primary rounded-pill">14</span>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <a class="flex-sm-fill text-sm-center nav-link link-dark dropdown-toggle" data-toggle="dropdown"
+               data-reference="parent" href="#">Столярные изделия</a>
+            <div class="dropdown-menu fade w-100 p-3 ml-n1">
+                Столярные изделия
+            </div>
+            <a class="flex-sm-fill text-sm-center nav-link link-dark dropdown-toggle" data-toggle="dropdown"
+               data-reference="parent" href="#">Услуги</a>
+            <div class="dropdown-menu fade w-100 p-3 ml-n1">
+                Услуги
+            </div>
             <a class="flex-sm-fill text-sm-center nav-link link-dark" href="#">Контакты</a>
             <a class="flex-sm-fill text-sm-center nav-link link-dark" href="#">Оплата и доставка</a>
             <a class="flex-sm-fill text-sm-center nav-link link-dark" href="#">Блог</a>
