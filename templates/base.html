@@ -108,10 +108,87 @@
 
 </div><!-- class="container" -->
 
-{# Подвал сайта #}
+<!--  Подвал сайта -->
 
+<footer class="bg-dark text-white">
+    <div class="container">
+        <div class="row py-4 justify-content-between">
 
-{# / Подвал сайта #}
+            <div class="col col-md-3 col-sm-6">
+                <h5>Свяжитесь с нами</h5>
+                <ul class="list-unstyled">
+                    <li class="address"><label>Наш адрес</label>г. Казань, ул. Сибирский тракт, д. 34А, офис
+                        136<br>
+                        <a href="https://goo.gl/maps/p9Ude12ALTBFFBF18" target="blank"><img
+                                src="{% static 'img/google_maps_icon.jpg' %}"
+                                style="width: 85px; border-radius: 13px; margin: 15px;" title=""></a>
+                        <a href="https://yandex.ru/maps/-/CGhy4OLZ" target="blank"><img
+                                src="{% static 'img/yandex-maps.jpg' %}"
+                                style="width: 85px; border-radius: 13px; margin: 15px;" title=""></a>
+                    </li>
+                    <li class="email"><label>Техподдержка:</label> <a class="link-light text-decoration-none"
+                                                                      href="mailto:support@derevo116.ru">support@derevo116.ru</a>
+                    </li>
+                    <li class="phone"><label>Телефон:</label> <a class="link-light text-decoration-none"
+                                                                 href="tel:78432739196">8-843-273-91-96</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col col-md-2 col-sm-6">
+                <h5>Информация</h5>
+                <ul class="list-unstyled">
+                    <li><a class="link-light text-decoration-none" href="/about_us">О нас</a></li>
+                    <li><a class="link-light text-decoration-none" href="/delivery">Доставка и оплата</a></li>
+                    <li><a class="link-light text-decoration-none" href="/privacy">Приватность</a></li>
+                    <li><a class="link-light text-decoration-none" href="/contact-us/">Свяжитесь с нами</a></li>
+                    <li><a class="link-light text-decoration-none" href="/sitemap/">Карта сайта</a></li>
+                </ul>
+            </div>
+            <div class="col col-md-2 col-sm-6">
+                <h5>Инстаграм</h5>
+                <a href="https://www.instagram.com/imperial_biofa_kzn/" target="blank"><img
+                        src="{% static 'img/instagram.jpg' %}" class="img-fluid" style="border-radius: 8px;"></a>
+            </div>
+            <div class="col col-md-2 col-sm-6">
+                <h5>Новости</h5>
+                <input type="text" class="newsletter_email mb-1 w-100" name="mail_subscribe" value=""
+                       placeholder="Введите ваш email для получения полезных статей">
+                <button type="button" class="btn btn-primary w-100"
+                        onclick="ptnewsletter.saveMail($(this));">
+                    Подписаться
+                </button>
+            </div>
+
+        </div>
+
+        <div class="row text-right mb-3">
+            <div class="py-4 border border-1 border-white border-left-0 border-right-0">
+                <div class="col-12 fa-2x">
+                    <span class="h5">Добавляйтесь в друзья!</span>
+                    <a href="https://www.facebook.com/biofa16" class="link-light mx-3" target="_blank"
+                       title="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="https://vk.com/biofa_kzn" target="_blank" class="link-light mx-3" title="Vk"><i
+                            class="fab fa-vk"></i></a>
+                    <a href="https://www.instagram.com/imperial_biofa_kzn/" target="_blank" class="link-light mx-3"
+                       title="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row pb-3 text-center small">
+            <ul class="list-unstyled list-inline">
+                <li class="list-inline-item"><a class="link-light text-decoration-none" href="/brands/">Поставщики</a></li>
+                <li class="list-inline-item"><a class="link-light text-decoration-none" href="/specials/">Акции</a></li>
+                <li class="list-inline-item"><a class="link-light text-decoration-none" href="/account-return-add/">Возвраты</a></li>
+                <li class="list-inline-item"><a class="link-light text-decoration-none" href="/order-history/">История заказов</a></li>
+                <li class="list-inline-item"><a class="link-light text-decoration-none" href="/my-account/">Мой аккаунт</a></li>
+            </ul>
+            <p><b>Столярная мастерская Империал © 2020</b></p>
+        </div>
+    </div>
+</footer>
+
+<!--  / Подвал сайта -->
 
 <!-- Option 1: Bootstrap Bundle with Popper.js -->
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>

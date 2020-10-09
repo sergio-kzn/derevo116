@@ -15,7 +15,6 @@
 
             #slider-2 p {
                 font-size: .8rem;
-
             }
         }
 
@@ -26,7 +25,10 @@
 
             #slider-2 p {
                 font-size: .675rem;
+            }
 
+            .banner-3 p {
+                display: none;
             }
         }
 
@@ -39,13 +41,43 @@
                 display: block;
             }
         }
+
+        .card-align-middle {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        @media (max-width: 375px) {
+            .card-align-middle > p {
+                display: none;
+            }
+
+        }
+
+        .banner-3 {
+            left: 65%;
+            word-wrap: normal
+        }
+
+        @media (max-width: 500px) {
+            .banner-3 h5 {
+                font-size: .7rem
+            }
+        }
+
+        @media (max-width: 325px) {
+            .banner-3 {
+                left: 55%;
+                font-size: .5rem
+            }
+        }
+
     </style>
 {% endblock %}
 
 {% block content %}
-
-    {# Слайды #}
-
+    <!-- Слайды -->
     <div id="carouselExampleCaptions" class="carousel slide mb-4" data-ride="carousel">
         <ol class="carousel-indicators">
             {% for slide in main_slides %}
@@ -75,11 +107,9 @@
             <span class="carousel-control-next-icon " aria-hidden="true"></span>
         </a>
     </div>
+    <!-- / Слайды -->
 
-    {# / Слайды #}
-
-    {# блок из трех картинок Строительство Реставрация Картины #}
-
+    <!-- блок из трех картинок Строительство Реставрация Картины -->
     <div class="row" id="slider-2">
         {% for slide in slides_2 %}
             <div class="col-12 col-sm-6 col-md-4">
@@ -95,22 +125,110 @@
             </div>
         {% endfor %}
     </div>
+    <!-- / блок из трех картинок Строительство Реставрация Картины -->
 
-    {# / блок из трех картинок Строительство Реставрация Картины #}
-
-    {# блок из Рекламного банера и Новых товаров #}
-
-    <div class="row  align-items-start">
-        <div class="col-xl-4"><img src="{{ banner.slide_img.url }}" class="img-fluid"></div>
-        <div class="row col-xl-8">
-            <h2>Новые <i class="font-weight-normal">товары</i> в шоуруме</h2>
-            <div class="col-xl-3">1</div>
-            <div class="col-xl-3">2</div>
-            <div class="col-xl-3">3</div>
+    <!-- блок из Рекламного банера и Новых товаров -->
+    <div class="row align-items-start text-center text-md-left">
+        <div class="col-12 col-sm-6 col-lg-4 mb-3">
+            <img src="{{ banner_1.slide_img.url }}" class="img-fluid">
+        </div>
+        <div class="col-12 col-sm-6 col-lg-8">
+            <div class="row-cols-1 mb-3">
+                <h2>Новые <i class="font-weight-normal">товары</i> в шоуруме</h2>
+            </div>
+            <div class="row row-cols-1 row-cols-lg-3">
+                <div class="col">1</div>
+                <div class="col">2</div>
+                <div class="col">3</div>
+            </div>
         </div>
     </div>
+    <!-- / блок из Рекламного банера и Новых товаров -->
 
-    {# / блок из Рекламного банера и Новых товаров #}
+    <!-- блок с двумя картинками Доски и Доставка -->
+    <div class="row align-items-start text-center text-md-left">
+        {% for slide in slides_3 %}
+            <div class="card col-12 col-lg-6 mb-3 border-0 position-relative">
+                <img class="card-img" src="{{ slide.slide_img.url }}" alt="{{ slide }}">
+                <div class="card-img-overlay mx-3 py-0 card-align-middle">
+                    {{ slide.slide_description|safe }}
+                </div>
+                <a href="{{ slide.slide_link_url }}" class="stretched-link"></a>
+            </div>
+        {% endfor %}
+    </div>
+    <!-- / блок с двумя картинками Доски и Доставка -->
+
+    <!-- блок из Рекламного банера и ТОП товаров -->
+    <div class="row align-items-start text-center text-md-left">
+        <div class="col-12 col-sm-6 col-lg-4 mb-3">
+            <h2 class="mb-3">Террасы, <i class="font-weight-normal">Перголы,</i> Веранды</h2>
+
+            <div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel">
+                <div class="carousel-inner">
+                    {% for banner in banner_2 %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %} position-relative">
+                            <img src="{{ banner.slide_img.url }}" class="img-fluid" alt="{{ banner }}">
+                            <div class="text-center text-muted small mt-1">{{ banner.slide_description|safe }}</div>
+                            <a class="stretched-link"
+                               href="{{ banner.slide_link_url }}"></a>
+                        </div>
+                    {% endfor %}
+                </div>
+                <a class="carousel-control-prev" href="#carouselExampleFade" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleFade" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-8">
+            <div class="row-cols-1 mb-3">
+                <h2>ТОП <i class="font-weight-normal">товаров</i> за все время</h2>
+            </div>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+                <div class="col">1</div>
+                <div class="col">2</div>
+                <div class="col">3</div>
+                <div class="col">4</div>
+                <div class="col">5</div>
+                <div class="col">6</div>
+            </div>
+        </div>
+    </div>
+    <!-- / блок из Рекламного банера и ТОП товаров -->
+
+
+    <!-- Банер Консервация -->
+    <div class="row align-items-start text-center text-md-left">
+        <div class="col-12 mb-3">
+            <div class="card border-0 position-relative overflow-hidden">
+                <img class="card-img" src="{{ banner_3.slide_img.url }}" alt="{{ banner_3 }}">
+                <div class="card-img-overlay mx-3 py-0 card-align-middle banner-3"
+                     style="">
+                    {{ banner_3.slide_description|safe }}
+                </div>
+                <a href="{{ banner_3.slide_link_url }}" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    <!-- / Банер Консервация -->
+
+    <!-- Бренды -->
+    <div class="d-flex mb-3 overflow-auto align-items-center">
+        {% for brand in brands %}
+            <div class="card col-12 col-sm-6 col-md-4 col-lg-2 text-center border-0">
+                <div class="card-body">
+                    <img src="{{ brand.slide_img.url }}" alt="{{ brand }}" class="img-fluid">
+                    <a href="{{ brand.slide_link_url }}" class="stretched-link"></a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <!-- / Бренды -->
+
 
 
 {% endblock %}

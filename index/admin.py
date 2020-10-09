@@ -25,7 +25,10 @@ class SlideInline(admin.StackedInline, SummernoteInlineModelAdmin):
 
 class GroupAdmin(admin.ModelAdmin):
     inlines = [SlideInline]
-
+    list_display = ['id', 'name', 'count_slide']
+    def count_slide(self, obj):
+        return Slide.objects.filter(slide_group=obj).count()
+    count_slide.short_description = 'Кол-во'
 
 class SlideAdmin(SummernoteModelAdmin):
     summernote_fields = '__all__'
