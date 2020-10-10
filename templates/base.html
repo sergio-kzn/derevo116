@@ -66,8 +66,8 @@
     {# Логотип, поиск, корзина #}
     <div class="row justify-content-between py-3 px-0 align-items-center mx-0">
         <div class="col-12 col-sm-6 col-lg-3">
-            <img src="{% static 'img/logo-imperial.png' %}" class="img-fluid"
-                 alt="логотип ООО Империал - столярная мастерска">
+            <a href="/"><img src="{% static 'img/logo-imperial.png' %}" class="img-fluid"
+                 alt="логотип ООО Империал - столярная мастерска"></a>
         </div>
         <div class="col-12 col-sm-4 col-md-3 col-lg-2 my-3 my-sm-0 order-lg-5 position-relative">
             <div class="row bg-light p-2 align-items-center">
@@ -245,7 +245,7 @@
                         <div class="list-group list-group-flush small">
                             <a href="#" class="list-group-item list-group-item-action list-group-item-danger">
                         Средства для ухода
-                            </a>
+54222;                            </a>
                             <a href="#"
                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">Dapibus
                                 ac facilisis in
@@ -379,5 +379,6 @@
 
 <!-- Option 1: Bootstrap Bundle with Popper.js -->
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+{% block custom_footer %}{% endblock custom_footer %}
 </body>
 </html>
