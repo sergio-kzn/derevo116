@@ -1,8 +1,8 @@
 from django.shortcuts import render
 
-from Derevo116 import settings
 from .models import Slide
 from BiofaImportBD.models import ProductProduct, ProductVolumepriceproduct
+
 
 
 def index(request):

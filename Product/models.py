@@ -2,9 +2,21 @@ from django.db import models
 
 
 class ProductCategory(models.Model):
-    category_title = models.CharField(max_length=100)
-    category_sort = models.IntegerField()
-    category_url = models.CharField(unique=True, max_length=100)
+    category_parent = models.ForeignKey("self", verbose_name='Родительская категория', null=True, blank=True, on_delete=models.DO_NOTHING)
+    category_title = models.CharField(verbose_name='Категория', max_length=100)
+    category_sort = models.IntegerField(verbose_name='Сортировка', default=0)
+    category_url = models.SlugField(verbose_name='Ссылка url', unique=True)
+    category_main_menu = models.BooleanField(verbose_name='Показывать в главном меню?', default=False)
+    def __str__(self):
+        from django.utils.safestring import mark_safe
+        if self.category_parent:
+            return mark_safe(f'{self.category_parent.category_title} -- {self.category_title}')
+        else:
+            return mark_safe(self.category_title)
+    class Meta:
+        ordering = ['category_parent__id', 'category_sort']
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
 
 
 class Product(models.Model):
