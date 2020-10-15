@@ -2,6 +2,15 @@
 
 {% block title %}{{ product.product_title }} - купить в Казани{% endblock title %}
 
+{% block breadcrumb-category %}
+    {% if biofa %}
+        <li class="breadcrumb-item"><a href="{% url 'biofa_paints' %}">Biofa</a></li>
+    {% endif %}
+    <li class="breadcrumb-item"><a
+            href="{% url 'biofa_category' product.product_category.category_url %}">{{ product.product_category.category_title }}</a>
+    </li>
+    <li class="breadcrumb-item active">{{ product.product_vendor_code }}</li>
+{% endblock breadcrumb-category %}
 
 {% block content_product %}
 
@@ -21,7 +30,7 @@
                     <div class="row mt-2 mb-5">
                         {% for color in colors %}
                             <div class="col-md-4"><img
-                                    src="../../../biofa-kazan.ru/media/{{ color.colorproduct.color_image }}"
+                                    src="../../../../biofa-kazan.ru/media/{{ color.colorproduct.color_image }}"
                                     class="img-fluid"
                                     alt="цвет {{ color.colorproduct.color_title }}">
                                 <span class="small">{{ color.colorproduct.color_title }}</span></div>
@@ -46,11 +55,13 @@
 
     <div class="row row-cols-1 row-cols-md-2 mb-5">
         <div class="col">
-            <img src="../../../biofa-kazan.ru/media/{{ product.product_img }}" class="card-img-top"
+            <img src="../../../../biofa-kazan.ru/media/{{ product.product_img }}" class="card-img-top"
                  alt="{{ product.product_title }}">
         </div>
         <div class="col pt-3">
+
             <h1 class="">{{ product.product_title }}</h1>
+
             {% if not product.product_price %}
                 <p class="text-muted font-monospace" style="font-size: x-large">
                     от {{ volume_price.first.volumeprice_price }}.00
@@ -59,6 +70,7 @@
                 <p class="text-muted font-monospace" style="font-size: x-large">{{ product.product_price }}.00 <i
                         class="fas fa-ruble-sign"></i></p>
             {% endif %}
+
             <ul class="small list-unstyled text-muted my-3">
                 <li>Поставщик: {% if biofa %}
                     <a href="#">Biofa</a>
@@ -81,26 +93,29 @@
             {% endif %}
 
             <div class="row my-3">
-                <h3>Объем</h3>
-                <div class="pr-5">
-                    <table class="table table-sm table-hover small">
-                        <thead>
-                        <tr>
-                            <th>Объем</th>
-                            <th class="text-right">Цена</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for price in volume_price %}
+                <div class="col-12 col-sm-10 col md-8 col-lg-6">
+                    <h3>Объем</h3>
+                    <div class="pr-5">
+                        <table class="table table-sm table-hover small">
+                            <thead>
+                            <tr>
+                                <th>Объем</th>
+                                <th class="text-right">Цена</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for price in volume_price %}
                             <tr>
                                 <td>{{ price.volumeprice_volume.volume_title }} </td>
                                 <td class="text-right">{{ price.volumeprice_price }} </td>
                             </tr>
                         {% endfor %}
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+
             <div class="row px-3">
                 <button type="button" class="btn btn-primary btn-lg btn-block my-3">Добавить в корзину</button>
             </div>

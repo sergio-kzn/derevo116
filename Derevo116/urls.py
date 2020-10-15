@@ -20,8 +20,7 @@ from pyatspi import document
 
 urlpatterns = [
     path('', include('Index.urls')),
-    path('biofa/', include('BiofaImportBD.urls')),
-    path('product/', include('Product.urls')),
+    path('paints-and-oils/', include('Product.urls')),
     path('admin/', admin.site.urls),
     path('summernote/', include('django_summernote.urls')),
 ]

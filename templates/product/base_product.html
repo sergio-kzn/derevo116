@@ -4,6 +4,25 @@
 {# Содержимое страницы. Разное для всех приложений джанго   #}
 {% block content %}
     <!-- Хлебные крошки -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Главная</a></li>
+            {% url 'paints' as paints %}
+            {% if paints in request.path %}
+
+                {% if request.path == paints %}
+                    <li class="breadcrumb-item active">Краски и масла</li>
+                {% else %}
+                    <li class="breadcrumb-item"><a href="{{ paints }}">Краски и масла</a></li>
+                {% endif %}
+
+                {% block breadcrumb-category %}{% endblock breadcrumb-category %}
+
+
+            {% endif %}
+            {#            <li class="breadcrumb-item active" aria-current="page">Data</li>#}
+        </ol>
+    </nav>
     <!-- / Хлебные крошки -->
 
     {% block content_product %}

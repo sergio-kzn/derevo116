@@ -96,24 +96,29 @@
     {# / Логотип, поиск, корзина #}
 
 
-    {# Меню сайта #}
+    <!-- Меню сайта -->
+    {% url 'paints' as paints %}
     <div class="row px-3 py-2 mx-0 mb-3 bg-gradient bg-light position-relative">
         <nav class="nav nav-pills flex-column flex-sm-row">
-            <a class="flex-sm-fill text-sm-center nav-link {% if request.path == '/' %}btn btn-danger link-light{% else %} link-dark{% endif %}"
+
+            <a class="flex-sm-fill text-sm-center nav-link
+            {% if request.path == '/' %}btn btn-danger link-light{% else %} link-dark{% endif %}"
                aria-current="page" href="/">Главная</a>
-            <a class="flex-sm-fill text-sm-center nav-link link-dark dropdown-toggle" data-toggle="dropdown"
+
+            <a class="flex-sm-fill text-sm-center nav-link
+            {% if paints in request.path %}btn btn-danger link-light{% else %} link-dark{% endif %}
+             dropdown-toggle" data-toggle="dropdown"
                data-reference="parent" href="#">Краски и масла</a>
             <div class="dropdown-menu fade w-100 p-3 ml-n1">
                 <div class="row">
                     {% categories vendor='biofa' %}
                     {% categories vendor %}
-
                 </div>
                 <div class="row">
                     <div class="col-12 text-center align-middle"><h3>Не знаете что выбрать?</h3></div>
-
                 </div>
             </div>
+
             <a class="flex-sm-fill text-sm-center nav-link link-dark dropdown-toggle" data-toggle="dropdown"
                data-reference="parent" href="#">Столярные изделия</a>
             <div class="dropdown-menu fade w-100 p-3 ml-n1">

@@ -2,5 +2,49 @@
 
 {% block title %}Столярная мастерская Империал - г. Казань{% endblock title %}
 
+{% block breadcrumb-category %}
+    {% url 'biofa_paints' as biofa_paints %}
+    {% if request.path == biofa_paints %}
+        <li class="breadcrumb-item">Biofa</li>
+    {% else %}
+        {% if biofa %}
+            <li class="breadcrumb-item"><a href="{% url 'biofa_paints' %}">Biofa</a></li>
+        {% endif %}
+        <li class="breadcrumb-item active">{{ category.category_title }}</li>
+    {% endif %}
+{% endblock breadcrumb-category %}
+
 {% block content_product %}
+
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-4 mb-5">
+
+        {% for product in products %}
+            <div class="col">
+                <div class="card h-100 text-center">
+                    <div class="card-header text-muted small">
+                        Артикул: {{ product.product_vendor_code }}</div>
+
+                    <img src="/biofa-kazan.ru/media/{{ product.product_img }}" class="card-img-top"
+                         alt="{{ product.product_title }}">
+                    <div class="card-body">
+                        <p class="card-title">{{ product.product_title }}</p>
+
+                        {% if not product.product_price %}
+                            <p class="font-monospace">
+                                от {{ prices.first.volumeprice_price }}.00
+                                <i class="fas fa-ruble-sign"></i></p>
+                        {% else %}
+                            <p class="text-muted font-monospace" style="font-size: x-large">{{ product.product_price }}.00
+                                <i class="fas fa-ruble-sign"></i></p>
+                        {% endif %}
+                        <a href="{% url 'biofa_product' product.product_category.category_url product.product_url %}"
+                           class="btn btn-primary stretched-link">Посмотреть</a>
+                    </div>
+                    <div class="card-footer text-muted">{{ product.product_category.category_title }}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
 {% endblock content_product %}
