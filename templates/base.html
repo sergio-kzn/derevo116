@@ -25,25 +25,29 @@
 <body>
 <div class="container">
     {# Верхнее меню с контактами #}
-    <div class="row justify-content-between bg-light bg-gradient p-3 mx-0 text-center small">
-        <div class="col-12 col-lg mb-3 mb-lg-0">
-            <div class="row row-cols-1 row-cols-md-4 row-cols-lg-auto my-0 justify-content-lg-start">
+    <div class="row bg-light bg-gradient p-3 mx-0 small">
+        <div class="col-auto">
+            <div class="row my-0">
                 <div class="col text-nowrap"><a href="mailto:support@derevo116.ru" target="_blank"
                                     class="link-secondary text-decoration-none">
-                    <i class="fas fa-envelope"></i> support@derevo116.ru</a></div>
+                    <i class="fas fa-envelope"></i>
+                    <span class="d-none d-md-inline-block"> support@derevo116.ru</span></a></div>
                 <div class="col text-nowrap"><a href="tel:88432739196" target="_blank"
                                     class="link-secondary text-decoration-none">
-                    <i class="fas fa-phone"></i> 8-843-273-91-96</a></div>
+                    <i class="fas fa-phone"></i>
+                    <span class="d-none d-sm-inline-block"> 8-843-273-91-96</span></a></div>
                 <div class="col text-nowrap"><a href="http://wa.me/79655921235" target="_blank"
                                     class="link-secondary text-decoration-none">
-                    <i class="fab fa-whatsapp"></i> WhatsApp</a></div>
+                    <i class="fab fa-whatsapp"></i>
+                    <span class="d-none d-lg-inline-block"> WhatsApp</span></a></div>
                 <div class="col text-nowrap"><a href="https://t.me/Biofa16" target="_blank"
                                     class="link-secondary text-decoration-none">
-                    <i class="fab fa-telegram"></i> Telegram</a></div>
+                    <i class="fab fa-telegram"></i>
+                    <span class="d-none d-lg-inline-block"> Telegram</span></a></div>
             </div>
         </div>
 
-        <div class="col-12 col-lg-2">
+        <div class="col-auto text-right ml-auto">
             <div class="my-0 dropdown"><a
                     class="link-secondary text-decoration-none dropdown-toggle"
                     href="#" role="button" id="dropdownMenuLink"
@@ -98,14 +102,14 @@
 
     <!-- Меню сайта -->
     {% url 'paints' as paints %}
-    <div class="row px-3 py-2 mx-0 mb-3 bg-gradient bg-light position-relative">
+    <div class="row px-1 px-xl-3 py-2 mx-0 mb-3 bg-gradient bg-light position-relative">
         <nav class="nav nav-pills flex-column flex-sm-row">
 
-            <a class="flex-sm-fill text-sm-center nav-link
+            <a class="flex-sm-fill text-center nav-link
             {% if request.path == '/' %}btn btn-danger link-light{% else %} link-dark{% endif %}"
                aria-current="page" href="/">Главная</a>
 
-            <a class="flex-sm-fill text-sm-center nav-link
+            <a class="flex-sm-fill text-center nav-link
             {% if paints in request.path %}btn btn-danger link-light{% else %} link-dark{% endif %}
              dropdown-toggle" data-toggle="dropdown"
                data-reference="parent" href="#">Краски и масла</a>
@@ -119,19 +123,19 @@
                 </div>
             </div>
 
-            <a class="flex-sm-fill text-sm-center nav-link link-dark dropdown-toggle" data-toggle="dropdown"
+            <a class="flex-sm-fill text-center nav-link link-dark dropdown-toggle" data-toggle="dropdown"
                data-reference="parent" href="#">Столярные изделия</a>
             <div class="dropdown-menu fade w-100 p-3 ml-n1">
                 Столярные изделия
             </div>
-            <a class="flex-sm-fill text-sm-center nav-link link-dark dropdown-toggle" data-toggle="dropdown"
+            <a class="flex-sm-fill text-center nav-link link-dark dropdown-toggle" data-toggle="dropdown"
                data-reference="parent" href="#">Услуги</a>
             <div class="dropdown-menu fade w-100 p-3 ml-n1">
                 Услуги
             </div>
-            <a class="flex-sm-fill text-sm-center nav-link link-dark" href="#">Контакты</a>
-            <a class="flex-sm-fill text-sm-center nav-link link-dark" href="#">Оплата и доставка</a>
-            <a class="flex-sm-fill text-sm-center nav-link link-dark" href="#">Блог</a>
+            <a class="flex-sm-fill text-center nav-link link-dark" href="#">Контакты</a>
+            <a class="flex-sm-fill text-center nav-link link-dark" href="#">Оплата и доставка</a>
+            <a class="flex-sm-fill text-center nav-link link-dark" href="#">Блог</a>
         </nav>
     </div>
     {# / Меню сайта #}
