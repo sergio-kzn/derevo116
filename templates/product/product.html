@@ -5,6 +5,10 @@
 {% block breadcrumb-category %}
     {% if biofa %}
         <li class="breadcrumb-item"><a href="{% url 'biofa_paints' %}">Biofa</a></li>
+    {% else %}
+        <li class="breadcrumb-item"><a
+                href="{% url 'main_category' product.product_vendor.vendor_url %}">{{ product.product_vendor.vendor_title }}</a>
+        </li>
     {% endif %}
     <li class="breadcrumb-item"><a
             href="{% url 'biofa_category' product.product_category.category_url %}">{{ product.product_category.category_title }}</a>
@@ -55,8 +59,13 @@
 
     <div class="row row-cols-1 row-cols-md-2 mb-5">
         <div class="col">
-            <img src="../../../../biofa-kazan.ru/media/{{ product.product_img }}" class="card-img-top"
-                 alt="{{ product.product_title }}">
+            {% if biofa %}
+                <img src="../../../../biofa-kazan.ru/media/{{ product.product_img }}" class="card-img-top  my-3"
+                     alt="{{ product.product_title }}">
+            {% else %}
+                <img src="{{ product.product_img.url }}" class="card-img-top my-3"
+                     alt="{{ product.product_title }}">
+            {% endif %}
         </div>
         <div class="col pt-3">
 
@@ -73,9 +82,9 @@
 
             <ul class="small list-unstyled text-muted my-3">
                 <li>Поставщик: {% if biofa %}
-                    <a href="#">Biofa</a>
+                    <a href="{% url 'biofa_paints' %}">Biofa</a>
                 {% else %}
-                    <a href="#">{{ product.product_vendor }}</a>
+                    <a href="{% url 'main_category' product.product_vendor.vendor_url %}">{{ product.product_vendor.vendor_title }}</a>
                 {% endif %} </li>
                 <li>Артикул: {{ product.product_vendor_code }}</li>
                 <li>Наличие: {% if biofa %}
@@ -135,10 +144,14 @@
                     <a class="nav-link" data-toggle="tab" href="#attributes" role="tab"
                        aria-controls="attributes" aria-selected="false">Характеристики</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#photo" role="tab"
-                       aria-controls="photo" aria-selected="false">ФОТО</a>
-                </li>
+
+                {% if product.product_description %}
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#photo" role="tab"
+                           aria-controls="photo" aria-selected="false">ФОТО</a>
+                    </li>
+                {% endif %}
+
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="tab" href="#reviews" role="tab"
                        aria-controls="reviews" aria-selected="false">Отзывы <span class="badge bg-primary">0</span></a>
@@ -146,28 +159,48 @@
             </ul>
 
             <div class="tab-content">
+
                 <div class="tab-pane fade show active" id="description" role="tabpanel"
                      aria-labelledby="description-tab">
                     {{ product.product_content|safe }}
                 </div>
+
                 <div class="tab-pane fade" id="attributes" role="tabpanel" aria-labelledby="attributes-tab">
-                    <ul class="list-group list-group-flush">
+                    <table class="table table-sm table-hover small">
+                        <tbody>
                         {% for attr in attributes %}
-                            <li class="list-group-item">{{ attr.attribute_title }}</li>
+                            <tr>
+                            <td class="">
+                                {% if attr.attribute_title == None %}
+                                    &nbsp;
+                                {% else %}
+                                    {{ attr.attribute_title }}</td>
+                                {% endif %}
+                            <td>
+                                {% if attr.attribute_value == None %}
+                                    &nbsp;
+                                {% else %}
+                                    {{ attr.attribute_value }}</td>
+                                {% endif %}
                         {% endfor %}
-                    </ul>
+                        </tbody>
+                    </table>
                     {% if product.product_file %}
                         <div class="my-3">
                             <i class="fas fa-2x fa-file mr-2"></i>
-                                <a href="{{ product.product_file.url }}" target="_blank" rel="noopener noreferrer"
-                                class="text-muted text-decoration-none">
-                                    Техническое руководство ({{ product.product_vendor_code }}.pdf)</a>
+                            <a href="{{ product.product_file.url }}" target="_blank" rel="noopener noreferrer"
+                               class="text-muted text-decoration-none">
+                                Техническое руководство ({{ product.product_vendor_code }}.pdf)</a>
                         </div>
                     {% endif %}
                 </div>
-                <div class="tab-pane fade" id="photo" role="tabpanel" aria-labelledby="photo-tab">
-                    {{ product.product_description|safe }}
-                </div>
+
+                {% if product.product_description %}
+                    <div class="tab-pane fade" id="photo" role="tabpanel" aria-labelledby="photo-tab">
+                        {{ product.product_description|safe }}
+                    </div>
+                {% endif %}
+
                 <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">Отзывов пока
                     нет.
                 </div>
