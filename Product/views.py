@@ -8,6 +8,7 @@ def product(request, vendor_url, category_url, product_url):
     price_data = ProductVolumePrice.objects.filter(volumeprice_product__product_url=product_url)
     colors = ProductColor.objects.filter(product__product_url=product_url)
     attributes = ProductAttribute.objects.filter(attribute_product__product_url=product_url)
+
     content = {
         'product': product,
         'volume_price': price_data,
@@ -20,7 +21,7 @@ def product(request, vendor_url, category_url, product_url):
 
 def category(request, vendor_url, category_url):
     category = ProductCategory.objects.filter(category_url=category_url)
-    products = Product.objects.filter(product_category__category_url=category_url)
+    products = Product.objects.filter(product_category__category_url=category_url, product_show=True)
     price_data = ProductVolumePrice.objects.filter(volumeprice_product__product_category__category_url=category_url)
     vendor = ProductVendor.objects.filter(vendor_url=vendor_url)[0]
 
@@ -36,7 +37,7 @@ def category(request, vendor_url, category_url):
 
 def vendor_category(request, vendor_url):
     category = ProductCategory.objects.filter(category_parent__category_url=vendor_url)
-    products = Product.objects.filter(product_vendor__vendor_url=vendor_url)
+    products = Product.objects.filter(product_vendor__vendor_url=vendor_url, product_show=True)
     price_data = ProductVolumePrice.objects.filter(volumeprice_product__product_vendor__vendor_url=vendor_url)
     vendor = ProductVendor.objects.filter(vendor_url=vendor_url)[0]
 

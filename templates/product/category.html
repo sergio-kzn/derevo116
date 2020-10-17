@@ -83,8 +83,14 @@
                         </p>
                     </div>
                     <div class="card-footer bg-transparent">
-                        <a href="{% url 'biofa_product' product.product_category.category_url product.product_url %}"
-                           class="btn btn-primary stretched-link">Посмотреть</a>
+                        {% if biofa %}
+                            <a href="{% url 'biofa_product' product.product_category.category_url product.product_url %}"
+                               class="btn btn-primary stretched-link">Посмотреть</a>
+                        {% else %}
+                            <a href="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}"
+                               class="btn btn-primary stretched-link">Посмотреть</a>
+                        {% endif %}
+
                     </div>
                 </div>
             </div>

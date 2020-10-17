@@ -54,7 +54,7 @@ class ProductAdmin(SummernoteModelAdmin):  # instead of ModelAdmin
     inlines = [PriceInline, AttributeInline]
     list_display = ['image_preview', 'product_title', 'product_category', 'product_vendor_code', 'product_link']
     fields = [f.name for f in Product._meta.fields if f.name != 'id']
-    fields.insert(4, 'image_preview')
+    fields.insert(7, 'image_preview')
     save_on_top = True
     list_display_links = ['image_preview', 'product_title']
 

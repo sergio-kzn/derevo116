@@ -71,7 +71,7 @@
 
             <h1 class="">{{ product.product_title }}</h1>
 
-            {% if not product.product_price %}
+            {% if not product.product_price and product.product_price_choice == False %}
                 <p class="text-muted font-monospace" style="font-size: x-large">
                     от {{ volume_price.first.volumeprice_price }}.00
                     <i class="fas fa-ruble-sign"></i></p>
@@ -90,7 +90,7 @@
                 <li>Наличие: {% if biofa %}
                     <span class="text-success font-weight-bold">В наличии более 10л.</span>
                 {% else %}
-                    <span class="font-weight-bold">{{ product.product_count }}</span>
+                    <span class="text-success font-weight-bold">{{ product.product_count }}</span>
                 {% endif %}</li>
             </ul>
 
@@ -101,27 +101,59 @@
                 </button>
             {% endif %}
 
+            {% if product.product_extra_desc %}
+                <div class="row py-2">
+                    {{ product.product_extra_desc|safe }}
+                </div>
+            {% endif %}
+
             <div class="row my-3">
                 <div class="col-12 col-sm-10 col md-8 col-lg-6">
-                    <h3>Объем</h3>
-                    <div class="pr-5">
-                        <table class="table table-sm table-hover small">
-                            <thead>
-                            <tr>
-                                <th>Объем</th>
-                                <th class="text-right">Цена</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for price in volume_price %}
-                            <tr>
-                                <td>{{ price.volumeprice_volume.volume_title }} </td>
-                                <td class="text-right">{{ price.volumeprice_price }} </td>
-                            </tr>
-                        {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                    {% if biofa %}
+                        <h3>Объем</h3>
+                        <div class="pr-5">
+                            <table class="table table-sm table-hover small">
+                                <thead>
+                                <tr>
+                                    <th>Объем</th>
+                                    <th class="text-right">Цена</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for price in volume_price %}
+                                    <tr>
+                                        <td>{{ price.volumeprice_volume.volume_title }} </td>
+                                        <td class="text-right">{{ price.volumeprice_price }} </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% elif product.product_price_choice == False %}
+                        <h3>{{ product.product_price_title }}</h3>
+                        <div class="pr-5">
+                            <table class="table table-sm table-hover small">
+                                <thead>
+                                <tr>
+                                    <th class="text-nowrap">{{ product.product_price_title_1|safe }}</th>
+                                    <th class="text-right text-nowrap">{{ product.product_price_title_2|safe }}</th>
+                                    <th class="text-center text-nowrap">{{ product.product_price_title_3|safe|default_if_none:"" }}</th>
+                                    <th class="text-center text-nowrap">{{ product.product_price_title_4|safe|default_if_none:"" }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for price in volume_price %}
+                                    <tr>
+                                        <td>{{ price.volumeprice_volume.volume_title }}</td>
+                                        <td class="text-right text-nowrap">{{ price.volumeprice_price }}</td>
+                                        <td class="text-center text-nowrap">{{ price.volumeprice_expenditure|default_if_none:"" }}</td>
+                                        <td class="text-center text-nowrap">{{ price.volumeprice_expenditure_price|default_if_none:"" }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
 
@@ -148,13 +180,20 @@
                 {% if product.product_description %}
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#photo" role="tab"
-                           aria-controls="photo" aria-selected="false">ФОТО</a>
+                           aria-controls="photo" aria-selected="false">
+                            {% if biofa %}
+                                ФОТО
+                            {% else %}
+                                {{ product.product_description_title }}
+                            {% endif %}
+                        </a>
                     </li>
                 {% endif %}
 
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="tab" href="#reviews" role="tab"
-                       aria-controls="reviews" aria-selected="false">Отзывы <span class="badge bg-primary">0</span></a>
+                       aria-controls="reviews" aria-selected="false">Отзывы <span
+                            class="badge bg-primary ml-2 position-absolute">0</span></a>
                 </li>
             </ul>
 
@@ -171,17 +210,9 @@
                         {% for attr in attributes %}
                             <tr>
                             <td class="">
-                                {% if attr.attribute_title == None %}
-                                    &nbsp;
-                                {% else %}
-                                    {{ attr.attribute_title }}</td>
-                                {% endif %}
+                                {{ attr.attribute_title|default_if_none:"" }}</td>
                             <td>
-                                {% if attr.attribute_value == None %}
-                                    &nbsp;
-                                {% else %}
-                                    {{ attr.attribute_value }}</td>
-                                {% endif %}
+                                {{ attr.attribute_value|default_if_none:"" }}</td>
                         {% endfor %}
                         </tbody>
                     </table>
@@ -201,7 +232,8 @@
                     </div>
                 {% endif %}
 
-                <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">Отзывов пока
+                <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                    Отзывов пока
                     нет.
                 </div>
             </div>
