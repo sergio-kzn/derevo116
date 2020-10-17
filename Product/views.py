@@ -1,19 +1,19 @@
 from django.shortcuts import render
 
-from Product.models import Product, ProductVolumePrice, ProductColor, ProductAttribute, ProductCategory, ProductVendor
+from Product.models import Product, ProductVolumePrice, ProductAttribute, ProductCategory, ProductVendor, Color
 
 
 def product(request, vendor_url, category_url, product_url):
     product = Product.objects.filter(product_url=product_url)[0]
     price_data = ProductVolumePrice.objects.filter(volumeprice_product__product_url=product_url)
-    colors = ProductColor.objects.filter(product__product_url=product_url)
     attributes = ProductAttribute.objects.filter(attribute_product__product_url=product_url)
+    colors = Color.objects.filter(color_group__product__product_url=product_url)
 
     content = {
         'product': product,
         'volume_price': price_data,
-        'colors': colors,
         'attributes': attributes,
+        'colors': colors,
         'biofa': False,
     }
     return render(request, 'product/product.html', content)

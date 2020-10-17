@@ -1,5 +1,18 @@
 {% extends 'product/base_product.html' %}
 
+{% block custom_head %}
+    <style>
+    .color-target{
+        cursor: pointer;
+        border-radius: 5px;
+        transition: .1s;
+    }
+    .color-target.active{
+        border: #0d6efd 3px dashed;
+    }
+    </style>
+{% endblock %}
+
 {% block title %}{{ product.product_title }} - купить в Казани{% endblock title %}
 
 {% block breadcrumb-category %}
@@ -21,7 +34,7 @@
     <!-- Modal window for COLORS -->
     <div class="modal fade" id="colorModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="staticBackdropLabel">Выбор цвета краски</h5>
@@ -32,13 +45,24 @@
                 <div class="modal-body">
                     <h5>{{ product.product_title }}</h5>
                     <div class="row mt-2 mb-5">
-                        {% for color in colors %}
-                            <div class="col-md-4"><img
-                                    src="../../../../biofa-kazan.ru/media/{{ color.colorproduct.color_image }}"
-                                    class="img-fluid"
-                                    alt="цвет {{ color.colorproduct.color_title }}">
-                                <span class="small">{{ color.colorproduct.color_title }}</span></div>
-                        {% endfor %}
+                        {% if biofa %}
+                            {% for color in colors %}
+                                <div class="col-md-4 mb-3" style="line-height: 1rem;"><img
+                                        src="../../../../biofa-kazan.ru/media/{{ color.colorproduct.color_image }}"
+                                        class="img-fluid"
+                                        alt="цвет {{ color.colorproduct.color_title }}">
+                                    <span class="small">{{ color.colorproduct.color_title }}</span></div>
+                            {% endfor %}
+                        {% else %}
+                            {% for color in colors %}
+                                <div class="col-md-4 my-1 py-1 color-target" style="line-height: 1rem;">
+                                        <img
+                                        src="{{ color.color_image.url }}"
+                                        class="img-fluid"
+                                        alt="цвет {{ color.color_title }}">
+                                    <span class="small">{{ color.color_title }}</span></div>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                     <p>Помните - мониторы искажают цвет!
 
@@ -50,6 +74,7 @@
                         сочетаний.
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Выбрать</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                 </div>
             </div>
@@ -137,8 +162,9 @@
                                 <tr>
                                     <th class="text-nowrap">{{ product.product_price_title_1|safe }}</th>
                                     <th class="text-right text-nowrap">{{ product.product_price_title_2|safe }}</th>
-                                    <th class="text-center text-nowrap">{{ product.product_price_title_3|safe|default_if_none:"" }}</th>
-                                    <th class="text-center text-nowrap">{{ product.product_price_title_4|safe|default_if_none:"" }}</th>
+
+                                    <th class="text-center text-nowrap">{{ product.product_price_title_3|default_if_none:""|safe }}</th>
+                                    <th class="text-center text-nowrap">{{ product.product_price_title_4|default_if_none:""|safe }}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -177,17 +203,26 @@
                        aria-controls="attributes" aria-selected="false">Характеристики</a>
                 </li>
 
-                {% if product.product_description %}
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#photo" role="tab"
-                           aria-controls="photo" aria-selected="false">
-                            {% if biofa %}
+                {% if biofa %}
+                    {% if product.product_description %}
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#photo" role="tab"
+                               aria-controls="photo" aria-selected="false">
                                 ФОТО
-                            {% else %}
-                                {{ product.product_description_title }}
-                            {% endif %}
-                        </a>
-                    </li>
+                            </a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    {% if product.product_tab.count > 0 %}
+                        {% for tab in product.product_tab.all %}
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#{{ tab.tab_slug }}" role="tab"
+                                   aria-controls="{{ tab.tab_slug }}" aria-selected="false">
+                                    {{ tab.tab_title }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    {% endif %}
                 {% endif %}
 
                 <li class="nav-item">
@@ -198,21 +233,22 @@
             </ul>
 
             <div class="tab-content">
-
+                <!-- Описание -->
                 <div class="tab-pane fade show active" id="description" role="tabpanel"
                      aria-labelledby="description-tab">
                     {{ product.product_content|safe }}
                 </div>
 
+                <!-- Характеристики -->
                 <div class="tab-pane fade" id="attributes" role="tabpanel" aria-labelledby="attributes-tab">
                     <table class="table table-sm table-hover small">
                         <tbody>
                         {% for attr in attributes %}
                             <tr>
                             <td class="">
-                                {{ attr.attribute_title|default_if_none:"" }}</td>
+                                {{ attr.attribute_title|default_if_none:""|safe }}</td>
                             <td>
-                                {{ attr.attribute_value|default_if_none:"" }}</td>
+                                {{ attr.attribute_value|default_if_none:""|safe }}</td>
                         {% endfor %}
                         </tbody>
                     </table>
@@ -226,12 +262,25 @@
                     {% endif %}
                 </div>
 
-                {% if product.product_description %}
-                    <div class="tab-pane fade" id="photo" role="tabpanel" aria-labelledby="photo-tab">
-                        {{ product.product_description|safe }}
-                    </div>
+                <!-- Доп. вкладки -->
+                {% if biofa %}
+                    {% if product.product_description %}
+                        <div class="tab-pane fade" id="photo" role="tabpanel" aria-labelledby="photo-tab">
+                            {{ product.product_description|safe }}
+                        </div>
+                    {% endif %}
+                {% else %}
+                    {% if product.product_tab.count > 0 %}
+                        {% for tab in product.product_tab.all %}
+                            <div class="tab-pane fade" id="{{ tab.tab_slug }}" role="tabpanel"
+                                 aria-labelledby="{{ tab.tab_slug }}-tab">
+                                {{ tab.tab_content|safe }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
                 {% endif %}
 
+                <!-- Отзывы -->
                 <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
                     Отзывов пока
                     нет.
@@ -242,3 +291,22 @@
     <!-- / вкладки Описание Характиристики Отзывы -->
 
 {% endblock content_product %}
+
+{% block custom_footer %}
+<!-- скрипт отвечает за выделение Цвета в модальном окне -->
+<script>
+(function() {
+  var blocks = document.querySelectorAll(".color-target");
+
+  for(var i = 0; i < blocks.length; i++) {
+    blocks[i].addEventListener("click", function() {
+      for(var j = 0; j < blocks.length; j++) {
+        blocks[j].classList.remove("active");
+      }
+
+      this.classList.add("active");
+    }, false);
+  }
+})();
+</script>
+{% endblock custom_footer %}

@@ -39,7 +39,7 @@ class ColorGroup(models.Model):
         verbose_name_plural = "Цвета (группы)"
     def __str__(self):
         return self.color_group_name
-    color_group_name = models.CharField(max_length=50)
+    color_group_name = models.CharField(verbose_name='Группа цветов', max_length=100)
 
 class Color(models.Model):
     """цвета для масел"""
@@ -48,14 +48,28 @@ class Color(models.Model):
         verbose_name_plural = "Цвета"
         ordering = ['color_sort', 'color_title']
 
-    color_title = models.CharField(verbose_name='Цвет', max_length=50)
+    color_title = models.CharField(verbose_name='Название цвета', max_length=50)
     color_image = models.ImageField(
-        verbose_name='Изображение', upload_to='colors')
+        verbose_name='Изображение', upload_to='products/colors')
     color_sort = models.IntegerField('Сортировка', default=0)
     color_group = models.ForeignKey(ColorGroup, models.DO_NOTHING)
 
     def __str__(self):
         return self.color_title
+
+
+class ProductTab(models.Model):
+    """Дополнительные вкладки на странице товара"""
+    class Meta:
+        verbose_name = "Вкладка"
+        verbose_name_plural = "Вкладки"
+    def __str__(self):
+        return str(self.tab_title_admin)
+
+    tab_title_admin = models.CharField(verbose_name='Название (в админке)', max_length=200)
+    tab_title = models.CharField(verbose_name='Название (в шаблоне)', max_length=200)
+    tab_content = models.TextField(verbose_name='Содержимое доп. вкладки', blank=True, null=True)
+    tab_slug = models.SlugField(verbose_name='Ссылка href="# ..."')
 
 
 class Product(models.Model):
@@ -77,20 +91,20 @@ class Product(models.Model):
     product_title = models.CharField(verbose_name='Заголовок', max_length=200)
     product_url = models.SlugField(verbose_name='Ссылка url', unique=True, max_length=100)
     product_extra_desc = models.TextField(verbose_name='Дополнительная информация рядом с ценой', blank=True, null=True)
-    product_img = models.ImageField(verbose_name='Изображение товара',upload_to=f'products/{ProductCategory.category_url}/')
-    product_description_title = models.CharField(verbose_name='Название доп. вкладки', max_length=200, blank=True, null=True)
-    product_description = models.TextField(verbose_name='Содержимое доп. вкладки', blank=True, null=True)
+    product_img = models.ImageField(verbose_name='Изображение товара',upload_to='products')
+    # product_description_title = models.CharField(verbose_name='Название доп. вкладки', max_length=200, blank=True, null=True)
+    # product_description = models.TextField(verbose_name='Содержимое доп. вкладки', blank=True, null=True)
     product_content = models.TextField(verbose_name='Описание', )
     product_file = models.FileField(verbose_name='Прикрепить файл (Техническое руководство) pdf', upload_to='product/files', null=True, blank=True)
     product_count = models.CharField(verbose_name='Наличие товара', max_length=30, blank=True, null=True, default="В наличии более 10л.")
     product_color = models.ManyToManyField(ColorGroup, verbose_name="Группа цветов", blank=True)
+    product_tab = models.ManyToManyField(ProductTab, verbose_name="Доп. вкладки", blank=True)
     product_price_choice = models.BooleanField(verbose_name='Тип цены', choices=PRICE, default=False)
     product_price = models.CharField(verbose_name='Простая цена', max_length=30, blank=True, null=True)
     product_price_title_1 = models.CharField(verbose_name='Расширенная цена 1 столбик', max_length=50, blank=True, null=True, default="Объем")
     product_price_title_2 = models.CharField(verbose_name='Расширенная цена 2 столбик', max_length=50, blank=True, null=True, default="Цена")
     product_price_title_3 = models.CharField(verbose_name='Расширенная цена 3 столбик', max_length=50, blank=True, null=True, default="Расход на м<sup>2</sup><br>(1 слой / 2 слоя)")
     product_price_title_4 = models.CharField(verbose_name='Расширенная цена 4 столбик', max_length=50, blank=True, null=True, default="Цена за р/м<sup>2</sup><br>(1 слой / 2 слоя)")
-
 
 
 class ProductAttribute(models.Model):
@@ -110,9 +124,9 @@ class ProductAttribute(models.Model):
     attribute_product = models.ForeignKey(Product, models.DO_NOTHING, verbose_name='Товар')
 
 
-class ProductColor(models.Model):
-    product = models.ForeignKey(Product, models.DO_NOTHING)
-    color = models.ForeignKey(Color, models.DO_NOTHING)
+# class ProductColor(models.Model):
+#     product = models.ForeignKey(Product, models.DO_NOTHING)
+#     color = models.ForeignKey(Color, models.DO_NOTHING)
 
 
 class Volume(models.Model):
