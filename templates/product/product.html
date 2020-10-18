@@ -38,7 +38,7 @@
         </li>
     {% else %}
         <li class="breadcrumb-item"><a
-                href="{% url 'main_category' product.product_vendor.vendor_url %}">{{ product.product_vendor.vendor_title }}</a>
+                href="{% url 'vendor-paints' product.product_vendor.vendor_url %}">{{ product.product_vendor.vendor_title }}</a>
         <li class="breadcrumb-item"><a
                 href="{% url 'category' product.product_vendor.vendor_url product.product_category.category_url %}">{{ product.product_category.category_title }}</a>
         </li>
@@ -150,7 +150,7 @@
                 <li>Поставщик: {% if biofa %}
                     <a href="{% url 'biofa_paints' %}">Biofa</a>
                 {% else %}
-                    <a href="{% url 'main_category' product.product_vendor.vendor_url %}">{{ product.product_vendor.vendor_title }}</a>
+                    <a href="{% url 'vendor-paints' product.product_vendor.vendor_url %}">{{ product.product_vendor.vendor_title }}</a>
                 {% endif %} </li>
                 <li>Артикул: {{ product.product_vendor_code }}</li>
                 <li>Наличие: {% if biofa %}

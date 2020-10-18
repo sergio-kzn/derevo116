@@ -24,6 +24,7 @@ def product(request, vendor_url, category_url, product_url):
 
 def category(request, vendor_url, category_url):
     category = ProductCategory.objects.filter(category_url=category_url)
+    all_category = ProductCategory.objects.filter(category_parent__category_url=vendor_url)
     products = Product.objects.filter(product_category__category_url=category_url, product_show=True)
     price_data = ProductVolumePrice.objects.filter(volumeprice_product__product_category__category_url=category_url)
     vendor = ProductVendor.objects.filter(vendor_url=vendor_url)[0]
@@ -31,6 +32,7 @@ def category(request, vendor_url, category_url):
     content = {
         'products': products,
         'prices': price_data,
+        'all_category': all_category,
         'category': category,
         'biofa': False,
         'vendor': vendor
@@ -39,6 +41,7 @@ def category(request, vendor_url, category_url):
 
 
 def vendor_category(request, vendor_url):
+    all_category = ProductCategory.objects.filter(category_parent__category_url=vendor_url)
     category = ProductCategory.objects.filter(category_parent__category_url=vendor_url)
     products = Product.objects.filter(product_vendor__vendor_url=vendor_url, product_show=True)
     price_data = ProductVolumePrice.objects.filter(volumeprice_product__product_vendor__vendor_url=vendor_url)
@@ -46,6 +49,7 @@ def vendor_category(request, vendor_url):
 
     content = {
         'category': category,
+        'all_category': all_category,
         'products': products,
         'prices': price_data,
         'biofa': False,

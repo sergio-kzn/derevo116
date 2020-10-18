@@ -20,7 +20,7 @@
         {% if category.category_main_menu %}
             <div class="col-6 col-md-4 col-lg-3 mb-3">
                 <div class="list-group list-group-flush small">
-                    <a href="{% url 'main_category' category.category_url %}" class="list-group-item list-group-item-action
+                    <a href="{% url 'vendor-paints' category.category_url %}" class="list-group-item list-group-item-action
                             {% if category.category_url == 'consumables' %} bg-secondary text-white{% else %} bg-danger text-white{% endif %} bg-gradient">
                         {{ category.category_title|safe }}
                     </a>

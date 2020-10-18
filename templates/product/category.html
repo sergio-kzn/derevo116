@@ -2,9 +2,12 @@
 
 {% block title %}Столярная мастерская Империал - г. Казань{% endblock title %}
 
+
 {% block breadcrumb-category %}
+    <!-- Хлебные крошки -->
+    {% url 'biofa_paints' as biofa_paints %}
+    {% url 'vendor-paints' vendor.vendor_url as main_category %}
     {% if biofa %}
-        {% url 'biofa_paints' as biofa_paints %}
         {% if request.path == biofa_paints %}
             <li class="breadcrumb-item active">Biofa</li>
         {% else %}
@@ -14,7 +17,6 @@
             {% endfor %}
         {% endif %}
     {% else %}
-        {% url 'main_category' vendor.vendor_url as main_category %}
         {% if request.path == main_category %}
             <li class="breadcrumb-item active">{{ vendor.vendor_title }}</li>
         {% else %}
@@ -24,35 +26,65 @@
             {% endfor %}
         {% endif %}
     {% endif %}
-
 {% endblock breadcrumb-category %}
 
+
 {% block content_product %}
+
+    {# краски и масла #}
     {% url 'paints' as paints_url %}
-    {% if request.path == paints_url %}
-        <div class="row mb-3">
-            <div class="col">
-                    <a role="button" class="btn btn-outline-secondary m-1"
-                       href="{% url 'biofa_paints' %}">Biofa</a>
-                {% for v in vendor %}
-                    <a role="button" class="btn btn-outline-secondary m-1"
-                       href="{% url 'main_category' v.vendor_url %}">{{ v.vendor_title }}</a>
-                {% endfor %}
-            </div>
-        </div>
-    {% endif %}
+
+    {# краски и масла / биофа #}
+    {% url 'biofa_paints' as biofa_paints %}
+
+    {# краски и масла / биофа / категориия #}
+    {% url 'biofa_category' category.first.category_url as biofa_category_url %}
+
+    {# краски и масла / производитель #}
+    {% url 'vendor-paints' vendor.vendor_url as vendor_paints %}
+
+    {# краски и масла / производитель / категориия #}
+    {% url 'category' vendor.vendor_url category.first.category_url as category_url %}
 
     <div class="row mb-3">
         <div class="col">
-            {% if category.count > 1 %}
-                {% for cat in category %}
+
+            {# Подсказки категорий на странице КРАСКИ И МАСЛА #}
+            {% if request.path == paints_url %}
+                <a role="button" class="btn btn-outline-secondary m-1"
+                   href="{% url 'biofa_paints' %}">Biofa</a>
+                {% for v in vendor %}
+                    <a role="button" class="btn btn-outline-secondary m-1"
+                       href="{% url 'vendor-paints' v.vendor_url %}">{{ v.vendor_title }}</a>
+                {% endfor %}
+            {% endif %}
+            {# / Подсказки категорий на странице КРАСКИ И МАСЛА #}
+
+            {# Подсказки категорий на странице Производителя красок #}
+            {% if request.path == biofa_paints or request.path == vendor_paints %}
+                {% for cat in all_category %}
                     <a role="button" class="btn btn-outline-secondary m-1"
                        href="{{ cat.category_url }}/">{{ cat.category_title }}</a>
                 {% endfor %}
             {% endif %}
+            {# / Подсказки категорий на странице Производителя красок #}
+
+            {# Подсказки категорий на странице Категории #}
+            {% if request.path == biofa_category_url or request.path == category_url %}
+                {% for cat in all_category %}
+                    {% url 'biofa_category' cat.category_url as current_biofa_category_url %}
+                    {% url 'category' vendor.vendor_url cat.category_url as current_category_url %}
+                    <a role="button" class="btn m-1
+                        {% if request.path == current_biofa_category_url or request.path == current_category_url %}btn-secondary{% else %}btn-outline-secondary{% endif %}"
+                       href="../{{ cat.category_url }}/">{{ cat.category_title }}</a>
+                {% endfor %}
+            {% endif %}
+            {# / Подсказки категорий на странице Категории #}
+
         </div>
     </div>
 
+    {# ТОВАРЫ #}
     <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-4 mb-5">
 
         {% for product in products %}
