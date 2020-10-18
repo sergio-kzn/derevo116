@@ -2,14 +2,29 @@
 
 {% block custom_head %}
     <style>
-    .color-target{
-        cursor: pointer;
-        border-radius: 5px;
-        transition: .1s;
-    }
-    .color-target.active{
-        border: #0d6efd 3px dashed;
-    }
+        .color-target {
+            cursor: pointer;
+            border-radius: 5px;
+            transition: .1s;
+        }
+
+        .color-target.active {
+            border: #0d6efd 3px dashed;
+        }
+
+        .additional-images {
+            cursor: pointer;
+        }
+
+        .additional-images.active {
+            border-radius: 5px;
+            border: #0d6efd 1px dashed;
+        }
+
+        #main-image {
+            opacity: 1;
+            transition: 1s;
+        }
     </style>
 {% endblock %}
 
@@ -18,15 +33,17 @@
 {% block breadcrumb-category %}
     {% if biofa %}
         <li class="breadcrumb-item"><a href="{% url 'biofa_paints' %}">Biofa</a></li>
+        <li class="breadcrumb-item"><a
+                href="{% url 'biofa_category' product.product_category.category_url %}">{{ product.product_category.category_title }}</a>
+        </li>
     {% else %}
         <li class="breadcrumb-item"><a
                 href="{% url 'main_category' product.product_vendor.vendor_url %}">{{ product.product_vendor.vendor_title }}</a>
+        <li class="breadcrumb-item"><a
+                href="{% url 'category' product.product_vendor.vendor_url product.product_category.category_url %}">{{ product.product_category.category_title }}</a>
         </li>
     {% endif %}
-    <li class="breadcrumb-item"><a
-            href="{% url 'biofa_category' product.product_category.category_url %}">{{ product.product_category.category_title }}</a>
-    </li>
-    <li class="breadcrumb-item active">{{ product.product_vendor_code }}</li>
+    <li class="breadcrumb-item active">{{ product.product_title }}</li>
 {% endblock breadcrumb-category %}
 
 {% block content_product %}
@@ -88,8 +105,32 @@
                 <img src="../../../../biofa-kazan.ru/media/{{ product.product_img }}" class="card-img-top  my-3"
                      alt="{{ product.product_title }}">
             {% else %}
-                <img src="{{ product.product_img.url }}" class="card-img-top my-3"
-                     alt="{{ product.product_title }}">
+                <div class="row">
+                    <div class="col">
+                        <img src="{{ product.product_img.url }}" class="img-fluid my-3"
+                             alt="{{ product.product_img_title }}" id="main-image">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-muted small my-1 text-center" id="image-title">
+                        {{ product.product_img_title|default_if_none:"" }}
+                    </div>
+                </div>
+                {% if images %}
+                    <div class="row row-cols-4">
+                        <div class="col p-1">
+                            <img src="{{ product.product_img.url }}" class="img-fluid my-3 additional-images active"
+                                 alt="{{ product.product_img_title }}">
+
+                        </div>
+                        {% for image in images %}
+                            <div class="col p-1">
+                                <img src="{{ image.img_file.url }}" class="img-fluid my-3 additional-images"
+                                     alt="{{ image.img_title }}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             {% endif %}
         </div>
         <div class="col pt-3">
@@ -132,7 +173,8 @@
                 </div>
             {% endif %}
 
-            <div class="row my-3">
+            <!-- Опции для цен -->
+            <div class="row my-3 justify-content-center">
                 <div class="col-12 col-sm-10 col md-8 col-lg-6">
                     {% if biofa %}
                         <h3>Объем</h3>
@@ -293,20 +335,40 @@
 {% endblock content_product %}
 
 {% block custom_footer %}
-<!-- скрипт отвечает за выделение Цвета в модальном окне -->
-<script>
-(function() {
-  var blocks = document.querySelectorAll(".color-target");
+    <!-- скрипт отвечает за выделение Цвета в модальном окне -->
+    <script>
+        (function () {
+            var color_blocks = document.querySelectorAll(".color-target");
 
-  for(var i = 0; i < blocks.length; i++) {
-    blocks[i].addEventListener("click", function() {
-      for(var j = 0; j < blocks.length; j++) {
-        blocks[j].classList.remove("active");
-      }
+            for (var i = 0; i < color_blocks.length; i++) {
+                color_blocks[i].addEventListener("click", function () {
+                    for (var j = 0; j < color_blocks.length; j++) {
+                        color_blocks[j].classList.remove("active");
+                    }
+                    this.classList.add("active");
+                }, false);
+            }
+        })();
+    </script>
 
-      this.classList.add("active");
-    }, false);
-  }
-})();
-</script>
+    <!-- скрипт отвечает за смену изображений товара -->
+    {% if images %}
+        <script>
+            var main_image = document.getElementById('main-image');
+            var image_title = document.getElementById('image-title');
+            var additional_images = document.querySelectorAll('.additional-images');
+            for (var i = 0; i < additional_images.length; i++) {
+                additional_images[i].addEventListener('click', function () {
+                    main_image.src = this.src;
+                    for (var j = 0; j < additional_images.length; j++) {
+                        additional_images[j].classList.remove("active")
+                    }
+                    this.classList.add("active");
+                    image_title.textContent = this.alt;
+                });
+            }
+            {#additional-images#}
+
+        </script>
+    {% endif %}
 {% endblock custom_footer %}

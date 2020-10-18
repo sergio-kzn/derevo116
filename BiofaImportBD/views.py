@@ -17,10 +17,11 @@ def product(request, category_url, product_url):
     }
     return render(request, 'product/product.html', content)
 
-def category(request, category):
-    biofa_category = ProductCategoryproduct.objects.using('biofa').filter(category_url=category)
-    biofa_products = ProductProduct.objects.using('biofa').filter(product_category__category_url=category)
-    biofa_price_data = ProductVolumepriceproduct.objects.using('biofa').filter(volumeprice_product__product_category__category_url=category)
+
+def category(request, category_url):
+    biofa_category = ProductCategoryproduct.objects.using('biofa').filter(category_url=category_url)
+    biofa_products = ProductProduct.objects.using('biofa').filter(product_category__category_url=category_url)
+    biofa_price_data = ProductVolumepriceproduct.objects.using('biofa').filter(volumeprice_product__product_category__category_url=category_url)
 
     content = {
         'products': biofa_products,
@@ -28,7 +29,8 @@ def category(request, category):
         'category': biofa_category,
         'biofa': True,
     }
-    return render(request,'product/category.html', content)
+    return render(request, 'product/category.html', content)
+
 
 def all_category(request):
     biofa_category = ProductCategoryproduct.objects.using('biofa').all()

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
-from Product.models import Product, ProductVolumePrice, ProductAttribute, ProductCategory, ProductVendor, Color
+from Product.models import Product, ProductVolumePrice, ProductAttribute, ProductCategory, ProductVendor, Color, \
+    ProductImage
 
 
 def product(request, vendor_url, category_url, product_url):
@@ -8,12 +9,14 @@ def product(request, vendor_url, category_url, product_url):
     price_data = ProductVolumePrice.objects.filter(volumeprice_product__product_url=product_url)
     attributes = ProductAttribute.objects.filter(attribute_product__product_url=product_url)
     colors = Color.objects.filter(color_group__product__product_url=product_url)
+    images = ProductImage.objects.filter(img_group__product__product_url=product_url)
 
     content = {
         'product': product,
         'volume_price': price_data,
         'attributes': attributes,
         'colors': colors,
+        'images': images,
         'biofa': False,
     }
     return render(request, 'product/product.html', content)

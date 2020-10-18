@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.safestring import mark_safe
 
 
 class ProductCategory(models.Model):
@@ -47,15 +48,12 @@ class Color(models.Model):
         verbose_name = "Цвет"
         verbose_name_plural = "Цвета"
         ordering = ['color_sort', 'color_title']
-
-    color_title = models.CharField(verbose_name='Название цвета', max_length=50)
-    color_image = models.ImageField(
-        verbose_name='Изображение', upload_to='products/colors')
-    color_sort = models.IntegerField('Сортировка', default=0)
-    color_group = models.ForeignKey(ColorGroup, models.DO_NOTHING)
-
     def __str__(self):
         return self.color_title
+    color_title = models.CharField(verbose_name='Название цвета', max_length=50)
+    color_image = models.ImageField(verbose_name='Изображение', upload_to='products/colors')
+    color_sort = models.IntegerField('Сортировка', default=0)
+    color_group = models.ForeignKey(ColorGroup, models.DO_NOTHING)
 
 
 class ProductTab(models.Model):
@@ -71,6 +69,16 @@ class ProductTab(models.Model):
     tab_content = models.TextField(verbose_name='Содержимое доп. вкладки', blank=True, null=True)
     tab_slug = models.SlugField(verbose_name='Ссылка href="# ..."')
 
+
+class ProductImageGroup(models.Model):
+    def __str__(self):
+        return self.img_group
+    img_group = models.CharField(verbose_name='Дополнительные изображения', max_length=100, help_text='Название группы изображений, например название Товара')
+
+class ProductImage(models.Model):
+    img_file = models.ImageField(verbose_name='Изображение товара', upload_to='products')
+    img_title = models.CharField(verbose_name='Подпись', max_length=100)
+    img_group = models.ForeignKey(ProductImageGroup, models.DO_NOTHING)
 
 class Product(models.Model):
     """товары"""
@@ -91,7 +99,9 @@ class Product(models.Model):
     product_title = models.CharField(verbose_name='Заголовок', max_length=200)
     product_url = models.SlugField(verbose_name='Ссылка url', unique=True, max_length=100)
     product_extra_desc = models.TextField(verbose_name='Дополнительная информация рядом с ценой', blank=True, null=True)
-    product_img = models.ImageField(verbose_name='Изображение товара',upload_to='products')
+    product_img = models.ImageField(verbose_name='Изображение товара',upload_to='products', help_text='Основное изображение товара, рекомендуемый размер 1000х700 px')
+    product_img_title = models.CharField(verbose_name='Подпись', max_length=100, blank=True, null=True)
+    product_imgs = models.ManyToManyField(ProductImageGroup, verbose_name='Дополнительные изображения товара', blank=True)
     # product_description_title = models.CharField(verbose_name='Название доп. вкладки', max_length=200, blank=True, null=True)
     # product_description = models.TextField(verbose_name='Содержимое доп. вкладки', blank=True, null=True)
     product_content = models.TextField(verbose_name='Описание', )
@@ -100,11 +110,11 @@ class Product(models.Model):
     product_color = models.ManyToManyField(ColorGroup, verbose_name="Группа цветов", blank=True)
     product_tab = models.ManyToManyField(ProductTab, verbose_name="Доп. вкладки", blank=True)
     product_price_choice = models.BooleanField(verbose_name='Тип цены', choices=PRICE, default=False)
-    product_price = models.CharField(verbose_name='Простая цена', max_length=30, blank=True, null=True)
+    product_price = models.CharField(verbose_name='Простая цена (Руб.)', max_length=30, blank=True, null=True, help_text='Введите цену без копеек и без знака рубля')
     product_price_title_1 = models.CharField(verbose_name='Расширенная цена 1 столбик', max_length=50, blank=True, null=True, default="Объем")
     product_price_title_2 = models.CharField(verbose_name='Расширенная цена 2 столбик', max_length=50, blank=True, null=True, default="Цена")
-    product_price_title_3 = models.CharField(verbose_name='Расширенная цена 3 столбик', max_length=50, blank=True, null=True, default="Расход на м<sup>2</sup><br>(1 слой / 2 слоя)")
-    product_price_title_4 = models.CharField(verbose_name='Расширенная цена 4 столбик', max_length=50, blank=True, null=True, default="Цена за р/м<sup>2</sup><br>(1 слой / 2 слоя)")
+    product_price_title_3 = models.CharField(verbose_name='Расширенная цена 3 столбик', max_length=50, blank=True, null=True, help_text="&#1056;&#1072;&#1089;&#1093;&#1086;&#1076;&#32;&#1085;&#1072;&#32;&#1084;&#60;&#115;&#117;&#112;&#62;&#50;&#60;&#47;&#115;&#117;&#112;&#62;&#60;&#98;&#114;&#62;&#40;&#49;&#32;&#1089;&#1083;&#1086;&#1081;&#32;&#47;&#32;&#50;&#32;&#1089;&#1083;&#1086;&#1103;&#41;")
+    product_price_title_4 = models.CharField(verbose_name='Расширенная цена 4 столбик', max_length=50, blank=True, null=True, help_text="&#1062;&#1077;&#1085;&#1072;&#32;&#1088;&#47;&#1084;&#60;&#115;&#117;&#112;&#62;&#50;&#60;&#47;&#115;&#117;&#112;&#62;&#60;&#98;&#114;&#62;&#40;&#49;&#32;&#1089;&#1083;&#1086;&#1081;&#32;&#47;&#32;&#50;&#32;&#1089;&#1083;&#1086;&#1103;&#41;")
 
 
 class ProductAttribute(models.Model):
@@ -113,7 +123,7 @@ class ProductAttribute(models.Model):
     class Meta:
         verbose_name = "Атрибут"
         verbose_name_plural = "Атрибуты"
-        ordering = ['attribute_sort', 'attribute_title']
+        ordering = ['attribute_sort', 'id']
     def __str__(self):
         if self.attribute_title == None:
             return f'(id={self.id})'
@@ -140,16 +150,14 @@ class Volume(models.Model):
     volume_title = models.CharField(verbose_name='Опция', max_length=10)
     volume_sort = models.IntegerField(verbose_name='Сортировка', default=0)
 
-
 class ProductVolumePrice(models.Model):
     """таблица для товаров, у которых несколько опций цен"""
     class Meta:
         verbose_name = "Опция"
         verbose_name_plural = "Опции"
         ordering = ['volumeprice_sort', 'volumeprice_volume']
-
     volumeprice_volume = models.ForeignKey(Volume, models.DO_NOTHING, verbose_name='Опции')
-    volumeprice_price = models.CharField(max_length=10, verbose_name='Столбец 2')
+    volumeprice_price = models.CharField(max_length=10, verbose_name='Цена')
     volumeprice_expenditure = models.CharField(max_length=50, verbose_name='Столбец 3', blank=True, null=True)
     volumeprice_expenditure_price = models.CharField(max_length=50, verbose_name='Столбец 4', blank=True, null=True)
     volumeprice_sort = models.IntegerField(verbose_name='Сортировка', default=0)

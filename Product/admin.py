@@ -2,10 +2,9 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django_summernote.admin import SummernoteModelAdmin
-from django_summernote.widgets import SummernoteInplaceWidget
 
 from .models import ProductCategory, Product, ProductVolumePrice, ProductAttribute, Volume, Color, \
-    ColorGroup, ProductVendor, ProductTab
+    ColorGroup, ProductVendor, ProductTab, ProductImage, ProductImageGroup
 
 
 class ProductCategoryList(admin.TabularInline):
@@ -13,7 +12,6 @@ class ProductCategoryList(admin.TabularInline):
     extra = 0
 
 class ProductCategoryAdmin(admin.ModelAdmin):
-
     def category_name(self, obj):
         if obj.category_parent:
             return mark_safe(f'{obj.category_parent.category_title} -- {obj.category_title}')
@@ -44,8 +42,7 @@ class AttributeInline(admin.TabularInline):
 class ColorInline(admin.TabularInline):
     model = Color
     extra = 0
-    field = ['color_title', 'image_preview', 'color_image', 'color_sort']
-
+    fields = ['color_title', 'image_preview', 'color_image', 'color_sort']
     readonly_fields = ('image_preview',)
 
     def image_preview(self, obj):
@@ -55,6 +52,31 @@ class ColorInline(admin.TabularInline):
         else:
             return '(No image)'
     image_preview.short_description = 'Просмотр'
+
+class ColorAdmin(admin.ModelAdmin):
+    inlines = [ColorInline]
+
+
+class ImageInline(admin.TabularInline):
+    model = ProductImage
+    extra = 0
+    fields = ['img_file', 'image_preview', 'img_title']
+    readonly_fields = ('image_preview',)
+
+    def image_preview(self, obj):
+        """либо показывает изображение в поле Обзор, либо пишет No image"""
+        if obj.img_file:
+            return mark_safe('<img src="{0}" width="100" height="100" style="object-fit:contain" />'.format(obj.img_file.url))
+        else:
+            return '(No image)'
+    image_preview.short_description = 'Просмотр'
+
+class ImageAdmin(admin.ModelAdmin):
+    inlines = [ImageInline]
+    list_display = ['img_group', 'count_image']
+    def count_image(self, obj):
+        return ProductImage.objects.filter(img_group=obj).count()
+    count_image.short_description = 'Кол-во'
 
 
 
@@ -78,6 +100,8 @@ class ProductAdmin(SummernoteModelAdmin):  # instead of ModelAdmin
         ('Изображение', {
             'classes': ('collapse',),
             'fields': (('image_preview', 'product_img'),
+                       'product_img_title',
+                       'product_imgs',
                        ),
         }),
         ('Дополнительно', {
@@ -138,22 +162,16 @@ class VolumeAdmin(admin.ModelAdmin):
     list_editable = ['volume_sort']
 
 
-class ColorAdmin(admin.ModelAdmin):
-    """так выглядит раздел с Цветом в админке
-    еще тут есть функция, которая делает превью загруженной картинки."""
-    inlines = [ColorInline]
-
-
 class TabAdmin(SummernoteModelAdmin):
     summernote_fields = "__all__"
     list_display = ['tab_title_admin', 'tab_title', 'tab_slug']
 
 
+admin.site.register(Product, ProductAdmin)
 
 admin.site.register(ProductCategory, ProductCategoryAdmin)
-
-admin.site.register(Product, ProductAdmin)
 admin.site.register(Volume, VolumeAdmin)
 admin.site.register(ColorGroup, ColorAdmin)
+admin.site.register(ProductImageGroup, ImageAdmin)
 admin.site.register(ProductVendor)
 admin.site.register(ProductTab, TabAdmin)

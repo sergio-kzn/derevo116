@@ -72,7 +72,11 @@
 
                         <p class="font-monospace my-3">
                             {% if not product.product_price %}
-                                от {{ prices.first.volumeprice_price }}.00
+                                {% if biofa %}
+                                    от {{ product.productvolumepriceproduct_set.first.volumeprice_price }}.00
+                                {% else %}
+                                    от {{ product.productvolumeprice_set.first.volumeprice_price }}.00
+                                {% endif %}
                             {% else %}
                                 {{ product.product_price }}.00
                             {% endif %}
