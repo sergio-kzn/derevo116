@@ -20,8 +20,8 @@ from . import views
 urlpatterns = [
     path('biofa/', include('BiofaImportBD.urls'), name='biofa_paints'),
     path('<slug:vendor_url>/<slug:category_url>/<slug:product_url>/', views.product, name='product'),
-    path('<slug:vendor>/<slug:category>/', views.category, name='category'),
-    path('<slug:vendor>/', views.vendor_category, name='main_category'),
+    path('<slug:vendor_url>/<slug:category_url>/', views.category, name='category'),
+    path('<slug:vendor_url>/', views.vendor_category, name='main_category'),
     path('', views.all_category, name='paints'),
 
 ]

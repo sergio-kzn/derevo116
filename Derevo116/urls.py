@@ -19,10 +19,11 @@ from django.urls import path, include
 from pyatspi import document
 
 urlpatterns = [
-    path('', include('Index.urls')),
     path('paints-and-oils/', include('Product.urls')),
     path('admin/', admin.site.urls),
     path('summernote/', include('django_summernote.urls')),
+    path('<slug:page_url>/', include('SimplePage.urls')),
+    path('', include('Index.urls')),
 ]
 
 
