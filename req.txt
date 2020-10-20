@@ -1,0 +1,1 @@
+django-fieldsets-with-inlines=0.6
