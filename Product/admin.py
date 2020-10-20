@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django_summernote.admin import SummernoteModelAdmin
+from fieldsets_with_inlines import FieldsetsInlineMixin
+
 
 from .models import ProductCategory, Product, ProductVolumePrice, ProductAttribute, Volume, Color, \
     ColorGroup, ProductVendor, ProductTab, ProductImage, ProductImageGroup
@@ -37,6 +39,7 @@ class PriceInline(admin.TabularInline):
 class AttributeInline(admin.TabularInline):
     model = ProductAttribute
     extra = 5
+    classes = ['collapse']
 
 
 class ColorInline(admin.TabularInline):
@@ -80,23 +83,29 @@ class ImageAdmin(admin.ModelAdmin):
 
 
 
-class ProductAdmin(SummernoteModelAdmin):  # instead of ModelAdmin
+class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of ModelAdmin
     summernote_fields = '__all__'
-    inlines = [PriceInline, AttributeInline]
     list_display = ['image_preview', 'product_title', 'product_category_with_html', 'product_vendor_code', 'product_link']
-    list_filter = ['product_vendor', 'product_show']
-    fieldsets = (
+    list_filter = ['product_vendor', 'product_show', 'product_price_choice', 'product_count']
+    fieldsets_with_inlines = (
         (None, {
             'fields': ('product_show',
+                        'product_link',
                        'product_category',
-                       ('product_vendor', 'product_vendor_code'),
+                       'product_vendor', 
+                       'product_vendor_code',
                        'product_title',
                        'product_url',
-                       'product_content',
                        'product_count',
-
                        )
         }),
+        ('Описание', {
+            'classes': ('collapse',),
+            'fields': ('product_extra_desc',
+            'product_content',
+                       ),
+            }),
+            AttributeInline,
         ('Изображение', {
             'classes': ('collapse',),
             'fields': (('image_preview', 'product_img'),
@@ -107,7 +116,6 @@ class ProductAdmin(SummernoteModelAdmin):  # instead of ModelAdmin
         ('Дополнительно', {
             'classes': ('collapse',),
             'fields': ('product_file',
-                       'product_extra_desc',
                        'product_color',
                        'product_tab'),
         }),
@@ -118,11 +126,14 @@ class ProductAdmin(SummernoteModelAdmin):  # instead of ModelAdmin
                        'product_price_title_1',
                        'product_price_title_2',
                        'product_price_title_3',
-                       'product_price_title_4',)
-        })
+                       'product_price_title_4',
+                       )
+        }),
+        PriceInline
     )
     save_on_top = True
     list_display_links = ['image_preview', 'product_title']
+    readonly_fields = ('image_preview','product_link')
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         field = super(ProductAdmin, self).formfield_for_dbfield(db_field, **kwargs)
@@ -136,12 +147,11 @@ class ProductAdmin(SummernoteModelAdmin):  # instead of ModelAdmin
             category_link = f'{obj.product_category.category_url}'
             product_link = f'{obj.product_url}'
             url = reverse('product', args=(vendor_link, category_link, product_link,))
-            return mark_safe(f'<a href="{url}" target="_blank">{obj.product_url}</a>')
+            return mark_safe(f'<a href="{url}" target="_blank"><i class="fas fa-external-link-alt fa-2x"></i></i></a>')
         else:
             return '(No link)'
-    product_link.short_description = 'Ссылка'
+    product_link.short_description = 'Перейти'
 
-    readonly_fields = ('image_preview',)
     def image_preview(self, obj):
         """либо показывает изображение в поле Обзор, либо пишет No image"""
         if obj.product_img:
@@ -154,6 +164,11 @@ class ProductAdmin(SummernoteModelAdmin):  # instead of ModelAdmin
         if obj.product_category:
             return mark_safe(obj.product_category)
     product_category_with_html.short_description = 'Категория'
+
+    class Media:
+           css = {
+                'all': ('css/all.min.css',)
+           }
 
 
 class VolumeAdmin(admin.ModelAdmin):

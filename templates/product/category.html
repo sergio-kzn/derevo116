@@ -3,6 +3,24 @@
 {% block title %}Столярная мастерская Империал - г. Казань{% endblock title %}
 
 
+{% block custom_head %}
+    <style>
+    .no-photo:before {
+    content: '\f1c5';
+    font-family: 'Font Awesome 5 Free';
+    color: #80808042;
+    font-size: xxx-large;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 50%;
+    margin-top: 50%;
+    margin-left: -50%;
+  }
+    </style>
+{% endblock %}
+
+
 {% block breadcrumb-category %}
     <!-- Хлебные крошки -->
     {% url 'biofa_paints' as biofa_paints %}
@@ -91,40 +109,79 @@
             <div class="col">
                 <div class="card h-100 text-center">
                     <div class="card-header text-muted small">
-                        Артикул: {{ product.product_vendor_code }}</div>
-                    {% if biofa %}
-                        <img src="/biofa-kazan.ru/media/{{ product.product_img }}" class="card-img-top my-2"
-                             alt="{{ product.product_title }}">
-                    {% else %}
-                        <img src="{{ product.product_img.url }}" class="card-img-top my-2"
-                             alt="{{ product.product_title }}">
-                    {% endif %}
-                    <div class="card-body p-1">
-                        <p class="card-title">{{ product.product_title }}</p>
+                        Артикул: {{ product.product_vendor_code }}
+                    </div>
 
-                        <p class="font-monospace my-3">
+                    <!-- Изображение товара -->
+                    <div class="row">
+                        <div class="col">
+                            {% if product.product_img %}
+                            {% if biofa %}
+                            <a href="{% url 'biofa_product' product.product_category.category_url product.product_url %}">
+                                <img src="/biofa-kazan.ru/media/{{ product.product_img }}" class="img-fluid my-2"
+                                alt="{{ product.product_title }}">
+                            </a>
+                            {% else %}
+                            <a href="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}">
+                                <img src="{{ product.product_img.url }}" class="img-fluid my-2"
+                                alt="{{ product.product_title }}">
+                            </a>
+                            {% endif %}
+                            {% else %}
+                            <a href="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}">
+                                <div class="img-fluid my-2 no-photo" style="padding: 50% 0"></div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="card-body p-1">
+                        <!-- Название товара -->
+                        {% if biofa %}
+                            <a href="{% url 'biofa_product' product.product_category.category_url product.product_url %}"
+                               class="card-title text-dark text-decoration-none">{{ product.product_title }}</a>
+                        {% else %}
+                            <a href="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}"
+                               class="card-title text-dark text-decoration-none">{{ product.product_title }}</a>
+                        {% endif %}
+
+                        <!-- Цена товара -->
+                        {% if product.productvolumeprice_set.first or product.productvolumepriceproduct_set.first %}
+                        <p class="font-monospace mt-3 mb-1">
                             {% if not product.product_price %}
                                 {% if biofa %}
                                     от {{ product.productvolumepriceproduct_set.first.volumeprice_price }}.00
                                 {% else %}
+
                                     от {{ product.productvolumeprice_set.first.volumeprice_price }}.00
                                 {% endif %}
                             {% else %}
                                 {{ product.product_price }}.00
                             {% endif %}
-                            <i class="fas fa-ruble-sign"></i>
+                            &#x20bd;
                         </p>
-                        <p class="text-muted small border-danger" style="border-bottom: 1px dashed">
-                            {{ product.product_category.category_title }}
-                        </p>
+                        {% endif %}
                     </div>
+
+                    <!-- Ссылка на категорию -->
+                    {% if request.path == biofa_paints or request.path == vendor_paints %}
+                        <div class="row mb-1">
+                            <div class="col">
+
+                                <a href="{{ product.product_category.category_url }}/"
+                                   class="text-muted small text-decoration-none">
+                                    {{ product.product_category.category_title }}
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+
                     <div class="card-footer bg-transparent">
                         {% if biofa %}
                             <a href="{% url 'biofa_product' product.product_category.category_url product.product_url %}"
-                               class="btn btn-primary stretched-link">Посмотреть</a>
+                               class="btn btn-primary">Посмотреть</a>
                         {% else %}
                             <a href="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}"
-                               class="btn btn-primary stretched-link">Посмотреть</a>
+                               class="btn btn-primary">Посмотреть</a>
                         {% endif %}
 
                     </div>

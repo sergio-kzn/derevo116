@@ -98,13 +98,13 @@ class Product(models.Model):
     product_vendor_code = models.CharField(verbose_name='Артикул', unique=True, max_length=20)
     product_title = models.CharField(verbose_name='Заголовок', max_length=200)
     product_url = models.SlugField(verbose_name='Ссылка url', unique=True, max_length=100)
-    product_extra_desc = models.TextField(verbose_name='Дополнительная информация рядом с ценой', blank=True, null=True)
-    product_img = models.ImageField(verbose_name='Изображение товара',upload_to='products', help_text='Основное изображение товара, рекомендуемый размер 1000х700 px')
+    product_extra_desc = models.TextField(verbose_name='Краткое описание', blank=True, null=True, help_text='Дополнительная информация, показывается рядом с ценой')
+    product_img = models.ImageField(verbose_name='Изображение товара',upload_to='products', blank=True, null=True, help_text='Основное изображение товара, рекомендуемый размер 1000х700 px')
     product_img_title = models.CharField(verbose_name='Подпись', max_length=100, blank=True, null=True)
     product_imgs = models.ManyToManyField(ProductImageGroup, verbose_name='Дополнительные изображения товара', blank=True)
     # product_description_title = models.CharField(verbose_name='Название доп. вкладки', max_length=200, blank=True, null=True)
     # product_description = models.TextField(verbose_name='Содержимое доп. вкладки', blank=True, null=True)
-    product_content = models.TextField(verbose_name='Описание', )
+    product_content = models.TextField(verbose_name='Описание', blank=True, null=True)
     product_file = models.FileField(verbose_name='Прикрепить файл (Техническое руководство) pdf', upload_to='product/files', null=True, blank=True)
     product_count = models.CharField(verbose_name='Наличие товара', max_length=30, blank=True, null=True, default="В наличии более 10л.")
     product_color = models.ManyToManyField(ColorGroup, verbose_name="Группа цветов", blank=True)
@@ -113,8 +113,8 @@ class Product(models.Model):
     product_price = models.CharField(verbose_name='Простая цена (Руб.)', max_length=30, blank=True, null=True, help_text='Введите цену без копеек и без знака рубля')
     product_price_title_1 = models.CharField(verbose_name='Расширенная цена 1 столбик', max_length=50, blank=True, null=True, default="Объем")
     product_price_title_2 = models.CharField(verbose_name='Расширенная цена 2 столбик', max_length=50, blank=True, null=True, default="Цена")
-    product_price_title_3 = models.CharField(verbose_name='Расширенная цена 3 столбик', max_length=50, blank=True, null=True, help_text="&#1056;&#1072;&#1089;&#1093;&#1086;&#1076;&#32;&#1085;&#1072;&#32;&#1084;&#60;&#115;&#117;&#112;&#62;&#50;&#60;&#47;&#115;&#117;&#112;&#62;&#60;&#98;&#114;&#62;&#40;&#49;&#32;&#1089;&#1083;&#1086;&#1081;&#32;&#47;&#32;&#50;&#32;&#1089;&#1083;&#1086;&#1103;&#41;")
-    product_price_title_4 = models.CharField(verbose_name='Расширенная цена 4 столбик', max_length=50, blank=True, null=True, help_text="&#1062;&#1077;&#1085;&#1072;&#32;&#1088;&#47;&#1084;&#60;&#115;&#117;&#112;&#62;&#50;&#60;&#47;&#115;&#117;&#112;&#62;&#60;&#98;&#114;&#62;&#40;&#49;&#32;&#1089;&#1083;&#1086;&#1081;&#32;&#47;&#32;&#50;&#32;&#1089;&#1083;&#1086;&#1103;&#41;")
+    product_price_title_3 = models.CharField(verbose_name='Расширенная цена 3 столбик', max_length=50, blank=True, null=True, help_text="Расход&nbsp;на&nbsp;м&lt;sup&gt;2&lt;/sup&gt;&lt;br&gt;(1&nbsp;слой&nbsp;/&nbsp;2&nbsp;слоя)")
+    product_price_title_4 = models.CharField(verbose_name='Расширенная цена 4 столбик', max_length=50, blank=True, null=True, help_text="Цена&nbsp;р/м&lt;sup&gt;2&lt;/sup&gt;&lt;br&gt;(1&nbsp;слой&nbsp;/&nbsp;2&nbsp;слоя)")
 
 
 class ProductAttribute(models.Model):

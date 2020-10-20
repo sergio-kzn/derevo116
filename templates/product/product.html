@@ -100,6 +100,9 @@
     <!-- / Modal window for COLORS -->
 
     <div class="row row-cols-1 row-cols-md-2 mb-5">
+
+        <!-- Изображение товара -->
+        {% if product.product_img %}
         <div class="col">
             {% if biofa %}
                 <img src="../../../../biofa-kazan.ru/media/{{ product.product_img }}" class="card-img-top  my-3"
@@ -133,17 +136,23 @@
                 {% endif %}
             {% endif %}
         </div>
+        {% endif %}
+
         <div class="col pt-3">
 
             <h1 class="">{{ product.product_title }}</h1>
 
-            {% if not product.product_price and product.product_price_choice == False %}
-                <p class="text-muted font-monospace" style="font-size: x-large">
+            <!-- Цена товара -->
+            {# FIXME: if product.product_price_choice == False #}
+            {% if volume_price.first %}
+            <p class="text-muted font-monospace" style="font-size: x-large">
+            {% if not product.product_price %}
                     от {{ volume_price.first.volumeprice_price }}.00
-                    <i class="fas fa-ruble-sign"></i></p>
             {% else %}
-                <p class="text-muted font-monospace" style="font-size: x-large">{{ product.product_price }}.00 <i
-                        class="fas fa-ruble-sign"></i></p>
+                	{{ product.product_price }}.00 
+            {% endif %}
+            	&#x20bd;        
+            </p>
             {% endif %}
 
             <ul class="small list-unstyled text-muted my-3">
@@ -175,20 +184,26 @@
 
             <!-- Опции для цен -->
             <div class="row my-3 justify-content-center">
-                <div class="col-12 col-sm-10 col md-8 col-lg-6">
+                <div class="col col-auto">
                     {% if biofa %}
-                        <h3>Объем</h3>
                         <div class="pr-5">
                             <table class="table table-sm table-hover small">
                                 <thead>
                                 <tr>
+                                	<th></th>
                                     <th>Объем</th>
                                     <th class="text-right">Цена</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {% for price in volume_price %}
-                                    <tr>
+                                    <tr onclick="document.getElementById('{{ price.id }}').checked=true;" style="cursor: pointer">
+                                    	<td class="px-3">
+                                    		<input type="radio" name="options"
+                                    		id="{{ price.id }}"
+                                    		{% if forloop.first %} checked {% endif %}
+                                    		value="{{ price.volumeprice_volume.volume_title }} - {{ price.volumeprice_price }}&#x20bd;">
+                                    	</td>
                                         <td>{{ price.volumeprice_volume.volume_title }} </td>
                                         <td class="text-right">{{ price.volumeprice_price }} </td>
                                     </tr>
@@ -196,26 +211,40 @@
                                 </tbody>
                             </table>
                         </div>
-                    {% elif product.product_price_choice == False %}
+                    {% elif product.product_price_choice == False and volume_price.first %}
                         <h3>{{ product.product_price_title }}</h3>
-                        <div class="pr-5">
+                        <div class="pr-5 overflow-auto">
                             <table class="table table-sm table-hover small">
                                 <thead>
                                 <tr>
-                                    <th class="text-nowrap">{{ product.product_price_title_1|safe }}</th>
-                                    <th class="text-right text-nowrap">{{ product.product_price_title_2|safe }}</th>
-
-                                    <th class="text-center text-nowrap">{{ product.product_price_title_3|default_if_none:""|safe }}</th>
-                                    <th class="text-center text-nowrap">{{ product.product_price_title_4|default_if_none:""|safe }}</th>
+                                	<th></th>
+                                    <th class="text-nowrap px-3">{{ product.product_price_title_1|safe }}</th>
+                                    <th class="text-center text-nowrap px-3">{{ product.product_price_title_2|safe }}</th>
+                                    {% if product.product_price_title_3 %}
+                                    <th class="text-left text-nowrap px-3">{{ product.product_price_title_3|default_if_none:""|safe }}</th>
+                                    {% endif %}
+                                    {% if product.product_price_title_4 %}
+                                    <th class="text-left text-nowrap px-3">{{ product.product_price_title_4|default_if_none:""|safe }}</th>
+                                    {% endif %}
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {% for price in volume_price %}
-                                    <tr>
-                                        <td>{{ price.volumeprice_volume.volume_title }}</td>
-                                        <td class="text-right text-nowrap">{{ price.volumeprice_price }}</td>
-                                        <td class="text-center text-nowrap">{{ price.volumeprice_expenditure|default_if_none:"" }}</td>
-                                        <td class="text-center text-nowrap">{{ price.volumeprice_expenditure_price|default_if_none:"" }}</td>
+                                    <tr onclick="document.getElementById('{{ price.id }}').checked=true;" style="cursor: pointer">
+                                    	<td class="px-3">
+                                    		<input type="radio" name="options"
+                                    		id="{{ price.id }}"
+                                    		{% if forloop.first %} checked {% endif %}
+                                    		value="{{ price.volumeprice_volume.volume_title }} - {{ price.volumeprice_price }}&#x20bd; - {{price.volumeprice_expenditure}} - {{ price.volumeprice_expenditure_price }}">
+                                    	</td>
+                           				<td class="text-left text-nowrap px-3">{{ price.volumeprice_volume.volume_title }}</td>
+                                        <td class="text-center text-nowrap px-3">{{ price.volumeprice_price }} &#x20bd;</td>
+                                        {% if price.volumeprice_expenditure %}
+                                        <td class="text-left text-nowrap px-3">{{ price.volumeprice_expenditure|default_if_none:"" }}</td>
+                                        {% endif %}
+                                        {% if price.volumeprice_expenditure_price %}
+                                        <td class="text-left text-nowrap px-3">{{ price.volumeprice_expenditure_price|default_if_none:"" }}</td>
+                                        {% endif %}
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -236,14 +265,20 @@
     <div class="row mb-5">
         <div class="col-12">
             <ul class="nav nav-tabs nav-fill mb-3" role="tablist">
+                
+                {% if product.product_content %}
                 <li class="nav-item">
                     <a class="nav-link active" data-toggle="tab" aria-controls="description" aria-selected="true"
                        href="#description">Описание</a>
                 </li>
+                {% endif %}
+
+                {% if attributes %}
                 <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#attributes" role="tab"
+                    <a class="nav-link {% if not product.product_content %}active{% endif %}" data-toggle="tab" href="#attributes" role="tab"
                        aria-controls="attributes" aria-selected="false">Характеристики</a>
                 </li>
+                {% endif %}
 
                 {% if biofa %}
                     {% if product.product_description %}
@@ -268,7 +303,8 @@
                 {% endif %}
 
                 <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#reviews" role="tab"
+                    <a class="nav-link 
+                    {% if not product.product_content and not attributes %}active{% endif %}" data-toggle="tab" href="#reviews" role="tab"
                        aria-controls="reviews" aria-selected="false">Отзывы <span
                             class="badge bg-primary ml-2 position-absolute">0</span></a>
                 </li>
@@ -276,13 +312,15 @@
 
             <div class="tab-content">
                 <!-- Описание -->
+                {% if product.product_content %}
                 <div class="tab-pane fade show active" id="description" role="tabpanel"
                      aria-labelledby="description-tab">
                     {{ product.product_content|safe }}
                 </div>
+                {% endif %}
 
                 <!-- Характеристики -->
-                <div class="tab-pane fade" id="attributes" role="tabpanel" aria-labelledby="attributes-tab">
+                <div class="tab-pane fade {% if not product.product_content %}show active{% endif %}" id="attributes" role="tabpanel" aria-labelledby="attributes-tab">
                     <table class="table table-sm table-hover small">
                         <tbody>
                         {% for attr in attributes %}
@@ -323,10 +361,12 @@
                 {% endif %}
 
                 <!-- Отзывы -->
-                <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                <div class="tab-pane fade 
+                {% if not product.product_content and not attributes %}show active{% endif %}" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
                     Отзывов пока
                     нет.
                 </div>
+
             </div>
         </div>
     </div>
