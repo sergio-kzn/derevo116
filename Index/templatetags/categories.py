@@ -12,14 +12,10 @@ def categories(vendor):
 
     global categories, category_vendor
 
-    categories_biofa = ProductCategoryproduct.objects.using('biofa').all()
-
     categories = ProductCategory.objects.all()
-
     category_vendor = vendor
 
     return {
-        'categories_biofa': categories_biofa,
         'categories': categories,
         'vendor': category_vendor,
     }

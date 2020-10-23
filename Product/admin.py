@@ -22,6 +22,7 @@ class ProductCategoryAdmin(admin.ModelAdmin):
     category_name.short_description = 'Категория'
 
     list_display = ['category_name', 'category_sort', 'category_main_menu']
+    list_editable = ['category_sort', 'category_main_menu']
     inlines = [ProductCategoryList]
 
 
