@@ -1,7 +1,10 @@
+import random
+
 from django.shortcuts import render
 
 from Product.models import Product, ProductVolumePrice, ProductAttribute, ProductCategory, ProductVendor, Color, \
     ProductImage
+from Product.services import random_relevant_products
 
 
 def product(request, vendor_url, category_url, product_url):
@@ -11,13 +14,15 @@ def product(request, vendor_url, category_url, product_url):
     colors = Color.objects.filter(color_group__product__product_url=product_url)
     images = ProductImage.objects.filter(img_group__product__product_url=product_url)
 
+    random_items = random_relevant_products(product.id)
+
     content = {
         'product': product,
         'volume_price': price_data,
         'attributes': attributes,
         'colors': colors,
         'images': images,
-        'biofa': False,
+        'random_items': random_items,
     }
     return render(request, 'product/product.html', content)
 

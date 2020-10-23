@@ -362,7 +362,8 @@
 
                 <!-- Отзывы -->
                 <div class="tab-pane fade 
-                {% if not product.product_content and not attributes %}show active{% endif %}" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                {% if not product.product_content and not attributes %}show active{% endif %}" id="reviews"
+                     role="tabpanel" aria-labelledby="reviews-tab">
                     Отзывов пока
                     нет.
                 </div>
@@ -371,6 +372,79 @@
         </div>
     </div>
     <!-- / вкладки Описание Характиристики Отзывы -->
+    <div class="row mb-3">
+        <h2>Похожие <i class="font-weight-normal">товары от</i> {{ product.product_vendor.vendor_title }}</h2>
+
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 mb-3 g-4">
+            {% for item in random_items %}
+                <div class="col
+                {% if forloop.counter == 5 %} d-none d-lg-flex {% endif %}
+                {% if forloop.counter == 4 %} d-none d-md-flex {% endif %}
+                {% if forloop.counter == 3 %} d-none d-sm-flex {% endif %}">
+                    <div class="card h-100 text-center">
+                        <div class="card-header text-muted small">
+                            Артикул: {{ item.product_vendor_code }}
+                        </div>
+
+                        <!-- Изображение товара -->
+                        <div class="row">
+                            <div class="col">
+                                {% if item.product_img %}
+                                    <a href="{% url 'product' item.product_vendor.vendor_url item.product_category.category_url item.product_url %}">
+                                        <img src="{{ item.product_img.url }}" class="img-fluid my-2"
+                                             alt="{{ item.product_title }}">
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'product' item.product_vendor.vendor_url item.product_category.category_url item.product_url %}">
+                                    <div class="img-fluid my-2 no-photo" style="padding: 50% 0"></div>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="card-body p-1">
+                            <!-- Название товара -->
+                            <a href="{% url 'product' item.product_vendor.vendor_url item.product_category.category_url item.product_url %}"
+                               class="card-title text-dark text-decoration-none">{{ item.product_title }}</a>
+
+                            <!-- Цена товара -->
+                            {% if item.productvolumeprice_set.first or item.productvolumepriceproduct_set.first %}
+                                <p class="font-monospace mt-3 mb-1">
+                                    {% if not item.product_price %}
+                                        от {{ item.productvolumeprice_set.first.volumeprice_price }}.00
+                                    {% else %}
+                                        {{ item.product_price }}.00
+                                    {% endif %}
+                                    &#x20bd;
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Ссылка на категорию -->
+                            <div class="row mb-1">
+                                <div class="col">
+                                    <a href="{{ item.product_category.category_url }}/"
+                                       class="text-muted small text-decoration-none">
+                                        {{ item.product_category.category_title }}
+                                    </a>
+                                </div>
+                            </div>
+
+                        <div class="card-footer bg-transparent">
+                            <a href="{% url 'product' item.product_vendor.vendor_url item.product_category.category_url item.product_url %}"
+                               class="btn btn-primary">Посмотреть</a>
+
+                        </div>
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+        {% url 'paints' as paints %}
+        <h3 class="text-center "><a href="{{ paints }}" class="text-decoration-none text-muted">Посмотреть <i
+                class="font-weight-normal">весь</i> каталог</a></h3>
+
+    </div>
 
 {% endblock content_product %}
 
