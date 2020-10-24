@@ -3,11 +3,10 @@
 
 {% block custom_head %}
     <!-- FancyBox3 CSS -->
-    {% if product.product_tab.count > 0 %}
-        <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.fancybox.min.css' %}">
+    {% if product.product_img %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.fancybox.min.css' %}">
     {% endif %}
 
-    <script src="{% static 'js/scripts.js' %}"></script>
     <style>
         .color-target {
             cursor: pointer;
@@ -77,7 +76,7 @@
                     <div class="row mt-2 mb-5">
                             {% for color in colors %}
                                 <div class="col-md-4 my-1 py-1 color-target text-center" style="line-height: 1rem;">
-                                    {% thumbnail color.color_image "280x280" padding=True format="WEBP" as im %}
+                                    {% thumbnail color.color_image "280x280" format="WEBP" as im %}
                                     <img
                                         src="{{ im.url }}"
                                         class="img-fluid"
@@ -113,38 +112,59 @@
             <div class="col">
                 <div class="row">
                     <div class="col">
-                        {% thumbnail product.product_img "650" padding=True format="WEBP" as img %}
-                            <img src="{{ img.url }}" class="img-fluid my-3"
-                                 alt="{{ product.product_img_title|default_if_none:product.product_title }}"
-                                 id="main-image">
+                        {% thumbnail product.product_img "1000x1000" format="WEBP" as big_img %}
+                            {% thumbnail product.product_img "650x650" padding=True format="WEBP" as img %}
+                                <a href="{{ big_img.url }}"
+                                   {% if images %} onclick="return false;" class="big-additional-images" {% else %} data-fancybox {% endif %}
+                                   data-caption="{{ product.product_img_title|default_if_none:product.product_title }}">
+                                    <img src="{{ img.url }}" class="img-fluid my-3" id="main-image"
+                                         alt="{{ product.product_img_title|default_if_none:product.product_title }}">
+                                </a>
+                            {% endthumbnail %}
                         {% endthumbnail %}
                     </div>
                 </div>
+                <!-- Подпись -->
                 <div class="row">
                     <div class="col text-muted small my-1 text-center" id="image-title">
                         {{ product.product_img_title|default_if_none:"" }}
                     </div>
                 </div>
+
+                <!-- Дополнительные изображения -->
                 {% if images %}
                     <div class="row row-cols-4">
 
                         <div class="col p-1">
-                            {% thumbnail product.product_img "650" padding=True format="WEBP" as img %}
+                        {% thumbnail product.product_img "1000x1000" format="WEBP" as big_img %}
+                            {% thumbnail product.product_img "650x650" padding=True format="WEBP" as img %}
+                                <a data-caption="{{ image.img_title|default_if_none:"" }}" href="{{ big_img.url }}"
+                                   onclick="return false;" class="">
                                 <img src="{{ img.url }}" class="img-fluid my-3 additional-images active"
-                                     alt="{{ product.product_img_title }}">
+                                     alt="{{ product.product_img_title }}" id="thumb-main-image">
+                                </a>
                             {% endthumbnail %}
+                        {% endthumbnail %}
 
                         </div>
                         {% for image in images %}
                             <div class="col p-1">
-                                {% thumbnail image.img_file "650" padding=True format="WEBP" as img %}
-                                    <img src="{{ img.url }}" class="img-fluid my-3 additional-images"
-                                         alt="{{ image.img_title }}">
+                                {% thumbnail image.img_file "1000x1000" format="WEBP" as big_img %}
+                                    {% thumbnail image.img_file "650x650" padding=True format="WEBP" as img %}
+                                        <a data-caption="{{ image.img_title|default_if_none:"" }}"
+                                           href="{{ big_img.url }}" onclick="return false;"
+                                           class="big-additional-images">
+                                            <img src="{{ img.url }}" class="img-fluid my-3 additional-images"
+                                                 alt="{{ image.img_title|default_if_none:"" }}">
+                                        </a>
+                                    {% endthumbnail %}
                                 {% endthumbnail %}
                             </div>
                         {% endfor %}
                     </div>
                 {% endif %}
+                <!-- / Дополнительные изображения -->
+
             </div>
         {% endif %}
 
@@ -203,29 +223,32 @@
                                     <th class="text-nowrap px-3">{{ product.product_price_title_1|safe }}</th>
                                     <th class="text-center text-nowrap px-3">{{ product.product_price_title_2|safe }}</th>
                                     {% if product.product_price_title_3 %}
-                                    <th class="text-left text-nowrap px-3">{{ product.product_price_title_3|default_if_none:""|safe }}</th>
+                                        <th class="text-left text-nowrap px-3">{{ product.product_price_title_3|default_if_none:""|safe }}</th>
                                     {% endif %}
                                     {% if product.product_price_title_4 %}
-                                    <th class="text-left text-nowrap px-3">{{ product.product_price_title_4|default_if_none:""|safe }}</th>
+                                        <th class="text-left text-nowrap px-3">{{ product.product_price_title_4|default_if_none:""|safe }}</th>
                                     {% endif %}
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {% for price in volume_price %}
-                                    <tr onclick="document.getElementById('{{ price.id }}').checked=true;" style="cursor: pointer">
-                                    	<td class="px-3">
-                                    		<input type="radio" name="options"
-                                    		id="{{ price.id }}"
-                                    		{% if forloop.first %} checked {% endif %}
-                                    		value="{{ price.volumeprice_volume.volume_title }} - {{ price.volumeprice_price }}&#x20bd; - {{price.volumeprice_expenditure}} - {{ price.volumeprice_expenditure_price }}">
-                                    	</td>
-                           				<td class="text-left text-nowrap px-3">{{ price.volumeprice_volume.volume_title }}</td>
-                                        <td class="text-center text-nowrap px-3">{{ price.volumeprice_price }} &#x20bd;</td>
+                                    <tr onclick="document.getElementById('{{ price.id }}').checked=true;"
+                                        style="cursor: pointer">
+                                        <td class="px-3">
+                                            <input type="radio" name="options"
+                                                   id="{{ price.id }}"
+                                                    {% if forloop.first %} checked {% endif %}
+                                                   value="{{ price.volumeprice_volume.volume_title }} - {{ price.volumeprice_price }}&#x20bd; - {{ price.volumeprice_expenditure }} - {{ price.volumeprice_expenditure_price }}">
+                                        </td>
+                                        <td class="text-left text-nowrap px-3">{{ price.volumeprice_volume.volume_title }}</td>
+                                        <td class="text-center text-nowrap px-3">{{ price.volumeprice_price }}
+                                            &#x20bd;
+                                        </td>
                                         {% if price.volumeprice_expenditure %}
-                                        <td class="text-left text-nowrap px-3">{{ price.volumeprice_expenditure|default_if_none:"" }}</td>
+                                            <td class="text-left text-nowrap px-3">{{ price.volumeprice_expenditure|default_if_none:""|safe }}</td>
                                         {% endif %}
                                         {% if price.volumeprice_expenditure_price %}
-                                        <td class="text-left text-nowrap px-3">{{ price.volumeprice_expenditure_price|default_if_none:"" }}</td>
+                                            <td class="text-left text-nowrap px-3">{{ price.volumeprice_expenditure_price|default_if_none:""|safe }}</td>
                                         {% endif %}
                                     </tr>
                                 {% endfor %}
@@ -450,47 +473,23 @@
 {% endblock content_product %}
 
 {% block custom_footer %}
-    <!-- скрипт отвечает за выделение Цвета в модальном окне -->
-    <script>
-        (function () {
-            var color_blocks = document.querySelectorAll(".color-target");
+    <!-- FancyBox3 JS -->
+    {% if product.product_img %}
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+    {% endif %}
 
-            for (var i = 0; i < color_blocks.length; i++) {
-                color_blocks[i].addEventListener("click", function () {
-                    for (var j = 0; j < color_blocks.length; j++) {
-                        color_blocks[j].classList.remove("active");
-                    }
-                    this.classList.add("active");
-                }, false);
-            }
-        })();
-    </script>
-
-    <!-- скрипт отвечает за смену изображений товара -->
+    <!-- открываем галерею при клике на главное изображение -->
     {% if images %}
         <script>
-            var main_image = document.getElementById('main-image');
-            var image_title = document.getElementById('image-title');
-            var additional_images = document.querySelectorAll('.additional-images');
-            for (var i = 0; i < additional_images.length; i++) {
-                additional_images[i].addEventListener('click', function () {
-                    main_image.src = this.src;
-                    for (var j = 0; j < additional_images.length; j++) {
-                        additional_images[j].classList.remove("active")
-                    }
-                    this.classList.add("active");
-                    image_title.textContent = this.alt;
+            $('#main-image').on('click', function () {
+                $.fancybox.open($('.big-additional-images'), {
+                    // настройки галереии
+                    // http://fancyapps.com/fancybox/3/docs/#options
                 });
-            }
-            {#additional-images#}
-
+            });
         </script>
     {% endif %}
 
-    <!-- FancyBox3 JS -->
-    {% if product.product_tab.count > 0 %}
-        <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
-	<script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
-    {% endif %}
-
+    <script src="{% static 'js/scripts.js' %}"></script>
 {% endblock custom_footer %}
