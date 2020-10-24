@@ -1,1 +1,2 @@
 django-fieldsets-with-inlines=0.6
+sorl-thumbnail=12.6.3

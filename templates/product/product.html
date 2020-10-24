@@ -1,5 +1,5 @@
 {% extends 'product/base_product.html' %}
-{% load static %}
+{% load static thumbnail %}
 
 {% block custom_head %}
     <!-- FancyBox3 CSS -->
@@ -75,24 +75,17 @@
                 <div class="modal-body">
                     <h5>{{ product.product_title }}</h5>
                     <div class="row mt-2 mb-5">
-                        {% if biofa %}
-                            {% for color in colors %}
-                                <div class="col-md-4 my-1 py-1 color-target" style="line-height: 1rem;"><img
-                                        src="../../../../biofa-kazan.ru/media/{{ color.colorproduct.color_image }}"
-                                        class="img-fluid"
-                                        alt="цвет {{ color.colorproduct.color_title }}"><br>
-                                    <span class="small">{{ color.colorproduct.color_title }}</span></div>
-                            {% endfor %}
-                        {% else %}
                             {% for color in colors %}
                                 <div class="col-md-4 my-1 py-1 color-target text-center" style="line-height: 1rem;">
-                                        <img
-                                        src="{{ color.color_image.url }}"
+                                    {% thumbnail color.color_image "280x280" padding=True format="WEBP" as im %}
+                                    <img
+                                        src="{{ im.url }}"
                                         class="img-fluid"
-                                        alt="цвет {{ color.color_title }}"><br>
+                                        alt="цвет {{ color.color_title }}">
+                                    {% endthumbnail %}
+                                    <br>
                                     <span class="small">{{ color.color_title }}</span></div>
                             {% endfor %}
-                        {% endif %}
                     </div>
                     <p>Помните - мониторы искажают цвет!
 
@@ -117,11 +110,14 @@
 
         <!-- Изображение товара -->
         {% if product.product_img %}
-        <div class="col">
+            <div class="col">
                 <div class="row">
                     <div class="col">
-                        <img src="{{ product.product_img.url }}" class="img-fluid my-3"
-                             alt="{{ product.product_img_title }}" id="main-image">
+                        {% thumbnail product.product_img "650" padding=True format="WEBP" as img %}
+                            <img src="{{ img.url }}" class="img-fluid my-3"
+                                 alt="{{ product.product_img_title|default_if_none:product.product_title }}"
+                                 id="main-image">
+                        {% endthumbnail %}
                     </div>
                 </div>
                 <div class="row">
@@ -131,20 +127,25 @@
                 </div>
                 {% if images %}
                     <div class="row row-cols-4">
+
                         <div class="col p-1">
-                            <img src="{{ product.product_img.url }}" class="img-fluid my-3 additional-images active"
-                                 alt="{{ product.product_img_title }}">
+                            {% thumbnail product.product_img "650" padding=True format="WEBP" as img %}
+                                <img src="{{ img.url }}" class="img-fluid my-3 additional-images active"
+                                     alt="{{ product.product_img_title }}">
+                            {% endthumbnail %}
 
                         </div>
                         {% for image in images %}
                             <div class="col p-1">
-                                <img src="{{ image.img_file.url }}" class="img-fluid my-3 additional-images"
-                                     alt="{{ image.img_title }}">
+                                {% thumbnail image.img_file "650" padding=True format="WEBP" as img %}
+                                    <img src="{{ img.url }}" class="img-fluid my-3 additional-images"
+                                         alt="{{ image.img_title }}">
+                                {% endthumbnail %}
                             </div>
                         {% endfor %}
                     </div>
                 {% endif %}
-        </div>
+            </div>
         {% endif %}
 
         <div class="col pt-3">
@@ -388,13 +389,15 @@
                         <div class="row">
                             <div class="col">
                                 {% if item.product_img %}
-                                    <a href="{% url 'product' item.product_vendor.vendor_url item.product_category.category_url item.product_url %}">
-                                        <img src="{{ item.product_img.url }}" class="img-fluid my-2"
-                                             alt="{{ item.product_title }}">
-                                    </a>
+                                    {% thumbnail item.product_img "300x300" padding=True format="WEBP" as im %}
+                                        <a href="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}">
+                                            <img src="{{ im.url }}" class="img-fluid my-2"
+                                                 alt="{{ item.product_title }}">
+                                        </a>
+                                    {% endthumbnail %}
                                 {% else %}
                                     <a href="{% url 'product' item.product_vendor.vendor_url item.product_category.category_url item.product_url %}">
-                                    <div class="img-fluid my-2 no-photo" style="padding: 50% 0"></div>
+                                        <div class="img-fluid my-2 no-photo" style="padding: 50% 0"></div>
                                     </a>
                                 {% endif %}
                             </div>

@@ -1,4 +1,5 @@
 {% extends 'product/base_product.html' %}
+{% load thumbnail %}
 
 {% block title %}Столярная мастерская Империал - г. Казань{% endblock title %}
 
@@ -95,10 +96,12 @@
                     <div class="row">
                         <div class="col">
                             {% if product.product_img %}
+                                {% thumbnail product.product_img "300x300" padding=True format="WEBP"  as im %}
                             <a href="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}">
-                                <img src="{{ product.product_img.url }}" class="img-fluid my-2"
+                                <img src="{{ im.url }}" class="img-fluid my-2"
                                 alt="{{ product.product_title }}">
                             </a>
+                                {% endthumbnail %}
                             {% else %}
                             <a href="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}">
                                 <div class="img-fluid my-2 no-photo" style="padding: 50% 0"></div>

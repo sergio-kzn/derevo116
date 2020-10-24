@@ -1,5 +1,6 @@
 from django.db import models
-from django.utils.safestring import mark_safe
+from sorl.thumbnail import ImageField
+
 
 
 class ProductCategory(models.Model):
@@ -30,7 +31,7 @@ class ProductVendor(models.Model):
         return self.vendor_title
     vendor_title = models.CharField(verbose_name='Поставщик', max_length=100)
     vendor_url = models.SlugField(verbose_name='Ссылка url',unique=True)
-    vendor_img = models.ImageField(verbose_name='Изображение', upload_to='vendors', blank=True)
+    vendor_img = ImageField(verbose_name='Изображение', upload_to='vendors', blank=True)
     vendor_sort = models.IntegerField(verbose_name='Сортировка', default=0)
     vendor_show = models.BooleanField(verbose_name='Показывать?', default=True)
 
@@ -53,7 +54,7 @@ class Color(models.Model):
     def __str__(self):
         return self.color_title
     color_title = models.CharField(verbose_name='Название цвета', max_length=50)
-    color_image = models.ImageField(verbose_name='Изображение', upload_to='products/colors')
+    color_image = ImageField(verbose_name='Изображение', upload_to='products/colors')
     color_sort = models.IntegerField('Сортировка', default=0)
     color_group = models.ForeignKey(ColorGroup, models.DO_NOTHING)
 
@@ -78,7 +79,7 @@ class ProductImageGroup(models.Model):
     img_group = models.CharField(verbose_name='Дополнительные изображения', max_length=100, help_text='Название группы изображений, например название Товара')
 
 class ProductImage(models.Model):
-    img_file = models.ImageField(verbose_name='Изображение товара', upload_to='products')
+    img_file = ImageField(verbose_name='Изображение товара', upload_to='products')
     img_title = models.CharField(verbose_name='Подпись', max_length=100)
     img_group = models.ForeignKey(ProductImageGroup, models.DO_NOTHING)
 
@@ -100,7 +101,7 @@ class Product(models.Model):
     product_title = models.CharField(verbose_name='Заголовок', max_length=200)
     product_url = models.SlugField(verbose_name='Ссылка url', unique=True, max_length=100)
     product_extra_desc = models.TextField(verbose_name='Краткое описание', blank=True, null=True, help_text='Дополнительная информация, показывается рядом с ценой')
-    product_img = models.ImageField(verbose_name='Изображение товара',upload_to='products', blank=True, null=True, help_text='Основное изображение товара, рекомендуемый размер 1000х700 px')
+    product_img = ImageField(verbose_name='Изображение товара',upload_to='products', blank=True, null=True, help_text='Основное изображение товара, рекомендуемый размер 1000х700 px')
     product_img_title = models.CharField(verbose_name='Подпись', max_length=100, blank=True, null=True, help_text='Подпись под изображением и alt')
     product_imgs = models.ManyToManyField(ProductImageGroup, verbose_name='Дополнительные изображения товара', blank=True)
     # product_description_title = models.CharField(verbose_name='Название доп. вкладки', max_length=200, blank=True, null=True)
