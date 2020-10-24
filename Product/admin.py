@@ -106,7 +106,10 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
             'product_content',
                        ),
             }),
-            AttributeInline,
+        AttributeInline,
+        (None, {
+            'fields': ('help_attr', )
+        }),
         ('Изображение', {
             'classes': ('collapse',),
             'fields': (('image_preview', 'product_img'),
@@ -134,12 +137,19 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
     )
     save_on_top = True
     list_display_links = ['image_preview', 'product_title']
-    readonly_fields = ('image_preview','product_link')
+    readonly_fields = ('image_preview', 'product_link', 'help_attr')
+
+    def help_attr(self, obj):
+        return '<sup>2</sup>\n<sup>3</sup>\n°C'
+    help_attr.short_description = 'Подсказки для копирования'
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         field = super(ProductAdmin, self).formfield_for_dbfield(db_field, **kwargs)
         if db_field.name == 'product_title':
             field.widget.attrs['style'] = 'display: flex; width: -webkit-fill-available;'
+        if db_field.name == 'product_img_title':
+            field.widget.attrs['style'] = 'display: flex; width: -webkit-fill-available;'
+
         return field
 
     def product_link(self, obj):
@@ -178,10 +188,17 @@ class VolumeAdmin(admin.ModelAdmin):
     list_editable = ['volume_sort']
 
 
+
 class TabAdmin(SummernoteModelAdmin):
     summernote_fields = "__all__"
     list_display = ['tab_title_admin', 'tab_title', 'tab_slug']
 
+
+
+class VendorAdmin(admin.ModelAdmin):
+    """раздел с поставщиками в админке"""
+    list_display = ['vendor_title', 'vendor_sort']
+    list_editable = ['vendor_sort']    
 
 admin.site.register(Product, ProductAdmin)
 
@@ -189,5 +206,5 @@ admin.site.register(ProductCategory, ProductCategoryAdmin)
 admin.site.register(Volume, VolumeAdmin)
 admin.site.register(ColorGroup, ColorAdmin)
 admin.site.register(ProductImageGroup, ImageAdmin)
-admin.site.register(ProductVendor)
+admin.site.register(ProductVendor, VendorAdmin)
 admin.site.register(ProductTab, TabAdmin)

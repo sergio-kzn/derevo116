@@ -1,6 +1,13 @@
 {% extends 'product/base_product.html' %}
+{% load static %}
 
 {% block custom_head %}
+    <!-- FancyBox3 CSS -->
+    {% if product.product_tab.count > 0 %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.fancybox.min.css' %}">
+    {% endif %}
+
+    <script src="{% static 'js/scripts.js' %}"></script>
     <style>
         .color-target {
             cursor: pointer;
@@ -25,34 +32,40 @@
             opacity: 1;
             transition: 1s;
         }
+
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
     </style>
 {% endblock %}
 
 {% block title %}{{ product.product_title }} - купить в Казани{% endblock title %}
 
 {% block breadcrumb-category %}
-    {% if biofa %}
-        <li class="breadcrumb-item"><a href="{% url 'biofa_paints' %}">Biofa</a></li>
-        <li class="breadcrumb-item"><a
-                href="{% url 'biofa_category' product.product_category.category_url %}">{{ product.product_category.category_title }}</a>
-        </li>
-    {% else %}
-        <li class="breadcrumb-item"><a
-                href="{% url 'vendor-paints' product.product_vendor.vendor_url %}">{{ product.product_vendor.vendor_title }}</a>
-        <li class="breadcrumb-item"><a
-                href="{% url 'category' product.product_vendor.vendor_url product.product_category.category_url %}">{{ product.product_category.category_title }}</a>
-        </li>
-    {% endif %}
+    <li class="breadcrumb-item"><a
+            href="{% url 'vendor-paints' product.product_vendor.vendor_url %}">{{ product.product_vendor.vendor_title }}</a>
+    <li class="breadcrumb-item"><a
+            href="{% url 'category' product.product_vendor.vendor_url product.product_category.category_url %}">{{ product.product_category.category_title }}</a>
+    </li>
     <li class="breadcrumb-item active">{{ product.product_title }}</li>
 {% endblock breadcrumb-category %}
 
 {% block content_product %}
 
     <!-- Modal window for COLORS -->
-    <div class="modal fade" id="colorModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
-         aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
+    {% if colors.all|length > 0 %}
+        <div class="modal fade" id="colorModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
+             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="staticBackdropLabel">Выбор цвета краски</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -97,6 +110,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
     <!-- / Modal window for COLORS -->
 
     <div class="row row-cols-1 row-cols-md-2 mb-5">
@@ -104,10 +118,6 @@
         <!-- Изображение товара -->
         {% if product.product_img %}
         <div class="col">
-            {% if biofa %}
-                <img src="../../../../biofa-kazan.ru/media/{{ product.product_img }}" class="card-img-top  my-3"
-                     alt="{{ product.product_title }}">
-            {% else %}
                 <div class="row">
                     <div class="col">
                         <img src="{{ product.product_img.url }}" class="img-fluid my-3"
@@ -134,7 +144,6 @@
                         {% endfor %}
                     </div>
                 {% endif %}
-            {% endif %}
         </div>
         {% endif %}
 
@@ -145,30 +154,34 @@
             <!-- Цена товара -->
             {# FIXME: if product.product_price_choice == False #}
             {% if volume_price.first %}
-            <p class="text-muted font-monospace" style="font-size: x-large">
-            {% if not product.product_price %}
-                    от {{ volume_price.first.volumeprice_price }}.00
-            {% else %}
-                	{{ product.product_price }}.00 
-            {% endif %}
-            	&#x20bd;        
-            </p>
+                <p class="text-muted font-monospace" style="font-size: x-large">
+                    {% if not product.product_price %}
+                        от {{ volume_price.first.volumeprice_price }}.00
+                    {% else %}
+                        {{ product.product_price }}.00
+                    {% endif %}
+                    &#x20bd;
+                </p>
             {% endif %}
 
+            <!-- Поставщик, артикул, наличие -->
             <ul class="small list-unstyled text-muted my-3">
-                <li>Поставщик: {% if biofa %}
-                    <a href="{% url 'biofa_paints' %}">Biofa</a>
-                {% else %}
-                    <a href="{% url 'vendor-paints' product.product_vendor.vendor_url %}">{{ product.product_vendor.vendor_title }}</a>
-                {% endif %} </li>
+                <li>Поставщик: <a
+                        href="{% url 'vendor-paints' product.product_vendor.vendor_url %}">{{ product.product_vendor.vendor_title }}</a>
+                </li>
                 <li>Артикул: {{ product.product_vendor_code }}</li>
-                <li>Наличие: {% if biofa %}
-                    <span class="text-success font-weight-bold">В наличии более 10л.</span>
-                {% else %}
-                    <span class="text-success font-weight-bold">{{ product.product_count }}</span>
-                {% endif %}</li>
+                <li>Наличие: <span class="text-success font-weight-bold">{{ product.product_count }}</span>
+                </li>
             </ul>
 
+            <!-- Короткое описание товара -->
+            {% if product.product_extra_desc %}
+                <div class="row py-2">
+                    {{ product.product_extra_desc|safe }}
+                </div>
+            {% endif %}
+
+            <!-- Выбор цвета -->
             {% if colors.all|length > 0 %}
                 <button type="button" class="btn btn-outline-primary my-3" data-toggle="modal" data-target="#colorModal"
                         style="white-space: nowrap;">
@@ -176,48 +189,16 @@
                 </button>
             {% endif %}
 
-            {% if product.product_extra_desc %}
-                <div class="row py-2">
-                    {{ product.product_extra_desc|safe }}
-                </div>
-            {% endif %}
-
             <!-- Опции для цен -->
             <div class="row my-3 justify-content-center">
                 <div class="col col-auto">
-                    {% if biofa %}
-                        <div class="pr-5">
-                            <table class="table table-sm table-hover small">
-                                <thead>
-                                <tr>
-                                	<th></th>
-                                    <th>Объем</th>
-                                    <th class="text-right">Цена</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for price in volume_price %}
-                                    <tr onclick="document.getElementById('{{ price.id }}').checked=true;" style="cursor: pointer">
-                                    	<td class="px-3">
-                                    		<input type="radio" name="options"
-                                    		id="{{ price.id }}"
-                                    		{% if forloop.first %} checked {% endif %}
-                                    		value="{{ price.volumeprice_volume.volume_title }} - {{ price.volumeprice_price }}&#x20bd;">
-                                    	</td>
-                                        <td>{{ price.volumeprice_volume.volume_title }} </td>
-                                        <td class="text-right">{{ price.volumeprice_price }} </td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% elif product.product_price_choice == False and volume_price.first %}
+                    {% if product.product_price_choice == False and volume_price.first %}
                         <h3>{{ product.product_price_title }}</h3>
-                        <div class="pr-5 overflow-auto">
+                        <div class="overflow-auto">
                             <table class="table table-sm table-hover small">
                                 <thead>
                                 <tr>
-                                	<th></th>
+                                    <th></th>
                                     <th class="text-nowrap px-3">{{ product.product_price_title_1|safe }}</th>
                                     <th class="text-center text-nowrap px-3">{{ product.product_price_title_2|safe }}</th>
                                     {% if product.product_price_title_3 %}
@@ -254,6 +235,21 @@
                 </div>
             </div>
 
+            <!-- Количество товара -->
+            <div class="row my-3 justify-content-center">
+                <div class="col col-auto">
+                    <div class="input-group align-items-center flex-nowrap">
+                        Количество:
+                        <button class="btn btn-outline-secondary ml-3" type="button" id="number-of-goods-minus">-
+                        </button>
+                        <input type="number" min="1" max="100" class="form-control flex-grow-0 text-center"
+                               style="width: 65px"
+                               id="number-of-goods-input" value="1" aria-label="Количетсво товара">
+                        <button class="btn btn-outline-secondary" type="button" id="number-of-goods-plus">+</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="row px-3">
                 <button type="button" class="btn btn-primary btn-lg btn-block my-3">Добавить в корзину</button>
             </div>
@@ -265,46 +261,42 @@
     <div class="row mb-5">
         <div class="col-12">
             <ul class="nav nav-tabs nav-fill mb-3" role="tablist">
-                
+
                 {% if product.product_content %}
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" aria-controls="description" aria-selected="true"
-                       href="#description">Описание</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" aria-controls="description" aria-selected="true"
+                           href="#description">Описание</a>
+                    </li>
                 {% endif %}
 
                 {% if attributes %}
-                <li class="nav-item">
-                    <a class="nav-link {% if not product.product_content %}active{% endif %}" data-toggle="tab" href="#attributes" role="tab"
-                       aria-controls="attributes" aria-selected="false">Характеристики</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if not product.product_content %}active{% endif %}" data-toggle="tab"
+                           href="#attributes" role="tab"
+                           aria-controls="attributes" aria-selected="false">Характеристики
+                            {% if product.product_file %}
+                                <span class="badge bg-primary ml-2 position-absolute"><i class="fas fa-file"></i></span>
+                            {% endif %}
+                        </a>
+                    </li>
                 {% endif %}
 
-                {% if biofa %}
-                    {% if product.product_description %}
+                <!-- Дополнительные вкладки -->
+                {% if product.product_tab.count > 0 %}
+                    {% for tab in product.product_tab.all %}
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#photo" role="tab"
-                               aria-controls="photo" aria-selected="false">
-                                ФОТО
+                            <a class="nav-link" data-toggle="tab" href="#{{ tab.tab_slug }}" role="tab"
+                               aria-controls="{{ tab.tab_slug }}" aria-selected="false">
+                                {{ tab.tab_title }}
                             </a>
                         </li>
-                    {% endif %}
-                {% else %}
-                    {% if product.product_tab.count > 0 %}
-                        {% for tab in product.product_tab.all %}
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#{{ tab.tab_slug }}" role="tab"
-                                   aria-controls="{{ tab.tab_slug }}" aria-selected="false">
-                                    {{ tab.tab_title }}
-                                </a>
-                            </li>
-                        {% endfor %}
-                    {% endif %}
+                    {% endfor %}
                 {% endif %}
 
                 <li class="nav-item">
                     <a class="nav-link 
-                    {% if not product.product_content and not attributes %}active{% endif %}" data-toggle="tab" href="#reviews" role="tab"
+                    {% if not product.product_content and not attributes %}active{% endif %}" data-toggle="tab"
+                       href="#reviews" role="tab"
                        aria-controls="reviews" aria-selected="false">Отзывы <span
                             class="badge bg-primary ml-2 position-absolute">0</span></a>
                 </li>
@@ -313,22 +305,28 @@
             <div class="tab-content">
                 <!-- Описание -->
                 {% if product.product_content %}
-                <div class="tab-pane fade show active" id="description" role="tabpanel"
-                     aria-labelledby="description-tab">
-                    {{ product.product_content|safe }}
-                </div>
+                    <div class="tab-pane fade show active" id="description" role="tabpanel"
+                         aria-labelledby="description-tab">
+                        {{ product.product_content|safe }}
+                    </div>
                 {% endif %}
 
                 <!-- Характеристики -->
-                <div class="tab-pane fade {% if not product.product_content %}show active{% endif %}" id="attributes" role="tabpanel" aria-labelledby="attributes-tab">
+                <div class="tab-pane fade {% if not product.product_content %}show active{% endif %}" id="attributes"
+                     role="tabpanel" aria-labelledby="attributes-tab">
                     <table class="table table-sm table-hover small">
                         <tbody>
                         {% for attr in attributes %}
-                            <tr>
-                            <td class="">
+                            <tr{% if attr.attribute_distinguish_bold %} class="font-weight-bold"{% endif %}
+                                    {% if attr.attribute_distinguish_yellow %}
+                                                                        style="background-color: yellow" {% endif %}>
+                            <td {% if attr.attribute_distinguish_colspan %}colspan="2"{% endif %}>
+                                {% if attr.attribute_distinguish_empty %}&nbsp;{% endif %}
                                 {{ attr.attribute_title|default_if_none:""|safe }}</td>
-                            <td>
-                                {{ attr.attribute_value|default_if_none:""|safe }}</td>
+                            {% if not attr.attribute_distinguish_colspan %}
+                                <td>
+                                    {{ attr.attribute_value|default_if_none:""|safe }}</td>
+                            {% endif %}
                         {% endfor %}
                         </tbody>
                     </table>
@@ -485,4 +483,11 @@
 
         </script>
     {% endif %}
+
+    <!-- FancyBox3 JS -->
+    {% if product.product_tab.count > 0 %}
+        <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+	<script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+    {% endif %}
+
 {% endblock custom_footer %}

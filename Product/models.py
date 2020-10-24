@@ -25,11 +25,13 @@ class ProductVendor(models.Model):
     class Meta:
         verbose_name = "Поставщик"
         verbose_name_plural = "Поставщики"
+        ordering = ['vendor_sort']
     def __str__(self):
         return self.vendor_title
     vendor_title = models.CharField(verbose_name='Поставщик', max_length=100)
     vendor_url = models.SlugField(verbose_name='Ссылка url',unique=True)
     vendor_img = models.ImageField(verbose_name='Изображение', upload_to='vendors', blank=True)
+    vendor_sort = models.IntegerField(verbose_name='Сортировка', default=0)
     vendor_show = models.BooleanField(verbose_name='Показывать?', default=True)
 
 
@@ -67,7 +69,7 @@ class ProductTab(models.Model):
     tab_title_admin = models.CharField(verbose_name='Название (в админке)', max_length=200)
     tab_title = models.CharField(verbose_name='Название (в шаблоне)', max_length=200)
     tab_content = models.TextField(verbose_name='Содержимое доп. вкладки', blank=True, null=True)
-    tab_slug = models.SlugField(verbose_name='Ссылка href="# ..."')
+    tab_slug = models.SlugField(verbose_name='Ссылка href="# ..."', default='additionally')
 
 
 class ProductImageGroup(models.Model):
@@ -85,7 +87,6 @@ class Product(models.Model):
     class Meta:
         verbose_name = "Товар"
         verbose_name_plural = "Товары"
-        ordering = ['product_vendor_code']
     def __str__(self):
         return self.product_title
     PRICE = [
@@ -100,7 +101,7 @@ class Product(models.Model):
     product_url = models.SlugField(verbose_name='Ссылка url', unique=True, max_length=100)
     product_extra_desc = models.TextField(verbose_name='Краткое описание', blank=True, null=True, help_text='Дополнительная информация, показывается рядом с ценой')
     product_img = models.ImageField(verbose_name='Изображение товара',upload_to='products', blank=True, null=True, help_text='Основное изображение товара, рекомендуемый размер 1000х700 px')
-    product_img_title = models.CharField(verbose_name='Подпись', max_length=100, blank=True, null=True)
+    product_img_title = models.CharField(verbose_name='Подпись', max_length=100, blank=True, null=True, help_text='Подпись под изображением и alt')
     product_imgs = models.ManyToManyField(ProductImageGroup, verbose_name='Дополнительные изображения товара', blank=True)
     # product_description_title = models.CharField(verbose_name='Название доп. вкладки', max_length=200, blank=True, null=True)
     # product_description = models.TextField(verbose_name='Содержимое доп. вкладки', blank=True, null=True)
@@ -128,8 +129,12 @@ class ProductAttribute(models.Model):
         if self.attribute_title == None:
             return f'(id={self.id})'
         return str(self.attribute_title)
+    attribute_distinguish_bold = models.BooleanField(verbose_name="<b>", default=False, help_text='Выделяет всю строку жирным')
+    attribute_distinguish_yellow = models.BooleanField(verbose_name="bg-y", default=False, help_text='Выделяет всю строку желтым фоном')
+    attribute_distinguish_empty = models.BooleanField(verbose_name="nbsp", default=False, help_text='Включите, если хотите добавить пустую строку')
+    attribute_distinguish_colspan = models.BooleanField(verbose_name="2:1", default=False, help_text='Объединяет ячейки в одну')
     attribute_title = models.CharField(max_length=200, verbose_name='Атрибут', blank=True, null=True)
-    attribute_value = models.CharField(max_length=200, verbose_name='Значение атрибута (необязательно)', blank=True, null=True)
+    attribute_value = models.CharField(max_length=200, verbose_name='Значение атрибута (необязательно)', blank=True, null=True,)
     attribute_sort = models.IntegerField(verbose_name='Сортировка', default=0)
     attribute_product = models.ForeignKey(Product, models.DO_NOTHING, verbose_name='Товар')
 
