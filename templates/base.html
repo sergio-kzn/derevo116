@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap CSS v5.0.0-alpha2 -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
 
     {# font awesome #}
@@ -17,6 +17,27 @@
     <style>
         .ml-n1 {
             margin-left: -1rem;
+        }
+
+        #basket .modal {
+            left: auto;
+            top: 0;
+        }
+
+        #basket .modal.fade .modal-dialog {
+            transition: all .15s Ease-in-out;
+        }
+
+        .modal-backdrop.show {
+            opacity: .2;
+        }
+
+        .basket-list-count {
+        {#position: absolute;#}{#display: block;#}{#top: 11px;#}{#right: 10px;#}
+        }
+
+        .basket-list-delete {
+        {#position: absolute;#}{#display: block;#}{#bottom: 11px;#}{#right: 10px;#}
         }
     </style>
     {% block custom_head %}{% endblock %}
@@ -71,27 +92,57 @@
     <div class="row justify-content-between py-3 px-0 align-items-center mx-0">
         <div class="col-12 col-sm-6 col-lg-3">
             <a href="/"><img src="{% static 'img/logo-imperial.png' %}" class="img-fluid"
-                 alt="логотип ООО Империал - столярная мастерска"></a>
+                             alt="логотип ООО Империал - столярная мастерска"></a>
         </div>
-        <div class="col-12 col-sm-4 col-md-3 col-lg-2 my-3 my-sm-0 order-lg-5 position-relative">
+
+        <!-- Корзина -->
+        <div class="col-12 col-sm-4 col-md-3 col-lg-2 my-3 my-sm-0 order-lg-5 position-relative" id="basket">
             <div class="row bg-light p-2 align-items-center">
                 <div class="col-6 text-muted">
                     <i class="fas fa-2x fa-shopping-cart"></i>
                 </div>
                 <div class="col-6 text-right">
-                    <a class="stretched-link" href="#">
-                        <span class="badge bg-primary">0</span><br>
-                        <span class="badge bg-secondary">0 руб.</span>
+                    <a class="stretched-link" href="#" data-toggle="modal" data-target="#basket-modal">
+                        <span class="badge bg-primary" id="basket-count">0</span><br>
+                        <span class="badge bg-secondary"><span id="basket-sum">0</span> руб.</span>
                     </a>
                 </div>
             </div>
+            <div class="modal fade h-auto p-0 position-absolute right-0" style="width: 296px;"
+                 tabindex="-1" id="basket-modal" aria-labelledby="basket-modal" aria-hidden="true"
+                 data-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog m-0">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Корзина</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Закрыть корзину">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body p-1 overflow-auto" style="max-height: 350px">
+                            <ul class="list-group list-group-flush" id="basket-list">
+                                <li class="list-group-item list-group-item-action px-1 disabled" id="empty-basket">Корзина совсем пустая :(
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <p class="w-100" id="basket-sum-footer"></p>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Скрыть</button>
+                            <a role="button" href="#" class="btn btn-primary">ОФОРМИТЬ</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        <!-- / Корзина -->
+
         <div class="col-12 col-lg order-lg-3">
             <div class="input-group my-2 px-lg-5">
                 <input type="text" class="form-control border-left-0 border-top-0 border-right-0" placeholder="Поиск"
                        aria-label="Поиск"
                        aria-describedby="button-addon2">
-                <button class="btn btn-outline-secondary border-left-0 border-top-0 border-right-0" type="button" id="button-addon2" style="border: 1px solid #ced4da;">
+                <button class="btn btn-outline-secondary border-left-0 border-top-0 border-right-0" type="button"
+                        id="button-addon2" style="border: 1px solid #ced4da;">
                     <i class="fas fa-search"></i>
                 </button>
             </div>

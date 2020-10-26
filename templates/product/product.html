@@ -33,14 +33,14 @@
         }
 
         /* Chrome, Safari, Edge, Opera */
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
+        #number-of-goods-input input::-webkit-outer-spin-button,
+        #number-of-goods-input input::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
 
         /* Firefox */
-        input[type=number] {
+        #number-of-goods-input input[type=number] {
             -moz-appearance: textfield;
         }
     </style>
@@ -96,7 +96,6 @@
                         сочетаний.
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Выбрать</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                 </div>
             </div>
@@ -204,10 +203,11 @@
 
             <!-- Выбор цвета -->
             {% if colors.all|length > 0 %}
-                <button type="button" class="btn btn-outline-primary my-3" data-toggle="modal" data-target="#colorModal"
+                <button type="button" class="btn btn-outline-primary mt-3" data-toggle="modal" data-target="#colorModal"
                         style="white-space: nowrap;">
                     Выбрать цвет<span class="ml-2 badge bg-primary">{{ colors.all|length }}</span>
                 </button>
+                <div id="selected-color" class="small text-muted mb-3"></div>
             {% endif %}
 
             <!-- Опции для цен -->
@@ -232,13 +232,15 @@
                                 </thead>
                                 <tbody>
                                 {% for price in volume_price %}
-                                    <tr onclick="document.getElementById('{{ price.id }}').checked=true;"
+                                    <tr onclick="select_input('{{ price.id }}')"
                                         style="cursor: pointer">
                                         <td class="px-3">
-                                            <input type="radio" name="options"
-                                                   id="{{ price.id }}"
-                                                    {% if forloop.first %} checked {% endif %}
-                                                   value="{{ price.volumeprice_volume.volume_title }} - {{ price.volumeprice_price }}&#x20bd; - {{ price.volumeprice_expenditure }} - {{ price.volumeprice_expenditure_price }}">
+                                            <label><input type="radio" name="options"
+                                                          id="{{ price.id }}"
+                                                    {#                                                    {% if forloop.first %} checked {% endif %}#}
+                                                          data-price="{{ price.volumeprice_price }}"
+                                                          value="{{ price.volumeprice_volume.volume_title }}">
+                                            </label>
                                         </td>
                                         <td class="text-left text-nowrap px-3">{{ price.volumeprice_volume.volume_title }}</td>
                                         <td class="text-center text-nowrap px-3">{{ price.volumeprice_price }}
@@ -275,7 +277,20 @@
             </div>
 
             <div class="row px-3">
-                <button type="button" class="btn btn-primary btn-lg btn-block my-3">Добавить в корзину</button>
+                <button type="button" class="btn btn-primary btn-lg btn-block my-3" id="add-to-basket"
+                        data-title="{{ product.product_title }}"
+                        data-url="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}"
+                        data-count="1"
+                        {% if volume_price.first %}
+                            {% if not product.product_price %}
+                        data-price="{{ volume_price.first.volumeprice_price }}"
+                            {% else %}
+                        data-price="{{ product.product_price }}"
+                            {% endif %}
+                        {% endif %}
+                        data-option-name="{{ product.product_price_title_1 }}"
+                >Добавить в корзину
+                </button>
             </div>
 
         </div>
@@ -394,6 +409,8 @@
         </div>
     </div>
     <!-- / вкладки Описание Характиристики Отзывы -->
+
+
     <div class="row mb-3">
         <h2>Похожие <i class="font-weight-normal">товары от</i> {{ product.product_vendor.vendor_title }}</h2>
 
@@ -413,7 +430,7 @@
                             <div class="col">
                                 {% if item.product_img %}
                                     {% thumbnail item.product_img "300x300" padding=True format="WEBP" as im %}
-                                        <a href="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}">
+                                        <a href="{% url 'product' item.product_vendor.vendor_url item.product_category.category_url item.product_url %}">
                                             <img src="{{ im.url }}" class="img-fluid my-2"
                                                  alt="{{ item.product_title }}">
                                         </a>
@@ -484,7 +501,7 @@
         <script>
             $('#main-image').on('click', function () {
                 $.fancybox.open($('.big-additional-images'), {
-                    // настройки галереии
+                    // настройки галереи
                     // http://fancyapps.com/fancybox/3/docs/#options
                 });
             });
@@ -492,4 +509,5 @@
     {% endif %}
 
     <script src="{% static 'js/scripts.js' %}"></script>
+    <script src="{% static 'js/add-to-basket.js' %}"></script>
 {% endblock custom_footer %}

@@ -4,24 +4,47 @@ document.addEventListener('DOMContentLoaded', function(){
     let button_minus = document.getElementById('number-of-goods-minus');
     let button_plus = document.getElementById('number-of-goods-plus');
     let input = document.getElementById('number-of-goods-input');
+    let button_add_to_basket = document.getElementById('add-to-basket')
 
+    edit_button_data = function () {
+        button_add_to_basket.setAttribute('data-count', input.value);
+    }
     button_minus.addEventListener('click', function () {
-        input.stepDown(1)
+        input.stepDown(1);
+        edit_button_data();
     });
     button_plus.addEventListener('click', function () {
         input.stepUp(1)
+        edit_button_data();
+
+    });
+    input.addEventListener('change',function (e) {
+        edit_button_data();
     });
 
-
-    // скрипт отвечает за выделение Цвета в модальном окне
+    // скрипт отвечает за выделение Цвета в модальном окне и за Сброс цвета
     var color_blocks = document.querySelectorAll(".color-target");
+    let color_span = document.getElementById('selected-color')
+    let selected_color;
+
+    clear_color = function () {
+        for (var j = 0; j < color_blocks.length; j++) {
+                color_blocks[j].classList.remove("active");
+            }
+        color_span.textContent = '';
+        button_add_to_basket.removeAttribute('data-color');
+    }
+
+    add_color = function (selected_color) {
+            button_add_to_basket.setAttribute('data-color', selected_color);
+            color_span.innerHTML = (selected_color + '<a class="ml-3 text-decoration-none text-danger" href="javascript:clear_color();">x</a>');
+    }
 
     for (var i = 0; i < color_blocks.length; i++) {
         color_blocks[i].addEventListener("click", function () {
-            for (var j = 0; j < color_blocks.length; j++) {
-                color_blocks[j].classList.remove("active");
-            }
+            clear_color();
             this.classList.add("active");
+            add_color(this.lastChild.textContent)
         }, false);
     }
 
@@ -56,5 +79,16 @@ document.addEventListener('DOMContentLoaded', function(){
             // добавляем рамку
             this.classList.add("active");
         });
+    }
+
+
+    // скрипт отвечает за выбор опций в ценах
+    select_input = function (price_id) {
+        let input_price = document.getElementById(price_id)
+        input_price.checked=true;
+        let options_price = input_price.getAttribute('value');
+        let price = input_price.getAttribute('data-price');
+        button_add_to_basket.setAttribute('data-options-price', options_price);
+        button_add_to_basket.setAttribute('data-price', price);
     }
 });
