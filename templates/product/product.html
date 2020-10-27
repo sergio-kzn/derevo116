@@ -172,17 +172,16 @@
             <h1 class="">{{ product.product_title }}</h1>
 
             <!-- Цена товара -->
-            {# FIXME: if product.product_price_choice == False #}
-            {% if volume_price.first %}
-                <p class="text-muted font-monospace" style="font-size: x-large">
-                    {% if not product.product_price %}
-                        от {{ volume_price.first.volumeprice_price }}.00
-                    {% else %}
-                        {{ product.product_price }}.00
-                    {% endif %}
-                    &#x20bd;
-                </p>
-            {% endif %}
+            <p class="text-muted font-monospace" style="font-size: x-large">
+                {% if product.product_price_choice == '1' %}
+                    {# ('1', 'Простая цена'),#}
+                    {# ('2', 'Цена с опциями'),#}
+                    {{ product.product_price }}.00
+                {% elif product.product_price_choice == '2' %}
+                    от {{ options_price.first.productoptionprice_set.first.product_option_price }}.00
+                {% endif %}
+                &#x20bd;
+            </p>
 
             <!-- Поставщик, артикул, наличие -->
             <ul class="small list-unstyled text-muted my-3">
@@ -296,8 +295,7 @@
                             data-option="{{ options_price.first.productoptionprice_set.first.product_option }}"
                             data-price-option="{{ options_price.first.productoptionprice_set.first.product_option_price }}"
                         {% else %}
-{#                        FIXME: #}
-{#                            data-price="{{ product.product_price }}"#}
+                            data-price-option="{{ product.product_price }}"
                         {% endif %}
                 >Добавить в корзину
                 </button>
