@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='product',
-            name='product_imgs',
+            name='product_images',
             field=models.ManyToManyField(blank=True, to='Product.ProductImage', verbose_name='Дополнительные изображения товара'),
         ),
     ]

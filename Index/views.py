@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from .models import Slide
 from BiofaImportBD.models import ProductProduct, ProductVolumepriceproduct
-from Product.models import Product, ProductVolumePrice
+from Product.models import Product, ProductOptionPrice
 
 
 
@@ -25,7 +25,7 @@ def index(request):
                }
 
     biofa_products = Product.objects.filter(product_vendor__vendor_url='biofa')[:5]
-    biofa_price_data = ProductVolumePrice.objects.filter(volumeprice_product__product_vendor__vendor_url='biofa')
+    biofa_price_data = ProductOptionPrice.objects.filter(volumeprice_product__product_vendor__vendor_url='biofa')
     context.update({
         'biofa_products': biofa_products,
         'biofa_prices': biofa_price_data,

@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='product',
-            name='product_imgs',
+            name='product_images',
             field=models.ManyToManyField(blank=True, to='Product.ProductImageGroup', verbose_name='Дополнительные изображения товара'),
         ),
         migrations.AlterField(

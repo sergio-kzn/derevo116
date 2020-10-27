@@ -86,9 +86,12 @@ document.addEventListener('DOMContentLoaded', function(){
     select_input = function (price_id) {
         let input_price = document.getElementById(price_id)
         input_price.checked=true;
-        let options_price = input_price.getAttribute('value');
-        let price = input_price.getAttribute('data-price');
-        button_add_to_basket.setAttribute('data-options-price', options_price);
-        button_add_to_basket.setAttribute('data-price', price);
+
+        let title_option = input_price.getAttribute('data-title-option');
+        let option = input_price.getAttribute('data-option');
+        let price_option = input_price.getAttribute('data-price-option');
+        button_add_to_basket.setAttribute('data-title-option', title_option);
+        button_add_to_basket.setAttribute('data-option', option);
+        button_add_to_basket.setAttribute('data-price-option', price_option);
     }
 });

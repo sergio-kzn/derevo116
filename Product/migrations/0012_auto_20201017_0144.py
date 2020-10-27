@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='volume',
-            name='volume_title',
+            name='option_title',
             field=models.CharField(max_length=10, verbose_name='Опция'),
         ),
     ]

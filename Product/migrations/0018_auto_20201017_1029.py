@@ -29,12 +29,12 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='product',
-            name='product_price_title_3',
+            name='product_price_option_extra_1',
             field=models.CharField(blank=True, default='Расход на м<sup>2</sup><br>(1 слой / 2 слоя)', max_length=50, null=True, verbose_name='Расширенная цена 3 столбик'),
         ),
         migrations.AlterField(
             model_name='product',
-            name='product_price_title_4',
+            name='product_price_option_extra_2',
             field=models.CharField(blank=True, default='Цена за р/м<sup>2</sup><br>(1 слой / 2 слоя)', max_length=50, null=True, verbose_name='Расширенная цена 4 столбик'),
         ),
         migrations.CreateModel(
