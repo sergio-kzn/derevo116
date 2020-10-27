@@ -220,7 +220,7 @@
                         {# ('2', 'Buttons'),#}
                         <div class="row my-3 justify-content-center">
                             <div class="col col-auto">
-                                <h3>{{ option.option_title }}</h3>
+                                <h3>{{ option.option_title|default_if_none:"" }}</h3>
                                 <div class="overflow-auto">
                                     <table class="table table-sm table-hover small">
                                         <thead>

@@ -80,7 +80,7 @@ class OptionGroup(models.Model):
     ]
     option_group = models.CharField(verbose_name='Название группы опций', max_length=100, help_text='Например, название товара, к которому эти опции относятся')
     option_type = models.CharField(verbose_name='Тип опций', max_length=50, choices=TYPES, default='1')
-    option_title = models.CharField(verbose_name='Заголовок', max_length=100, default="", blank=True, null=True, help_text='Отображается рядом с опциями на странице товара')
+    option_title = models.CharField(verbose_name='Заголовок', max_length=100, blank=True, null=True, help_text='Отображается рядом с опциями на странице товара')
     product_price_option = models.CharField(verbose_name='Опция', max_length=50, blank=True, null=True, default="Объем")
     product_price_option_price = models.CharField(verbose_name='Цена', max_length=50, blank=True, null=True, default="Цена")
     product_price_option_extra_1 = models.CharField(verbose_name='Дополнительно 1', max_length=50, blank=True, null=True, help_text="Расход&nbsp;на&nbsp;м&lt;sup&gt;2&lt;/sup&gt;&lt;br&gt;(1&nbsp;слой&nbsp;/&nbsp;2&nbsp;слоя)")

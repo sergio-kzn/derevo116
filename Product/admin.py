@@ -219,11 +219,7 @@ class OptionGroupInlines(admin.TabularInline):
 class OptionGroupAdmin(admin.ModelAdmin):
     """так выглядит раздел с Опциями в админке"""
     list_display = ['option_group', 'option_type']
-    # fields = ['option_group']
     inlines = [OptionGroupInlines]
-
-    def option_group(self, obj):
-        return obj.product_vendor
 
 
 class TabAdmin(SummernoteModelAdmin):
@@ -238,18 +234,17 @@ class VendorAdmin(admin.ModelAdmin):
     list_editable = ['vendor_sort']
 
 
+class OptionPriceAdmin(admin.ModelAdmin):
+    list_display = ['id', 'option_title', 'option_sort']
+    list_editable = ['option_title', 'option_sort']
+    fields = ['option_title', 'option_sort']
+    readonly_fields = ['id']
+
+
 admin.site.register(Product, ProductAdmin)
 
 admin.site.register(ProductCategory, ProductCategoryAdmin)
 admin.site.register(OptionGroup, OptionGroupAdmin)
-
-
-class OptionPriceAdmin(admin.ModelAdmin):
-    list_display = ['id', 'option_title', 'option_sort']
-    list_editable = ['option_title', 'option_sort']
-    readonly_fields = ['id']
-
-
 admin.site.register(OptionPrice, OptionPriceAdmin)
 admin.site.register(ColorGroup, ColorAdmin)
 admin.site.register(ProductImageGroup, ImageAdmin)

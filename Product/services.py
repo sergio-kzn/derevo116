@@ -3,7 +3,17 @@ import random
 from Product.models import Product
 
 
-def random_relevant_products(product_id):
+def random_relevant_products(product_id) -> Product:
+    """
+    Возвращает пять случайных товаров.
+    Сначала выбираем товары из той же категории что и сам товар.
+    Затем выбираем товары того же производителя всех категорий.
+    Функция старается выдать 3 товара из категории и 2 товара от производителя.
+    Если столько товаров в категории или у производителя нет, то вернет то что есть.
+    :param product_id: на входе получает id товара.
+    :return: возвращает QuerySet с пятью товарами
+    """
+
     items_in_category_max = 5
     items_in_vendor_max = 5
     total_items = 5
@@ -42,3 +52,41 @@ def random_relevant_products(product_id):
 
     products = Product.objects.filter(id__in=random_items).order_by('product_category__category_sort', 'product_category')
     return products
+
+
+def random_from_all_products(total_items:int = 5) -> Product:
+    """
+    Возвращает случайные товары.
+    :param total_items: количество товаров, которое нужно вернуть.
+    :return: возвращает QuerySet с товарами
+    """
+
+    all_items = Product.objects.filter(product_show=True)
+
+    all_items_list = list()
+    for item in all_items:
+        all_items_list.append(item.id)
+
+    max_items = len(all_items_list)
+
+    all_items_list_random = random.sample(all_items_list, max_items)
+
+    random_items = list()
+    random_items.extend(all_items_list_random)
+    random_items = random_items[:total_items]
+
+    products = Product.objects.filter(id__in=random_items)
+
+    return products
+
+
+def last_products(total_items:int = 4) -> Product:
+    """
+    Возвращает последние добавленные товары.
+    :param total_items: количество товаров, которое нужно вернуть.
+    :return: возвращает QuerySet с товарами
+    """
+
+    all_items = Product.objects.filter(product_show=True).order_by('-id')[:total_items]
+
+    return all_items
