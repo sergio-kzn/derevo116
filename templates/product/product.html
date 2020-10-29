@@ -120,7 +120,7 @@
                                 {% thumbnail product.product_img "650x650" padding=True format="WEBP" as img %}
                                     <a href="{{ big_img.url }}" data-fancybox
                                        data-caption="{{ product.product_img_title|default_if_none:product.product_title }}">
-                                        <img src="{{ img.url }}" class="img-fluid my-3"
+                                        <img src="{{ img.url }}" class="img-fluid my-3" id="main-image"
                                              alt="{{ product.product_img_title|default_if_none:product.product_title }}">
                                     </a>
                                 {% endthumbnail %}
@@ -209,7 +209,7 @@
             {% endif %}
 
             <!-- Выбор цвета -->
-            {% if colors.all|length > 0 %}
+            {% if colors %}
                 <button type="button" class="btn btn-outline-primary mt-3" data-toggle="modal" data-target="#colorModal"
                         style="white-space: nowrap;">
                     Выбрать цвет<span class="ml-2 badge bg-primary">{{ colors.all|length }}</span>
@@ -331,20 +331,24 @@
                         data-title="{{ product.product_title }}"
                         data-url="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}"
                         data-count="1"
+                        {% if colors %}
+                        data-color-check
+                        {% endif %}
                         {% if product.product_price_choice == '2' %}  {# 2 = если цена расширенная #}
-                        {% for option in options_price %}
+                            {% for option in options_price %}
                         data-title-option-{{ forloop.counter }}="{{ option.product_price_option }}"
                         data-option-{{ forloop.counter }}="{{ option.productoptionprice_set.first.product_option }}"
                         data-price-option-{{ forloop.counter }}="{{ option.productoptionprice_set.first.product_option_price|default_if_none:0 }}"
-                        {% endfor %}
+                            {% endfor %}
                         data-max-options="{{ options_price.count }}"
                         {% endif %}
                         data-price-product="{{ product.product_price }}"
                 >Добавить в корзину
                 </button>
             </div>
+            <!--  -->
             <div
-                    class="toast fade hide position-absolute w-100"
+                    class="toast fade hide position-absolute w-100 bg-success bg-gradient text-white"
                     style="z-index: 10"
                     id="toast"
                     role="alert"
@@ -363,6 +367,27 @@
                     ></button>
                 </div>
                 <div class="toast-body"></div>
+            </div>
+            <div
+                    class="toast fade hide position-absolute w-100 bg-danger bg-gradient text-white"
+                    style="z-index: 10"
+                    id="color-error"
+                    role="alert"
+                    aria-live="assertive"
+                    aria-atomic="true"
+                    data-autohide="true"
+            >
+                <div class="toast-header">
+                    <strong class="mr-auto">Корзина</strong>
+                    <small>Ошибка</small>
+                    <button
+                            type="button"
+                            class="btn-close"
+                            data-dismiss="toast"
+                            aria-label="Close"
+                    ></button>
+                </div>
+                <div class="toast-body">Выберите цвет</div>
             </div>
 
 

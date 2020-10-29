@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let color_blocks = document.querySelectorAll(".color-target");
     let color_span = document.getElementById('selected-color')
 
-    let clear_color = function () {
+    window.clear_color = function () {
         for (let j = 0; j < color_blocks.length; j++) {
             color_blocks[j].classList.remove("active");
         }
@@ -36,7 +36,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let add_color = function (selected_color) {
         button_add_to_basket.setAttribute('data-color', selected_color);
-        color_span.innerHTML = (selected_color + '<a class="ml-3 text-decoration-none text-danger" href="javascript:clear_color();">x</a>');
+        color_span.innerHTML = (selected_color +
+            '<span class="ml-3 text-decoration-none text-danger" style="cursor: pointer" onclick="clear_color();">x</span>');
     }
 
     for (let i = 0; i < color_blocks.length; i++) {

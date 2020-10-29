@@ -13,90 +13,93 @@ document.addEventListener('DOMContentLoaded', function () {
     })
 
     button.addEventListener('click', function () {
+        if (button.hasAttribute('data-color-check') && !button.hasAttribute('data-color'))
+            toastList[1].show();
+        else {
 
-        let li = document.createElement('li');
-        li.classList.add('list-group-item', 'list-group-item-action', 'px-1');
+            let li = document.createElement('li');
+            li.classList.add('list-group-item', 'list-group-item-action', 'px-1');
 
-        // название товара
-        let div_title = document.createElement('div');
-        let title = button.getAttribute("data-title");
-        let a_title = document.createElement('a');
-        let a_url = button.getAttribute('data-url');
-        div_title.classList.add('basket-list-title-item', 'd-flex', 'justify-content-between');
-        a_title.classList.add('text-decoration-none', 'text-dark');
-        a_title.href = a_url;
-        a_title.textContent = title;
+            // название товара
+            let div_title = document.createElement('div');
+            let title = button.getAttribute("data-title");
+            let a_title = document.createElement('a');
+            let a_url = button.getAttribute('data-url');
+            div_title.classList.add('basket-list-title-item', 'd-flex', 'justify-content-between');
+            a_title.classList.add('text-decoration-none', 'text-dark', 'font-weight-bolder', 'mb-1');
+            a_title.href = a_url;
+            a_title.textContent = title;
 
-        // количество
-        let span_count = document.createElement('span');
-        let count = button.getAttribute("data-count");
-        span_count.classList.add('badge', 'bg-primary', 'rounded-pill', 'basket-list-count', 'h-25');
-        span_count.textContent = count;
+            // количество
+            let span_count = document.createElement('span');
+            let count = button.getAttribute("data-count");
+            span_count.classList.add('badge', 'bg-primary', 'rounded-pill', 'basket-list-count', 'h-25');
+            span_count.textContent = count;
 
-        // опции
-        let div_options = document.createElement('div');
-        div_options.classList.add('basket-list-options', 'text-muted', 'small', 'd-flex', 'justify-content-between', 'align-items-center')
+            // опции
+            let div_options = document.createElement('div');
+            div_options.classList.add('basket-list-options', 'text-muted', 'small', 'd-flex', 'justify-content-between', 'align-items-center')
 
-        let div_color = document.createElement('div');
-        div_color.classList.add('basket-list-color');
-        let color = "";
-        let options_in_item = '';
-        let price = 0;
-        let price_span = '';
-        if (button.hasAttribute('data-color')) {
-            color = 'Цвет: ' + button.getAttribute('data-color') + '<br>';
-        }
-
-        let max_options = button.getAttribute('data-max-options')
-        for (let i = 1; i <= max_options; i++)
-            if (button.hasAttribute('data-price-option-' + i)) {
-                let title_option = button.getAttribute('data-title-option-' + i)
-                let option = button.getAttribute('data-option-' + i)
-                options_in_item += title_option + ': ' + option + '<br>';
-                price += parseInt(button.getAttribute('data-price-option-' + i).replace(/\s+/g, ''), 10);
+            let div_color = document.createElement('div');
+            div_color.classList.add('basket-list-color');
+            let color = "";
+            let options_in_item = '';
+            let price = 0;
+            let price_span = '';
+            if (button.hasAttribute('data-color')) {
+                color = 'Цвет: ' + button.getAttribute('data-color') + '<br>';
             }
 
-        // цена без опций
-        if (button.hasAttribute('data-price-product')) {
-        price += parseInt(button.getAttribute('data-price-product').replace(/\s+/g, ''), 10);
+            let max_options = button.getAttribute('data-max-options')
+            for (let i = 1; i <= max_options; i++)
+                if (button.hasAttribute('data-price-option-' + i)) {
+                    let title_option = button.getAttribute('data-title-option-' + i)
+                    let option = button.getAttribute('data-option-' + i)
+                    options_in_item += title_option + ': ' + option + '<br>';
+                    price += parseInt(button.getAttribute('data-price-option-' + i).replace(/\s+/g, ''), 10);
+                }
+
+            // цена без опций
+            if (button.hasAttribute('data-price-product')) {
+                price += parseInt(button.getAttribute('data-price-product').replace(/\s+/g, ''), 10);
+            }
+            price_span = '<span><b>' + price + ' &#x20bd;</b></span>';
+            div_color.innerHTML = color + options_in_item + price_span;
+
+            // удалить [ х ]
+            let span_delete = document.createElement("span");
+            span_delete.classList.add('btn', 'btn-outline-danger', 'btn-sm', 'delete_from_basket');
+            span_delete.setAttribute('role', 'button');
+            span_delete.textContent = ' x ';
+
+            div_title.appendChild(a_title);
+            div_title.appendChild(span_count);
+            div_options.appendChild(div_color);
+            div_options.appendChild(span_delete);
+            li.appendChild(div_title);
+            li.appendChild(div_options);
+            ul.appendChild(li);
+
+            // убираем заглушку
+            li_empty.classList.add('d-none');
+
+            basket_count += 1;
+            basket_sum += price * parseInt(count, 10);
+            update_count_and_price(basket_count, basket_sum)
+
+            li.id = 'item_' + basket_count;
+            span_delete.onclick = function () {
+                delete_item_from_basket(li.id, basket_count, basket_sum)
+            };
+
+            // всплывающее сообщение
+            document.querySelector('.toast-body').innerHTML =
+                '<span class="font-weight-bolder mb-1" style="font-size: large">' + title + '</span>' + '<br>'
+                + count + ' шт. <br>'
+                + color + options_in_item + price_span;
+
+            toastList[0].show();
         }
-        price_span = '<span><b>' + price + ' &#x20bd;</b></span>';
-        div_color.innerHTML = color + options_in_item + price_span;
-
-        // удалить [ х ]
-        let span_delete = document.createElement("span");
-        span_delete.classList.add('btn', 'btn-outline-danger', 'btn-sm', 'delete_from_basket');
-        span_delete.setAttribute('role', 'button');
-        span_delete.textContent = ' x ';
-
-        div_title.appendChild(a_title);
-        div_title.appendChild(span_count);
-        div_options.appendChild(div_color);
-        div_options.appendChild(span_delete);
-        li.appendChild(div_title);
-        li.appendChild(div_options);
-        ul.appendChild(li);
-
-        // убираем заглушку
-        li_empty.classList.add('d-none');
-
-        basket_count += 1;
-        basket_sum += price * parseInt(count, 10);
-        update_count_and_price(basket_count, basket_sum)
-
-        li.id = 'item_' + basket_count;
-        span_delete.onclick = function () {
-            delete_item_from_basket(li.id, basket_count, basket_sum)
-        };
-
-        // всплывающее сообщение
-        document.querySelector('.toast-body').innerHTML =
-            title + '<br>'
-            + count + ' шт. <br>'
-            + color + options_in_item + price_span;
-
-        for (let i = 0; i < toastList.length; i++)
-            toastList[i].show();
     })
 
     // функция удалить товар из корзины
