@@ -19,6 +19,6 @@ from . import views
 
 urlpatterns = [
     path('<slug:category_url>/<slug:product_url>/', views.product, name='biofa_product'),
-    path('<slug:category>/', views.category, name='biofa_category'),
+    path('<slug:category_url>/', views.category, name='biofa_category'),
     path('', views.all_category, name='biofa_paints'),
 ]

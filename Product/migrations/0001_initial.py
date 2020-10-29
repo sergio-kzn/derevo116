@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
             name='Volume',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('volume_title', models.CharField(max_length=10)),
+                ('option_title', models.CharField(max_length=10)),
                 ('volume_sort', models.IntegerField()),
             ],
         ),

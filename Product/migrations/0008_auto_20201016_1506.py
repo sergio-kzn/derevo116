@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='volume',
-            options={'ordering': ['volume_sort', 'volume_title'], 'verbose_name': 'Опция', 'verbose_name_plural': 'Опции'},
+            options={'ordering': ['volume_sort', 'option_title'], 'verbose_name': 'Опция', 'verbose_name_plural': 'Опции'},
         ),
         migrations.AddField(
             model_name='product',

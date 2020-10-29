@@ -4,7 +4,7 @@
 {# Содержимое страницы. Разное для всех приложений джанго   #}
 {% block content %}
     <!-- Хлебные крошки -->
-    <nav aria-label="breadcrumb">
+    <nav aria-label="breadcrumb" class=".text-truncate">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">Главная</a></li>
             {% url 'paints' as paints %}

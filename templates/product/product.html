@@ -1,191 +1,334 @@
 {% extends 'product/base_product.html' %}
+{% load static thumbnail %}
 
 {% block custom_head %}
+    <!-- FancyBox3 CSS -->
+    {% if product.product_img %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.fancybox.min.css' %}">
+    {% endif %}
+
     <style>
-    .color-target{
-        cursor: pointer;
-        border-radius: 5px;
-        transition: .1s;
-    }
-    .color-target.active{
-        border: #0d6efd 3px dashed;
-    }
+        .color-target {
+            cursor: pointer;
+            border-radius: 5px;
+            transition: .1s;
+        }
+
+        .color-target.active {
+            border: #0d6efd 3px dashed;
+        }
+
+        .additional-images {
+            cursor: pointer;
+        }
+
+        .additional-images.active {
+            border-radius: 5px;
+            border: #0d6efd 1px dashed;
+        }
+
+        #main-image {
+            cursor: pointer;
+        }
+
+        /* Chrome, Safari, Edge, Opera */
+        input#number-of-goods-input::-webkit-outer-spin-button,
+        input#number-of-goods-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        #number-of-goods-input input[type=number] {
+            -moz-appearance: textfield;
+        }
     </style>
 {% endblock %}
 
 {% block title %}{{ product.product_title }} - купить в Казани{% endblock title %}
 
 {% block breadcrumb-category %}
-    {% if biofa %}
-        <li class="breadcrumb-item"><a href="{% url 'biofa_paints' %}">Biofa</a></li>
-    {% else %}
-        <li class="breadcrumb-item"><a
-                href="{% url 'main_category' product.product_vendor.vendor_url %}">{{ product.product_vendor.vendor_title }}</a>
-        </li>
-    {% endif %}
     <li class="breadcrumb-item"><a
-            href="{% url 'biofa_category' product.product_category.category_url %}">{{ product.product_category.category_title }}</a>
+            href="{% url 'vendor-paints' product.product_vendor.vendor_url %}">{{ product.product_vendor.vendor_title }}</a>
+    <li class="breadcrumb-item"><a
+            href="{% url 'category' product.product_vendor.vendor_url product.product_category.category_url %}">{{ product.product_category.category_title }}</a>
     </li>
-    <li class="breadcrumb-item active">{{ product.product_vendor_code }}</li>
+    <li class="breadcrumb-item active">{{ product.product_title }}</li>
 {% endblock breadcrumb-category %}
 
 {% block content_product %}
 
     <!-- Modal window for COLORS -->
-    <div class="modal fade" id="colorModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
-         aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Выбор цвета краски</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <h5>{{ product.product_title }}</h5>
-                    <div class="row mt-2 mb-5">
-                        {% if biofa %}
+    {% if colors.all|length > 0 %}
+        <div class="modal fade" id="colorModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
+             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Выбор цвета краски</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h5>{{ product.product_title }}</h5>
+                        <div class="row mt-2 mb-5">
                             {% for color in colors %}
-                                <div class="col-md-4 mb-3" style="line-height: 1rem;"><img
-                                        src="../../../../biofa-kazan.ru/media/{{ color.colorproduct.color_image }}"
-                                        class="img-fluid"
-                                        alt="цвет {{ color.colorproduct.color_title }}">
-                                    <span class="small">{{ color.colorproduct.color_title }}</span></div>
-                            {% endfor %}
-                        {% else %}
-                            {% for color in colors %}
-                                <div class="col-md-4 my-1 py-1 color-target" style="line-height: 1rem;">
+                                <div class="col-md-4 my-1 py-1 color-target text-center" style="line-height: 1rem;">
+                                    {% thumbnail color.color_image "280x280" format="WEBP" as im %}
                                         <img
-                                        src="{{ color.color_image.url }}"
-                                        class="img-fluid"
-                                        alt="цвет {{ color.color_title }}">
+                                                src="{{ im.url }}"
+                                                class="img-fluid"
+                                                alt="цвет {{ color.color_title }}">
+                                    {% endthumbnail %}
+                                    <br>
                                     <span class="small">{{ color.color_title }}</span></div>
                             {% endfor %}
-                        {% endif %}
-                    </div>
-                    <p>Помните - мониторы искажают цвет!
+                        </div>
+                        <p>Помните - мониторы искажают цвет!
 
-                    <p class="small">Если вы не уверены в своем выборе, вы можете приехать в наш офис со своим
-                        материалом и
-                        подобрать нужный
-                        вам цвет. Наши менеджеры с радостью проконсультируют вас в вопросах, касающихся дизайна и
-                        цветовых
-                        сочетаний.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Выбрать</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        <p class="small">Если вы не уверены в своем выборе, вы можете приехать в наш офис со своим
+                            материалом и
+                            подобрать нужный
+                            вам цвет. Наши менеджеры с радостью проконсультируют вас в вопросах, касающихся дизайна и
+                            цветовых
+                            сочетаний.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    {% endif %}
     <!-- / Modal window for COLORS -->
 
     <div class="row row-cols-1 row-cols-md-2 mb-5">
-        <div class="col">
-            {% if biofa %}
-                <img src="../../../../biofa-kazan.ru/media/{{ product.product_img }}" class="card-img-top  my-3"
-                     alt="{{ product.product_title }}">
-            {% else %}
-                <img src="{{ product.product_img.url }}" class="card-img-top my-3"
-                     alt="{{ product.product_title }}">
-            {% endif %}
-        </div>
+
+        <!-- Изображение товара -->
+        {% if product.product_img %}
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        {% if images %}
+                            {% thumbnail product.product_img "650x650" padding=True format="WEBP" as img %}
+                                <img src="{{ img.url }}" class="img-fluid my-3" id="main-image"
+                                     alt="{{ product.product_img_title|default_if_none:product.product_title }}">
+                            {% endthumbnail %}
+                        {% else %}
+                            {% thumbnail product.product_img "1000x1000" format="WEBP" as big_img %}
+                                {% thumbnail product.product_img "650x650" padding=True format="WEBP" as img %}
+                                    <a href="{{ big_img.url }}" data-fancybox
+                                       data-caption="{{ product.product_img_title|default_if_none:product.product_title }}">
+                                        <img src="{{ img.url }}" class="img-fluid my-3"
+                                             alt="{{ product.product_img_title|default_if_none:product.product_title }}">
+                                    </a>
+                                {% endthumbnail %}
+                            {% endthumbnail %}
+                        {% endif %}
+                    </div>
+                </div>
+                <!-- Подпись -->
+                <div class="row">
+                    <div class="col text-muted small my-1 text-center" id="image-title">
+                        {{ product.product_img_title|default_if_none:"" }}
+                    </div>
+                </div>
+
+                <!-- Дополнительные изображения -->
+                {% if images %}
+                    <div class="row row-cols-4">
+
+                        <div class="col p-1">
+                            {% thumbnail product.product_img "1000x1000" format="WEBP" as big_img %}
+                                {% thumbnail product.product_img "650x650" padding=True format="WEBP" as img %}
+                                    <a data-caption="{{ product.product_img_title|default_if_none:product.product_title }}"
+                                       href="{{ big_img.url }}"
+                                       onclick="return false;" class="thumb-images" id="thumb-main-image">
+                                        <img src="{{ img.url }}" class="img-fluid my-3 additional-images active"
+                                             alt="{{ product.product_img_title }}">
+                                    </a>
+                                {% endthumbnail %}
+                            {% endthumbnail %}
+
+                        </div>
+                        {% for image in images %}
+                            <div class="col p-1">
+                                {% thumbnail image.img_file "1000x1000" format="WEBP" as big_img %}
+                                    {% thumbnail image.img_file "650x650" padding=True format="WEBP" as img %}
+                                        <a data-caption="{{ image.img_title|default_if_none:"" }}"
+                                           href="{{ big_img.url }}" onclick="return false;"
+                                           class="thumb-images">
+                                            <img src="{{ img.url }}" class="img-fluid my-3 additional-images"
+                                                 alt="{{ image.img_title|default_if_none:"" }}">
+                                        </a>
+                                    {% endthumbnail %}
+                                {% endthumbnail %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <!-- / Дополнительные изображения -->
+
+            </div>
+        {% endif %}
+
         <div class="col pt-3">
 
             <h1 class="">{{ product.product_title }}</h1>
 
-            {% if not product.product_price and product.product_price_choice == False %}
-                <p class="text-muted font-monospace" style="font-size: x-large">
-                    от {{ volume_price.first.volumeprice_price }}.00
-                    <i class="fas fa-ruble-sign"></i></p>
-            {% else %}
-                <p class="text-muted font-monospace" style="font-size: x-large">{{ product.product_price }}.00 <i
-                        class="fas fa-ruble-sign"></i></p>
-            {% endif %}
+            <!-- Цена товара -->
+            <p class="text-muted font-monospace" style="font-size: x-large">
+                {% if product.product_price_choice == '1' %}
+                    {# ('1', 'Простая цена'),#}
+                    {# ('2', 'Цена с опциями'),#}
+                    {{ product.product_price }}.00
+                {% elif product.product_price_choice == '2' %}
+                    от {{ options_price.first.productoptionprice_set.first.product_option_price }}.00
+                {% endif %}
+                &#x20bd;
+            </p>
 
+            <!-- Поставщик, артикул, наличие -->
             <ul class="small list-unstyled text-muted my-3">
-                <li>Поставщик: {% if biofa %}
-                    <a href="{% url 'biofa_paints' %}">Biofa</a>
-                {% else %}
-                    <a href="{% url 'main_category' product.product_vendor.vendor_url %}">{{ product.product_vendor.vendor_title }}</a>
-                {% endif %} </li>
+                <li>Поставщик: <a
+                        href="{% url 'vendor-paints' product.product_vendor.vendor_url %}">{{ product.product_vendor.vendor_title }}</a>
+                </li>
                 <li>Артикул: {{ product.product_vendor_code }}</li>
-                <li>Наличие: {% if biofa %}
-                    <span class="text-success font-weight-bold">В наличии более 10л.</span>
-                {% else %}
-                    <span class="text-success font-weight-bold">{{ product.product_count }}</span>
-                {% endif %}</li>
+                <li>Наличие: <span class="text-success font-weight-bold">{{ product.product_count }}</span>
+                </li>
             </ul>
 
-            {% if colors.all|length > 0 %}
-                <button type="button" class="btn btn-outline-primary my-3" data-toggle="modal" data-target="#colorModal"
-                        style="white-space: nowrap;">
-                    Выбрать цвет<span class="ml-2 badge bg-primary">{{ colors.all|length }}</span>
-                </button>
-            {% endif %}
-
+            <!-- Короткое описание товара -->
             {% if product.product_extra_desc %}
                 <div class="row py-2">
                     {{ product.product_extra_desc|safe }}
                 </div>
             {% endif %}
 
-            <div class="row my-3">
-                <div class="col-12 col-sm-10 col md-8 col-lg-6">
-                    {% if biofa %}
-                        <h3>Объем</h3>
-                        <div class="pr-5">
-                            <table class="table table-sm table-hover small">
-                                <thead>
-                                <tr>
-                                    <th>Объем</th>
-                                    <th class="text-right">Цена</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for price in volume_price %}
-                                    <tr>
-                                        <td>{{ price.volumeprice_volume.volume_title }} </td>
-                                        <td class="text-right">{{ price.volumeprice_price }} </td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% elif product.product_price_choice == False %}
-                        <h3>{{ product.product_price_title }}</h3>
-                        <div class="pr-5">
-                            <table class="table table-sm table-hover small">
-                                <thead>
-                                <tr>
-                                    <th class="text-nowrap">{{ product.product_price_title_1|safe }}</th>
-                                    <th class="text-right text-nowrap">{{ product.product_price_title_2|safe }}</th>
+            <!-- Выбор цвета -->
+            {% if colors.all|length > 0 %}
+                <button type="button" class="btn btn-outline-primary mt-3" data-toggle="modal" data-target="#colorModal"
+                        style="white-space: nowrap;">
+                    Выбрать цвет<span class="ml-2 badge bg-primary">{{ colors.all|length }}</span>
+                </button>
+                <div id="selected-color" class="small text-muted mb-3"></div>
+            {% endif %}
 
-                                    <th class="text-center text-nowrap">{{ product.product_price_title_3|default_if_none:""|safe }}</th>
-                                    <th class="text-center text-nowrap">{{ product.product_price_title_4|default_if_none:""|safe }}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for price in volume_price %}
-                                    <tr>
-                                        <td>{{ price.volumeprice_volume.volume_title }}</td>
-                                        <td class="text-right text-nowrap">{{ price.volumeprice_price }}</td>
-                                        <td class="text-center text-nowrap">{{ price.volumeprice_expenditure|default_if_none:"" }}</td>
-                                        <td class="text-center text-nowrap">{{ price.volumeprice_expenditure_price|default_if_none:"" }}</td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
+            <!-- Опции для цен -->
+            {% if product.product_price_choice == '2' %}
+                {# ('1', 'Простая цена'),#}
+                {# ('2', 'Цена с опциями'),#}
+                {% for option in options_price %}
+                    {% if option.option_type == '1' %}
+                        {# ('1', 'Radio Inputs'),#}
+                        {# ('2', 'Buttons'),#}
+                        <div class="row my-3 justify-content-center">
+                            <div class="col col-auto">
+                                <h3>{{ option.option_title|default_if_none:"" }}</h3>
+                                <div class="overflow-auto">
+                                    <table class="table table-sm table-hover small">
+                                        <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th class="text-nowrap px-3">{{ option.product_price_option|safe }}</th>
+                                            <th class="text-center text-nowrap px-3">{{ option.product_price_option_price|safe }}</th>
+                                            {% if option.product_price_option_extra_1 %}
+                                                <th class="text-left text-nowrap px-3">{{ option.product_price_option_extra_1|default_if_none:""|safe }}</th>
+                                            {% endif %}
+                                            {% if option.product_price_option_extra_2 %}
+                                                <th class="text-left text-nowrap px-3">{{ option.product_price_option_extra_2|default_if_none:""|safe }}</th>
+                                            {% endif %}
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for price in option.productoptionprice_set.all %}
+                                            <tr onclick="select_input('{{ price.id }}')"
+                                                style="cursor: pointer">
+                                                <td class="px-3">
+                                                    <label><input type="radio" name="options"
+                                                                  id="{{ price.id }}"
+                                                                  data-title-option="{{ option.product_price_option }}"
+                                                                  data-option="{{ price.product_option }}"
+                                                                  data-price-option="{{ price.product_option_price }}"
+                                                                  {% if forloop.first %}checked{% endif %}
+                                                    >
+                                                    </label>
+                                                </td>
+                                                <td class="text-left text-nowrap px-3">{{ price.product_option.option_title }}</td>
+                                                <td class="text-center text-nowrap px-3">{{ price.product_option_price }}
+                                                    &#x20bd;
+                                                </td>
+                                                {% if price.product_option_extra_1 %}
+                                                    <td class="text-left text-nowrap px-3">{{ price.product_option_extra_1|default_if_none:""|safe }}</td>
+                                                {% endif %}
+                                                {% if price.product_option_extra_2 %}
+                                                    <td class="text-left text-nowrap px-3">{{ price.product_option_extra_2|default_if_none:""|safe }}</td>
+                                                {% endif %}
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            <!-- Количество товара -->
+            <div class="row my-3 justify-content-center">
+                <div class="col col-auto">
+                    <div class="input-group align-items-center flex-nowrap">
+                        Количество:
+                        <button class="btn btn-outline-secondary ml-3" type="button" id="number-of-goods-minus">-
+                        </button>
+                        <input type="number" min="1" max="100" class="form-control flex-grow-0 text-center"
+                               style="width: 65px"
+                               id="number-of-goods-input" value="1" aria-label="Количетсво товара">
+                        <button class="btn btn-outline-secondary" type="button" id="number-of-goods-plus">+</button>
+                    </div>
                 </div>
             </div>
 
+            <!-- Кнопка Добавить в корзину -->
             <div class="row px-3">
-                <button type="button" class="btn btn-primary btn-lg btn-block my-3">Добавить в корзину</button>
+                <button type="button" class="btn btn-primary btn-lg btn-block my-3" id="add-to-basket"
+                        data-title="{{ product.product_title }}"
+                        data-url="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}"
+                        data-count="1"
+                        {% if product.product_price_choice == '2' %}
+                        data-title-option="{{ options_price.first.product_price_option }}"
+                        data-option="{{ options_price.first.productoptionprice_set.first.product_option }}"
+                        data-price-option="{{ options_price.first.productoptionprice_set.first.product_option_price }}"
+                        {% else %}
+                        data-price-option="{{ product.product_price }}"
+                        {% endif %}
+                >Добавить в корзину
+                </button>
             </div>
+            <div
+                    class="toast fade hide position-absolute w-100"
+                    style="z-index: 10"
+                    id="toast"
+                    role="alert"
+                    aria-live="assertive"
+                    aria-atomic="true"
+                    data-autohide="true"
+            >
+                <div class="toast-header">
+                    <strong class="mr-auto">Корзина</strong>
+                    <small>Товар успешно добавлен</small>
+                    <button
+                            type="button"
+                            class="btn-close"
+                            data-dismiss="toast"
+                            aria-label="Close"
+                    ></button>
+                </div>
+                <div class="toast-body"></div>
+            </div>
+
 
         </div>
     </div>
@@ -194,39 +337,42 @@
     <div class="row mb-5">
         <div class="col-12">
             <ul class="nav nav-tabs nav-fill mb-3" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" aria-controls="description" aria-selected="true"
-                       href="#description">Описание</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#attributes" role="tab"
-                       aria-controls="attributes" aria-selected="false">Характеристики</a>
-                </li>
 
-                {% if biofa %}
-                    {% if product.product_description %}
+                {% if product.product_content %}
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" aria-controls="description" aria-selected="true"
+                           href="#description">Описание</a>
+                    </li>
+                {% endif %}
+
+                {% if attributes %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if not product.product_content %}active{% endif %}" data-toggle="tab"
+                           href="#attributes" role="tab"
+                           aria-controls="attributes" aria-selected="false">Характеристики
+                            {% if product.product_file %}
+                                <span class="badge bg-primary ml-2 position-absolute"><i class="fas fa-file"></i></span>
+                            {% endif %}
+                        </a>
+                    </li>
+                {% endif %}
+
+                <!-- Дополнительные вкладки -->
+                {% if product.product_tab.count > 0 %}
+                    {% for tab in product.product_tab.all %}
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#photo" role="tab"
-                               aria-controls="photo" aria-selected="false">
-                                ФОТО
+                            <a class="nav-link" data-toggle="tab" href="#{{ tab.tab_slug }}" role="tab"
+                               aria-controls="{{ tab.tab_slug }}" aria-selected="false">
+                                {{ tab.tab_title }}
                             </a>
                         </li>
-                    {% endif %}
-                {% else %}
-                    {% if product.product_tab.count > 0 %}
-                        {% for tab in product.product_tab.all %}
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#{{ tab.tab_slug }}" role="tab"
-                                   aria-controls="{{ tab.tab_slug }}" aria-selected="false">
-                                    {{ tab.tab_title }}
-                                </a>
-                            </li>
-                        {% endfor %}
-                    {% endif %}
+                    {% endfor %}
                 {% endif %}
 
                 <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#reviews" role="tab"
+                    <a class="nav-link 
+                    {% if not product.product_content and not attributes %}active{% endif %}" data-toggle="tab"
+                       href="#reviews" role="tab"
                        aria-controls="reviews" aria-selected="false">Отзывы <span
                             class="badge bg-primary ml-2 position-absolute">0</span></a>
                 </li>
@@ -234,21 +380,29 @@
 
             <div class="tab-content">
                 <!-- Описание -->
-                <div class="tab-pane fade show active" id="description" role="tabpanel"
-                     aria-labelledby="description-tab">
-                    {{ product.product_content|safe }}
-                </div>
+                {% if product.product_content %}
+                    <div class="tab-pane fade show active" id="description" role="tabpanel"
+                         aria-labelledby="description-tab">
+                        {{ product.product_content|safe }}
+                    </div>
+                {% endif %}
 
                 <!-- Характеристики -->
-                <div class="tab-pane fade" id="attributes" role="tabpanel" aria-labelledby="attributes-tab">
+                <div class="tab-pane fade {% if not product.product_content %}show active{% endif %}" id="attributes"
+                     role="tabpanel" aria-labelledby="attributes-tab">
                     <table class="table table-sm table-hover small">
                         <tbody>
                         {% for attr in attributes %}
-                            <tr>
-                            <td class="">
+                            <tr{% if attr.attribute_distinguish_bold %} class="font-weight-bold"{% endif %}
+                                    {% if attr.attribute_distinguish_yellow %}
+                                                                        style="background-color: yellow" {% endif %}>
+                            <td {% if attr.attribute_distinguish_colspan %}colspan="2"{% endif %}>
+                                {% if attr.attribute_distinguish_empty %}&nbsp;{% endif %}
                                 {{ attr.attribute_title|default_if_none:""|safe }}</td>
-                            <td>
-                                {{ attr.attribute_value|default_if_none:""|safe }}</td>
+                            {% if not attr.attribute_distinguish_colspan %}
+                                <td>
+                                    {{ attr.attribute_value|default_if_none:""|safe }}</td>
+                            {% endif %}
                         {% endfor %}
                         </tbody>
                     </table>
@@ -281,32 +435,114 @@
                 {% endif %}
 
                 <!-- Отзывы -->
-                <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                <div class="tab-pane fade 
+                {% if not product.product_content and not attributes %}show active{% endif %}" id="reviews"
+                     role="tabpanel" aria-labelledby="reviews-tab">
                     Отзывов пока
                     нет.
                 </div>
+
             </div>
         </div>
     </div>
     <!-- / вкладки Описание Характиристики Отзывы -->
 
+
+    <div class="row mb-3">
+        <h2>Похожие <i class="font-weight-normal">товары от</i> {{ product.product_vendor.vendor_title }}</h2>
+
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 mb-3 g-4">
+            {% for item in random_items %}
+                <div class="col
+                {% if forloop.counter == 5 %} d-none d-lg-flex {% endif %}
+                {% if forloop.counter == 4 %} d-none d-md-flex {% endif %}
+                {% if forloop.counter == 3 %} d-none d-sm-flex {% endif %}">
+                    <div class="card h-100 text-center">
+                        <div class="card-header text-muted small">
+                            Артикул: {{ item.product_vendor_code }}
+                        </div>
+
+                        <!-- Изображение товара -->
+                        <div class="row">
+                            <div class="col">
+                                {% if item.product_img %}
+                                    {% thumbnail item.product_img "300x300" padding=True format="WEBP" as im %}
+                                        <a href="{% url 'product' item.product_vendor.vendor_url item.product_category.category_url item.product_url %}">
+                                            <img src="{{ im.url }}" class="img-fluid my-2"
+                                                 alt="{{ item.product_title }}">
+                                        </a>
+                                    {% endthumbnail %}
+                                {% else %}
+                                    <a href="{% url 'product' item.product_vendor.vendor_url item.product_category.category_url item.product_url %}">
+                                        <div class="img-fluid my-2 no-photo" style="padding: 50% 0"></div>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="card-body p-1">
+                            <!-- Название товара -->
+                            <a href="{% url 'product' item.product_vendor.vendor_url item.product_category.category_url item.product_url %}"
+                               class="card-title text-dark text-decoration-none">{{ item.product_title }}</a>
+
+                            <!-- Цена товара -->
+                            {% if item.productvolumeprice_set.first or item.productvolumepriceproduct_set.first %}
+                                <p class="font-monospace mt-3 mb-1">
+                                    {% if not item.product_price %}
+                                        от {{ item.productvolumeprice_set.first.volumeprice_price }}.00
+                                    {% else %}
+                                        {{ item.product_price }}.00
+                                    {% endif %}
+                                    &#x20bd;
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Ссылка на категорию -->
+                        <div class="row mb-1">
+                            <div class="col">
+                                <a href="{{ item.product_category.category_url }}/"
+                                   class="text-muted small text-decoration-none">
+                                    {{ item.product_category.category_title }}
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="card-footer bg-transparent">
+                            <a href="{% url 'product' item.product_vendor.vendor_url item.product_category.category_url item.product_url %}"
+                               class="btn btn-primary">Посмотреть</a>
+
+                        </div>
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+        {% url 'paints' as paints %}
+        <h3 class="text-center "><a href="{{ paints }}" class="text-decoration-none text-muted">Посмотреть <i
+                class="font-weight-normal">весь</i> каталог</a></h3>
+
+    </div>
+
 {% endblock content_product %}
 
 {% block custom_footer %}
-<!-- скрипт отвечает за выделение Цвета в модальном окне -->
-<script>
-(function() {
-  var blocks = document.querySelectorAll(".color-target");
+    <!-- FancyBox3 JS -->
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
 
-  for(var i = 0; i < blocks.length; i++) {
-    blocks[i].addEventListener("click", function() {
-      for(var j = 0; j < blocks.length; j++) {
-        blocks[j].classList.remove("active");
-      }
+    {#    <!-- открываем галерею при клике на главное изображение -->#}
+    {#    {% if images %}#}
+    {#        <script>#}
+    {#            $('#main-image').on('click', function () {#}
+    {#                $.fancybox.open($('.big-additional-images'), {#}
+    {#                    // настройки галереи#}
+    {#                    // http://fancyapps.com/fancybox/3/docs/#options#}
+    {#                });#}
+    {#            });#}
+    {#        </script>#}
+    {#    {% endif %}#}
 
-      this.classList.add("active");
-    }, false);
-  }
-})();
-</script>
+    <script src="{% static 'js/scripts.js' %}"></script>
+    <script src="{% static 'js/add-to-basket.js' %}"></script>
 {% endblock custom_footer %}
