@@ -117,14 +117,15 @@
 
                         <!-- Цена товара -->
                         <p class="font-monospace mt-3 mb-1">
-                            {% if product.product_price_choice == '1' %}
-                                {# ('1', 'Простая цена'),#}
-                                {# ('2', 'Цена с опциями'),#}
+                            {% if product.product_price_choice == '1' %}{# ('1', 'Простая цена'),#}
                                 {{ product.product_price }}.00
-                            {% elif product.product_price_choice == '2' %}
-                                от
-                                {{ product.product_price_options.first.productoptionprice_set.first.product_option_price }}
-                                .00
+                            {% elif product.product_price_choice == '2' %} {# ('2', 'Цена с опциями'),#}
+{#                                {{ product.product_price_options.first.productoptionprice_set.first.product_option_price }}#}
+                                {% for option in product.product_price_options.all %}
+                                    {% if option.productoptionprice_set.first.product_option_price %}
+                                        от {{ option.productoptionprice_set.first.product_option_price }}.00
+                                    {% endif %}
+                                {% endfor %}
                             {% endif %}
                             &#x20bd;
                         </p>

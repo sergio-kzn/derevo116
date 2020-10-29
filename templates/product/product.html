@@ -179,12 +179,14 @@
 
             <!-- Цена товара -->
             <p class="text-muted font-monospace" style="font-size: x-large">
-                {% if product.product_price_choice == '1' %}
-                    {# ('1', 'Простая цена'),#}
-                    {# ('2', 'Цена с опциями'),#}
+                {% if product.product_price_choice == '1' %}{# ('1', 'Простая цена'),#}
                     {{ product.product_price }}.00
-                {% elif product.product_price_choice == '2' %}
-                    от {{ options_price.first.productoptionprice_set.first.product_option_price }}.00
+                {% elif product.product_price_choice == '2' %} {# ('2', 'Цена с опциями'),#}
+                    {% for option in options_price %}
+                        {% if option.productoptionprice_set.first.product_option_price %}
+                        от {{ option.productoptionprice_set.first.product_option_price }}.00
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
                 &#x20bd;
             </p>
@@ -221,7 +223,7 @@
                 {# ('2', 'Цена с опциями'),#}
                 {% for option in options_price %}
                     <div class="row my-3 justify-content-center">
-                        <div class="col col-auto">
+                        <div class="col">
                             <h3>{{ option.option_title|default_if_none:"" }}</h3>
                             <div class="overflow-auto">
                                 {% if option.option_type == '1' %}
@@ -231,8 +233,8 @@
                                         <thead>
                                         <tr>
                                             <th></th>
-                                            <th class="text-nowrap px-3">{{ option.product_price_option|safe }}</th>
-                                            <th class="text-center text-nowrap px-3">{{ option.product_price_option_price|safe }}</th>
+                                            <th class="text-nowrap px-3">{{ option.product_price_option|default_if_none:""|safe }}</th>
+                                            <th class="text-center text-nowrap px-3">{{ option.product_price_option_price|default_if_none:""|safe }}</th>
                                             {% if option.product_price_option_extra_1 %}
                                                 <th class="text-left text-nowrap px-3">{{ option.product_price_option_extra_1|default_if_none:""|safe }}</th>
                                             {% endif %}
@@ -250,14 +252,14 @@
                                                                   id="{{ price.id }}"
                                                                   data-title-option-{{ forloop.parentloop.counter }}="{{ option.product_price_option }}"
                                                                   data-option-{{ forloop.parentloop.counter }}="{{ price.product_option }}"
-                                                                  data-price-option-{{ forloop.parentloop.counter }}="{{ price.product_option_price }}"
+                                                                  data-price-option-{{ forloop.parentloop.counter }}="{{ price.product_option_price|default_if_none:0 }}"
                                                                   {% if forloop.first %}checked{% endif %}
                                                     >
                                                     </label>
                                                 </td>
                                                 <td class="text-left text-nowrap px-3">{{ price.product_option.option_title }}</td>
-                                                <td class="text-center text-nowrap px-3">{{ price.product_option_price }}
-                                                    &#x20bd;
+                                                <td class="text-center text-nowrap px-3">{{ price.product_option_price|default_if_none:""|safe }}
+                                                    {% if price.product_option_price %}&#x20bd;{% endif %}
                                                 </td>
                                                 {% if price.product_option_extra_1 %}
                                                     <td class="text-left text-nowrap px-3">{{ price.product_option_extra_1|default_if_none:""|safe }}</td>
@@ -279,24 +281,28 @@
                                                        id="{{ price.id }}"
                                                        data-title-option-{{ forloop.parentloop.counter }}="{{ option.product_price_option }}"
                                                        data-option-{{ forloop.parentloop.counter }}="{{ price.product_option }}"
-                                                       data-price-option-{{ forloop.parentloop.counter }}="{{ price.product_option_price }}"
+                                                       data-price-option-{{ forloop.parentloop.counter }}="{{ price.product_option_price|default_if_none:0 }}"
                                                        {% if forloop.first %}checked{% endif %}
                                                 >
                                                 <label class="btn btn btn-outline-secondary w-100 h-100 align-content-center"
                                                        onclick="select_input('{{ price.id }}', '{{ forloop.parentloop.counter }}');
-                                                               document.getElementById('extra-0').innerHTML = '{{ option.product_price_option_price|safe|default_if_none:""|safe }} {{ price.product_option_price|default_if_none:""|safe }}';
-                                                               document.getElementById('extra-1').innerHTML = '{{ option.product_price_option_extra_1|default_if_none:""|safe }} {{ price.product_option_extra_1|default_if_none:""|safe }}';
-                                                               document.getElementById('extra-2').innerHTML = '{{ option.product_price_option_extra_2|default_if_none:""|safe }} {{ price.product_option_extra_2|default_if_none:""|safe }}'"
+                                                               document.getElementById('extra-0-{{ forloop.parentloop.counter }}').innerHTML = '{{ option.product_price_option_price|default_if_none:""|safe }} {{ price.product_option_price|default_if_none:""|safe }}';
+                                                               document.getElementById('extra-1-{{ forloop.parentloop.counter }}').innerHTML = '{{ option.product_price_option_extra_1|default_if_none:""|safe }} {{ price.product_option_extra_1|default_if_none:""|safe }}';
+                                                               document.getElementById('extra-2-{{ forloop.parentloop.counter }}').innerHTML = '{{ option.product_price_option_extra_2|default_if_none:""|safe }} {{ price.product_option_extra_2|default_if_none:""|safe }}'"
                                                        for="{{ price.id }}">{{ price.product_option.option_title }}</label>
                                             </div>
                                         {% endfor %}
                                     </div>
                                     <div class="text-muted small"
-                                         id="extra-0">{{ option.product_price_option_price|safe }} {{ option.productoptionprice_set.first.product_option_price|safe }} &#x20bd;</div>
+                                         id="extra-0-{{ forloop.parentloop.counter }}">
+                                    {% if option.product_price_option_price %}
+                                        {{ option.product_price_option_price|safe }} {{ option.productoptionprice_set.first.product_option_price|safe }} &#x20bd;
+                                    {% endif %}
+                                        </div>
+                                        <div class="text-muted small"
+                                         id="extra-1-{{ forloop.parentloop.counter }}">{{ option.product_price_option_extra_1|default_if_none:""|safe }} {{ option.productoptionprice_set.first.product_option_extra_1|default_if_none:""|safe }}</div>
                                     <div class="text-muted small"
-                                         id="extra-1">{{ option.product_price_option_extra_1|default_if_none:""|safe }} {{ option.productoptionprice_set.first.product_option_extra_1|default_if_none:""|safe }}</div>
-                                    <div class="text-muted small"
-                                         id="extra-2">{{ option.product_price_option_extra_2|default_if_none:""|safe }} {{ option.productoptionprice_set.first.product_option_extra_2|default_if_none:""|safe }}</div>
+                                         id="extra-2-{{ forloop.parentloop.counter }}">{{ option.product_price_option_extra_2|default_if_none:""|safe }} {{ option.productoptionprice_set.first.product_option_extra_2|default_if_none:""|safe }}</div>
                                 {% endif %}
                             </div>
                         </div>
@@ -329,7 +335,7 @@
                         {% for option in options_price %}
                         data-title-option-{{ forloop.counter }}="{{ option.product_price_option }}"
                         data-option-{{ forloop.counter }}="{{ option.productoptionprice_set.first.product_option }}"
-                        data-price-option-{{ forloop.counter }}="{{ option.productoptionprice_set.first.product_option_price }}"
+                        data-price-option-{{ forloop.counter }}="{{ option.productoptionprice_set.first.product_option_price|default_if_none:0 }}"
                         {% endfor %}
                         data-max-options="{{ options_price.count }}"
                         {% endif %}

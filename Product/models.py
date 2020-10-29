@@ -138,7 +138,7 @@ class Product(models.Model):
     product_color = models.ManyToManyField(ColorGroup, verbose_name="Группа цветов", blank=True)
     product_tab = models.ManyToManyField(ProductTab, verbose_name="Доп. вкладки", blank=True)
     product_price_choice = models.CharField(verbose_name='Тип цены', choices=PRICE, default='2', max_length=50)
-    product_price = models.CharField(verbose_name='Простая цена (Руб.)', max_length=30, blank=True, null=True, help_text='Введите цену без копеек и без знака рубля')
+    product_price = models.CharField(verbose_name='Простая цена (Руб.)', max_length=30, default=0, help_text='Введите цену без копеек и без знака рубля')
     product_price_options = models.ManyToManyField(OptionGroup, verbose_name='Опции цены', blank=True)
 
 
@@ -184,7 +184,7 @@ class ProductOptionPrice(models.Model):
 
     product_option_group = models.ForeignKey(OptionGroup, models.DO_NOTHING, verbose_name='Группа опций')
     product_option = models.ForeignKey(OptionPrice, models.DO_NOTHING, verbose_name='Выберите опцию')
-    product_option_price = models.CharField(max_length=10, verbose_name='Цена')
+    product_option_price = models.CharField(max_length=10, verbose_name='Цена', blank=True, null=True)
     product_option_extra_1 = models.CharField(max_length=50, verbose_name='Дополнительно 1', blank=True, null=True)
     product_option_extra_2 = models.CharField(max_length=50, verbose_name='Дополнительно 2', blank=True, null=True)
     product_option_sort = models.IntegerField(verbose_name='Сортировка', default=0)
