@@ -220,13 +220,13 @@
                 {# ('1', 'Простая цена'),#}
                 {# ('2', 'Цена с опциями'),#}
                 {% for option in options_price %}
-                    {% if option.option_type == '1' %}
-                        {# ('1', 'Radio Inputs'),#}
-                        {# ('2', 'Buttons'),#}
-                        <div class="row my-3 justify-content-center">
-                            <div class="col col-auto">
-                                <h3>{{ option.option_title|default_if_none:"" }}</h3>
-                                <div class="overflow-auto">
+                    <div class="row my-3 justify-content-center">
+                        <div class="col col-auto">
+                            <h3>{{ option.option_title|default_if_none:"" }}</h3>
+                            <div class="overflow-auto">
+                                {% if option.option_type == '1' %}
+                                    {# ('1', 'Radio Inputs'),#}
+                                    {# ('2', 'Buttons'),#}
                                     <table class="table table-sm table-hover small">
                                         <thead>
                                         <tr>
@@ -243,14 +243,14 @@
                                         </thead>
                                         <tbody>
                                         {% for price in option.productoptionprice_set.all %}
-                                            <tr onclick="select_input('{{ price.id }}')"
+                                            <tr onclick="select_input(price_id='{{ price.id }}', '{{ forloop.parentloop.counter }}')"
                                                 style="cursor: pointer">
                                                 <td class="px-3">
-                                                    <label><input type="radio" name="options"
+                                                    <label><input type="radio" name="options-{{ forloop.parentloop.counter }}"
                                                                   id="{{ price.id }}"
-                                                                  data-title-option="{{ option.product_price_option }}"
-                                                                  data-option="{{ price.product_option }}"
-                                                                  data-price-option="{{ price.product_option_price }}"
+                                                                  data-title-option-{{ forloop.parentloop.counter }}="{{ option.product_price_option }}"
+                                                                  data-option-{{ forloop.parentloop.counter }}="{{ price.product_option }}"
+                                                                  data-price-option-{{ forloop.parentloop.counter }}="{{ price.product_option_price }}"
                                                                   {% if forloop.first %}checked{% endif %}
                                                     >
                                                     </label>
@@ -269,10 +269,38 @@
                                         {% endfor %}
                                         </tbody>
                                     </table>
-                                </div>
+
+                                {% elif option.option_type == '2' %} {# ('2', 'Buttons'),#}
+                                    <div class="text-muted">{{ option.product_price_option|safe }}</div>
+                                    <div class="row row-cols-2 g-1 mb-3 mx-0">
+                                        {% for price in option.productoptionprice_set.all %}
+                                            <div class="col mb-1 btn-group-sm">
+                                                <input type="radio" class="btn-check" name="options-{{ forloop.parentloop.counter }}" autocomplete="off"
+                                                       id="{{ price.id }}"
+                                                       data-title-option-{{ forloop.parentloop.counter }}="{{ option.product_price_option }}"
+                                                       data-option-{{ forloop.parentloop.counter }}="{{ price.product_option }}"
+                                                       data-price-option-{{ forloop.parentloop.counter }}="{{ price.product_option_price }}"
+                                                       {% if forloop.first %}checked{% endif %}
+                                                >
+                                                <label class="btn btn btn-outline-secondary w-100 h-100 align-content-center"
+                                                       onclick="select_input('{{ price.id }}', '{{ forloop.parentloop.counter }}');
+                                                               document.getElementById('extra-0').innerHTML = '{{ option.product_price_option_price|safe|default_if_none:""|safe }} {{ price.product_option_price|default_if_none:""|safe }}';
+                                                               document.getElementById('extra-1').innerHTML = '{{ option.product_price_option_extra_1|default_if_none:""|safe }} {{ price.product_option_extra_1|default_if_none:""|safe }}';
+                                                               document.getElementById('extra-2').innerHTML = '{{ option.product_price_option_extra_2|default_if_none:""|safe }} {{ price.product_option_extra_2|default_if_none:""|safe }}'"
+                                                       for="{{ price.id }}">{{ price.product_option.option_title }}</label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="text-muted small"
+                                         id="extra-0">{{ option.product_price_option_price|safe }} {{ option.productoptionprice_set.first.product_option_price|safe }} &#x20bd;</div>
+                                    <div class="text-muted small"
+                                         id="extra-1">{{ option.product_price_option_extra_1|default_if_none:""|safe }} {{ option.productoptionprice_set.first.product_option_extra_1|default_if_none:""|safe }}</div>
+                                    <div class="text-muted small"
+                                         id="extra-2">{{ option.product_price_option_extra_2|default_if_none:""|safe }} {{ option.productoptionprice_set.first.product_option_extra_2|default_if_none:""|safe }}</div>
+                                {% endif %}
                             </div>
                         </div>
-                    {% endif %}
+                    </div>
                 {% endfor %}
             {% endif %}
 
@@ -297,13 +325,15 @@
                         data-title="{{ product.product_title }}"
                         data-url="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}"
                         data-count="1"
-                        {% if product.product_price_choice == '2' %}
-                        data-title-option="{{ options_price.first.product_price_option }}"
-                        data-option="{{ options_price.first.productoptionprice_set.first.product_option }}"
-                        data-price-option="{{ options_price.first.productoptionprice_set.first.product_option_price }}"
-                        {% else %}
-                        data-price-option="{{ product.product_price }}"
+                        {% if product.product_price_choice == '2' %}  {# 2 = если цена расширенная #}
+                        {% for option in options_price %}
+                        data-title-option-{{ forloop.counter }}="{{ option.product_price_option }}"
+                        data-option-{{ forloop.counter }}="{{ option.productoptionprice_set.first.product_option }}"
+                        data-price-option-{{ forloop.counter }}="{{ option.productoptionprice_set.first.product_option_price }}"
+                        {% endfor %}
+                        data-max-options="{{ options_price.count }}"
                         {% endif %}
+                        data-price-product="{{ product.product_price }}"
                 >Добавить в корзину
                 </button>
             </div>
@@ -447,7 +477,7 @@
     </div>
     <!-- / вкладки Описание Характиристики Отзывы -->
 
-
+    <!-- Похожие товары -->
     <div class="row mb-3">
         <h2>Похожие <i class="font-weight-normal">товары от</i> {{ product.product_vendor.vendor_title }}</h2>
 

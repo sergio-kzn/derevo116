@@ -85,16 +85,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 // скрипт отвечает за выбор опций в ценах
-        window.select_input = function (price_id) {
+        window.select_input = function (price_id, option_id) {
             let input_price = document.getElementById(price_id)
             input_price.checked = true;
 
-            let title_option = input_price.getAttribute('data-title-option');
-            let option = input_price.getAttribute('data-option');
-            let price_option = input_price.getAttribute('data-price-option');
-            button_add_to_basket.setAttribute('data-title-option', title_option);
-            button_add_to_basket.setAttribute('data-option', option);
-            button_add_to_basket.setAttribute('data-price-option', price_option);
+            let title_option = input_price.getAttribute('data-title-option-' + option_id);
+            let option = input_price.getAttribute('data-option-' + option_id);
+            let price_option = input_price.getAttribute('data-price-option-' + option_id);
+            button_add_to_basket.setAttribute('data-title-option-' + option_id, title_option);
+            button_add_to_basket.setAttribute('data-option-' + option_id, option);
+            button_add_to_basket.setAttribute('data-price-option-' + option_id, price_option);
         }
     })
     ;

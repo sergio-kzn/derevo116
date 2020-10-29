@@ -41,22 +41,26 @@ document.addEventListener('DOMContentLoaded', function () {
         div_color.classList.add('basket-list-color');
         let color = "";
         let options_in_item = '';
-        let price = '';
+        let price = 0;
         let price_span = '';
         if (button.hasAttribute('data-color')) {
             color = 'Цвет: ' + button.getAttribute('data-color') + '<br>';
         }
-        if (button.hasAttribute('data-price-option')) {
-            let title_option = button.getAttribute('data-title-option')
-            let option = button.getAttribute('data-option')
-            options_in_item = title_option + ': ' + option + '<br>';
-        }
 
-        // цена
-        if (button.hasAttribute('data-price-option')) {
-            price = button.getAttribute('data-price-option');
-            price_span = '<span><b>' + price + ' &#x20bd;</b></span>';
+        let max_options = button.getAttribute('data-max-options')
+        for (let i = 1; i <= max_options; i++)
+            if (button.hasAttribute('data-price-option-' + i)) {
+                let title_option = button.getAttribute('data-title-option-' + i)
+                let option = button.getAttribute('data-option-' + i)
+                options_in_item += title_option + ': ' + option + '<br>';
+                price += parseInt(button.getAttribute('data-price-option-' + i).replace(/\s+/g, ''), 10);
+            }
+
+        // цена без опций
+        if (button.hasAttribute('data-price-product')) {
+        price += parseInt(button.getAttribute('data-price-product').replace(/\s+/g, ''), 10);
         }
+        price_span = '<span><b>' + price + ' &#x20bd;</b></span>';
         div_color.innerHTML = color + options_in_item + price_span;
 
         // удалить [ х ]
@@ -77,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
         li_empty.classList.add('d-none');
 
         basket_count += 1;
-        basket_sum += parseInt(price.replace(/\s+/g, ''), 10) * parseInt(count, 10);
+        basket_sum += price * parseInt(count, 10);
         update_count_and_price(basket_count, basket_sum)
 
         li.id = 'item_' + basket_count;
