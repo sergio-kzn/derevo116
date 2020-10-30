@@ -62,16 +62,21 @@
     {% if colors.all|length > 0 %}
         <div class="modal fade" id="colorModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
              aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-dialog modal-xl modal-fullscreen-xl-down modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">Выбор цвета краски</h5>
+                        <h5 class="modal-title" id="staticBackdropLabel">Выбор цвета</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <h5>{{ product.product_title }}</h5>
+                        <h5>{% if product.product_color.first.color_group_title %}
+                            {{ product.product_color.first.color_group_title }}
+                        {% else %}
+                            {{ product.product_title }}
+                        {% endif %}
+                        </h5>
                         <div class="row mt-2 mb-5">
                             {% for color in colors %}
                                 <div class="col-md-4 my-1 py-1 color-target text-center" style="line-height: 1rem;">
@@ -103,7 +108,7 @@
     {% endif %}
     <!-- / Modal window for COLORS -->
 
-    <div class="row row-cols-1 row-cols-md-2 mb-5">
+    <div class="row row-cols-1 {% if product.product_img %} row-cols-md-2 {% endif %} mb-5">
 
         <!-- Изображение товара -->
         {% if product.product_img %}
@@ -180,15 +185,14 @@
             <!-- Цена товара -->
             <p class="text-muted font-monospace" style="font-size: x-large">
                 {% if product.product_price_choice == '1' %}{# ('1', 'Простая цена'),#}
-                    {{ product.product_price }}.00
+                    {{ product.product_price }}.00 &#x20bd;
                 {% elif product.product_price_choice == '2' %} {# ('2', 'Цена с опциями'),#}
                     {% for option in options_price %}
                         {% if option.productoptionprice_set.first.product_option_price %}
-                        от {{ option.productoptionprice_set.first.product_option_price }}.00
+                            от {{ option.productoptionprice_set.first.product_option_price }}.00 &#x20bd;
                         {% endif %}
                     {% endfor %}
                 {% endif %}
-                &#x20bd;
             </p>
 
             <!-- Поставщик, артикул, наличие -->
@@ -222,8 +226,8 @@
                 {# ('1', 'Простая цена'),#}
                 {# ('2', 'Цена с опциями'),#}
                 {% for option in options_price %}
-                    <div class="row my-3 justify-content-center">
-                        <div class="col">
+                    <div class="row my-3 {% if product.product_img %} justify-content-center {% endif %}">
+                        <div class="col {% if not product.product_img %} col-auto {% endif %}">
                             <h3>{{ option.option_title|default_if_none:"" }}</h3>
                             <div class="overflow-auto">
                                 {% if option.option_type == '1' %}
@@ -311,7 +315,7 @@
             {% endif %}
 
             <!-- Количество товара -->
-            <div class="row my-3 justify-content-center">
+            <div class="row my-3 {% if product.product_img %} justify-content-center {% endif %}">
                 <div class="col col-auto">
                     <div class="input-group align-items-center flex-nowrap">
                         Количество:
@@ -327,24 +331,28 @@
 
             <!-- Кнопка Добавить в корзину -->
             <div class="row px-3">
-                <button type="button" class="btn btn-primary btn-lg btn-block my-3" id="add-to-basket"
-                        data-title="{{ product.product_title }}"
-                        data-url="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}"
-                        data-count="1"
-                        {% if colors %}
-                        data-color-check
-                        {% endif %}
-                        {% if product.product_price_choice == '2' %}  {# 2 = если цена расширенная #}
-                            {% for option in options_price %}
-                        data-title-option-{{ forloop.counter }}="{{ option.product_price_option }}"
-                        data-option-{{ forloop.counter }}="{{ option.productoptionprice_set.first.product_option }}"
+                <div class="col">
+                    <button type="button"
+                            class="btn btn-primary btn-lg {% if product.product_img %} btn-block {% endif %} my-3"
+                            id="add-to-basket"
+                            data-title="{{ product.product_title }}"
+                            data-url="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}"
+                            data-count="1"
+                            {% if colors %}
+                            data-color-check
+                            {% endif %}
+                            {% if product.product_price_choice == '2' %}  {# 2 = если цена расширенная #}
+                                {% for option in options_price %}
+                            data-title-option-{{ forloop.counter }}="{{ option.product_price_option }}"
+                            data-option-{{ forloop.counter }}="{{ option.productoptionprice_set.first.product_option }}"
                         data-price-option-{{ forloop.counter }}="{{ option.productoptionprice_set.first.product_option_price|default_if_none:0 }}"
                             {% endfor %}
                         data-max-options="{{ options_price.count }}"
                         {% endif %}
                         data-price-product="{{ product.product_price }}"
-                >Добавить в корзину
-                </button>
+                    >Добавить в корзину
+                    </button>
+                </div>
             </div>
             <!--  -->
             <div
@@ -397,6 +405,16 @@
     <!-- вкладки Описание Характиристики Отзывы -->
     <div class="row mb-5">
         <div class="col-12">
+            <!-- Показать файл здесь, если нет вкладки с Атрибутами -->
+            {% if product.product_file and not attributes %}
+                <div class="my-3">
+                    <i class="fas fa-2x fa-file mr-2"></i>
+                    <a href="{{ product.product_file.url }}" target="_blank" rel="noopener noreferrer"
+                       class="text-muted text-decoration-none">
+                        Техническое руководство ({{ product.product_vendor_code }}.pdf)</a>
+                </div>
+            {% endif %}
+
             <ul class="nav nav-tabs nav-fill mb-3" role="tablist">
 
                 {% if product.product_content %}
@@ -467,7 +485,7 @@
                         {% endfor %}
                         </tbody>
                     </table>
-                    {% if product.product_file %}
+                    {% if product.product_file and attributes %}
                         <div class="my-3">
                             <i class="fas fa-2x fa-file mr-2"></i>
                             <a href="{{ product.product_file.url }}" target="_blank" rel="noopener noreferrer"

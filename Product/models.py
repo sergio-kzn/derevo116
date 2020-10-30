@@ -38,12 +38,17 @@ class ProductVendor(models.Model):
 
 class ColorGroup(models.Model):
     """объединяет цвета по группам"""
+
     class Meta:
         verbose_name = "Цвета (группа)"
         verbose_name_plural = "Цвета (группы)"
+
     def __str__(self):
         return self.color_group_name
-    color_group_name = models.CharField(verbose_name='Группа цветов', max_length=100)
+
+    color_group_name = models.CharField(verbose_name='Группа цветов', max_length=100, help_text='Показывается только в админке.')
+    color_group_title = models.CharField(verbose_name='Заголовок', max_length=200, help_text='Показывается во всплывающем окне при выборе цвета.<br>Если не заполнено, показывается название группы.', null=True, blank=True)
+
 
 class Color(models.Model):
     """цвета для масел"""
@@ -53,7 +58,7 @@ class Color(models.Model):
         ordering = ['color_sort', 'color_title']
     def __str__(self):
         return self.color_title
-    color_title = models.CharField(verbose_name='Название цвета', max_length=50)
+    color_title = models.CharField(verbose_name='Подпись', max_length=50)
     color_image = ImageField(verbose_name='Изображение', upload_to='products/colors')
     color_sort = models.IntegerField('Сортировка', default=0)
     color_group = models.ForeignKey(ColorGroup, models.DO_NOTHING)
@@ -81,6 +86,7 @@ class OptionGroup(models.Model):
     option_group = models.CharField(verbose_name='Название группы опций', max_length=100, help_text='Например, название товара, к которому эти опции относятся')
     option_type = models.CharField(verbose_name='Тип опций', max_length=50, choices=TYPES, default='1')
     option_title = models.CharField(verbose_name='Заголовок', max_length=100, blank=True, null=True, help_text='Отображается рядом с опциями на странице товара')
+    options_sort = models.IntegerField(verbose_name='Сортировка', default=0)
     product_price_option = models.CharField(verbose_name='Опция', max_length=50, blank=True, null=True, default="Объем")
     product_price_option_price = models.CharField(verbose_name='Цена', max_length=50, blank=True, null=True, default="Цена")
     product_price_option_extra_1 = models.CharField(verbose_name='Дополнительно 1', max_length=50, blank=True, null=True, help_text="Расход&nbsp;м&lt;sup&gt;2&lt;/sup&gt;&lt;br&gt;(1&nbsp;слой&nbsp;/&nbsp;2&nbsp;слоя)<br>")
@@ -94,6 +100,7 @@ class OptionGroup(models.Model):
 
 class ProductImageGroup(models.Model):
     img_group = models.CharField(verbose_name='Дополнительные изображения', max_length=100, help_text='Название группы изображений, например название Товара')
+    img_group_sort = models.IntegerField(verbose_name='Сортировка', default=0)
 
     def __str__(self):
         return self.img_group
@@ -101,12 +108,16 @@ class ProductImageGroup(models.Model):
     class Meta:
         verbose_name = 'Изображение (группа)'
         verbose_name_plural = 'Изображения (группы)'
-
+        ordering = ['img_group_sort']
 
 class ProductImage(models.Model):
     img_file = ImageField(verbose_name='Изображение товара', upload_to='products')
     img_title = models.CharField(verbose_name='Подпись', max_length=100)
     img_group = models.ForeignKey(ProductImageGroup, models.DO_NOTHING)
+    img_sort = models.IntegerField(verbose_name='Сортировка', default=0)
+
+    class Meta:
+        ordering = ['img_sort']
 
 
 class Product(models.Model):

@@ -9,10 +9,10 @@ from Product.services import random_relevant_products
 
 def product(request, vendor_url, category_url, product_url):
     product = Product.objects.get(product_url=product_url)
-    price_data = OptionGroup.objects.filter(product__product_url=product_url)
+    price_data = OptionGroup.objects.filter(product__product_url=product_url).order_by('options_sort')
     attributes = ProductAttribute.objects.filter(attribute_product__product_url=product_url)
     colors = Color.objects.filter(color_group__product__product_url=product_url)
-    images = ProductImage.objects.filter(img_group__product__product_url=product_url)
+    images = ProductImage.objects.filter(img_group__product__product_url=product_url).order_by('img_group__img_group_sort')
 
     random_items = random_relevant_products(product.id)
 
