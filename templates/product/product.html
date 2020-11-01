@@ -80,12 +80,16 @@
                         <div class="row mt-2 mb-5">
                             {% for color in colors %}
                                 <div class="col-md-4 my-1 py-1 color-target text-center" style="line-height: 1rem;">
+                                {% if color.color_image %}
                                     {% thumbnail color.color_image "280x280" format="WEBP" as im %}
                                         <img
                                                 src="{{ im.url }}"
                                                 class="img-fluid"
                                                 alt="цвет {{ color.color_title }}">
                                     {% endthumbnail %}
+                                {% elif color.color_html %}
+                                <div style="width: 280px; height: 140px; background-color: {{ color.color_html }};"></div>
+                                {% endif %}
                                     <br>
                                     <span class="small">{{ color.color_title }}</span></div>
                             {% endfor %}

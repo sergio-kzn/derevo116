@@ -17,8 +17,8 @@ class ProductCategory(models.Model):
             return mark_safe(self.category_title)
     class Meta:
         ordering = ['category_parent__id', 'category_sort']
-        verbose_name = 'Категория'
-        verbose_name_plural = 'Категории'
+        verbose_name = 'Категория (Краски и масла)'
+        verbose_name_plural = 'Категории (Краски и масла)'
 
 
 class ProductVendor(models.Model):
@@ -59,7 +59,8 @@ class Color(models.Model):
     def __str__(self):
         return self.color_title
     color_title = models.CharField(verbose_name='Подпись', max_length=50)
-    color_image = ImageField(verbose_name='Изображение', upload_to='products/colors')
+    color_image = ImageField(verbose_name='Изображение', upload_to='products/colors', null=True, blank=True)
+    color_html = models.CharField(verbose_name='Цвет HEX', max_length=20, help_text='Цвет в формате HEX, например: "#ebe7e0"', null=True, blank=True)
     color_sort = models.IntegerField('Сортировка', default=0)
     color_group = models.ForeignKey(ColorGroup, models.DO_NOTHING)
 

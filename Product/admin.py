@@ -56,7 +56,7 @@ class AttributeInline(admin.TabularInline):
 class ColorInline(admin.TabularInline):
     model = Color
     extra = 0
-    fields = ['color_image', 'image_preview', 'color_title', 'color_sort']
+    fields = ['color_image', 'image_preview', 'color_html',  'color_title', 'color_sort']
     readonly_fields = ('image_preview',)
 
     def image_preview(self, obj):
@@ -64,10 +64,19 @@ class ColorInline(admin.TabularInline):
         if obj.color_image:
             return mark_safe(
                 '<img src="{0}" width="160" height="65" style="object-fit:contain" />'.format(obj.color_image.url))
+        elif obj.color_html:
+            return mark_safe(
+                '<div style="width:160px; height:65px; background-color: {0}">'.format(obj.color_html))
         else:
             return '(No image)'
 
     image_preview.short_description = 'Просмотр'
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        field = super(ColorInline, self).formfield_for_dbfield(db_field, **kwargs)
+        if db_field.name == 'color_html':
+            field.widget.attrs['style'] = 'width: 10em;'
+        return field
 
 
 class ColorAdmin(admin.ModelAdmin):
