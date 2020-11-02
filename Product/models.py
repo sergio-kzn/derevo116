@@ -154,7 +154,7 @@ class Product(models.Model):
     # product_description = models.TextField(verbose_name='Содержимое доп. вкладки', blank=True, null=True)
     product_content = models.TextField(verbose_name='Описание', blank=True, null=True)
     product_file = models.FileField(verbose_name='Прикрепить файл (Техническое руководство) pdf', upload_to='product/files', null=True, blank=True)
-    product_count = models.CharField(verbose_name='Наличие товара', max_length=30, blank=True, null=True, default="В наличии более 10л.")
+    product_count = models.CharField(verbose_name='Наличие товара', max_length=30, blank=True, null=True, default="В наличии более 10л.", help_text='В наличии более 10 л.<br>В наличии более 10 шт.<br>В наличии 1 шт.<br>Под заказ<br>Нет в наличии.')
     product_color = models.ManyToManyField(ColorGroup, verbose_name="Группа цветов", blank=True)
     product_tab = models.ManyToManyField(ProductTab, verbose_name="Доп. вкладки", blank=True)
     product_price_choice = models.CharField(verbose_name='Тип цены', choices=PRICE, default='2', max_length=50)

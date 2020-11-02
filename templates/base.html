@@ -169,7 +169,7 @@
 
 <!--  Подвал сайта -->
 
-<footer class="bg-dark text-white">
+<footer class="bg-dark text-white mt-5">
     <div class="container">
         <div class="row row-cols-2 row-cols-md-4 py-4 small g-4">
 
@@ -178,7 +178,7 @@
                 <ul class="list-unstyled">
                     <li class="mb-3"><b>Наш адрес: </b>г. Казань, ул. Сибирский тракт, д. 34А, офис 136</li>
                     <li class="row mb-3">
-                        <div class="row w-100 gx-3">
+                        <div class="row w-100 gx-3 text-center">
                             <div class="col-6">
                                 <a href="https://goo.gl/maps/p9Ude12ALTBFFBF18" target="blank"><img
                                         src="{% static 'img/google_maps_icon.jpg' %}" class="img-fluid"
@@ -187,7 +187,8 @@
                             <div class="col-6">
                                 <a href="https://yandex.ru/maps/-/CGhy4OLZ" target="blank"><img
                                         src="{% static 'img/yandex-maps.jpg' %}" class="img-fluid"
-                                        style="border-radius: 13px;" alt="ООО Империал на yandex картах"></a>
+                                        style="border-radius: 13px; max-width: 85px;"
+                                        alt="ООО Империал на yandex картах"></a>
                             </div>
                         </div>
                     </li>
@@ -198,21 +199,7 @@
                                                               href="tel:78432739196">8-843-273-91-96</a>
                     </li>
                 </ul>
-            </div>
-            <div class="col">
-                <h5 class="mb-3">Информация</h5>
-                <ul class="list-unstyled">
-                    <li class="mb-2"><a class="link-light text-decoration-none" href="/about_us/">О нас</a></li>
-                    <li class="mb-2"><a class="link-light text-decoration-none" href="/delivery/">Доставка и оплата</a>
-                    </li>
-                    <li class="mb-2"><a class="link-light text-decoration-none" href="/privacy/">Приватность</a></li>
-                    <li class="mb-2"><a class="link-light text-decoration-none" href="/contact-us/">Свяжитесь с нами</a>
-                    </li>
-                    <li class="mb-2"><a class="link-light text-decoration-none" href="/sitemap/">Карта сайта</a></li>
-                </ul>
-            </div>
-            <div class="col">
-                <h5>Социальные сети</h5>
+                                <h5>Социальные сети</h5>
 
                 <div class="text-nowrap mb-4">
                     <a class="text-decoration-none" href="https://www.facebook.com/biofa16/" target="_blank">
@@ -246,10 +233,28 @@
                         </svg>
                     </a>
                 </div>
-                <h5>Инстаграм</h5>
-                <a href="https://www.instagram.com/imperial_biofa_kzn/" target="blank">
-                    <img src="{% static 'img/instagram.jpg' %}" alt="Instagram @imperial_biofa_kzn"
-                         class="img-fluid mb-3" style="border-radius: 8px;"></a>
+            </div>
+            <div class="col text-center">
+{#            <h5>Инстаграм</h5>#}
+                <div class="mb-3 px-4">
+                    <a href="https://www.instagram.com/imperial_biofa_kzn/" target="blank">
+                        <img src="{% static 'img/instagram.webp' %}" alt="Instagram @imperial_biofa_kzn"
+                             class="img-fluid"></a>
+                    <spam class="small text-muted">Отсканируйте визитку в Instagram,<br>что бы подписаться
+                    </spam>
+                </div>
+            </div>
+            <div class="col">
+                <h5 class="mb-3">Информация</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a class="link-light text-decoration-none" href="/about_us/">О нас</a></li>
+                    <li class="mb-2"><a class="link-light text-decoration-none" href="/delivery/">Доставка и оплата</a>
+                    </li>
+                    <li class="mb-2"><a class="link-light text-decoration-none" href="/privacy/">Приватность</a></li>
+                    <li class="mb-2"><a class="link-light text-decoration-none" href="/contact-us/">Свяжитесь с нами</a>
+                    </li>
+                    <li class="mb-2"><a class="link-light text-decoration-none" href="/sitemap/">Карта сайта</a></li>
+                </ul>
             </div>
             <div class="col">
                 <h5>Новости</h5>
