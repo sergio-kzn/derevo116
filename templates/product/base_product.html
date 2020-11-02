@@ -7,16 +7,7 @@
     <nav aria-label="breadcrumb" class=".text-truncate">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">Главная</a></li>
-            {% url 'paints' as paints %}
-            {% if paints in request.path %}
-
-                {% if request.path == paints %}
-                    <li class="breadcrumb-item active">Краски и масла</li>
-                {% else %}
-                    <li class="breadcrumb-item"><a href="{{ paints }}">Краски и масла</a></li>
-                {% endif %}
-                {% block breadcrumb-category %}{% endblock breadcrumb-category %}
-            {% endif %}
+            {% block breadcrumb-category %}{% endblock breadcrumb-category %}
         </ol>
     </nav>
     <!-- / Хлебные крошки -->

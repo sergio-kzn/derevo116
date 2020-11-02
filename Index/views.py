@@ -30,10 +30,10 @@ def index(request):
                }
 
     biofa_products = Product.objects.filter(product_vendor__vendor_url='biofa')[:5]
-    biofa_price_data = OptionGroup.objects.filter(product__product_vendor__vendor_url='biofa')
+    # biofa_price_data = OptionGroup.objects.filter(product__product_vendor__vendor_url='biofa')
     context.update({
         'biofa_products': biofa_products,
-        'biofa_prices': biofa_price_data,
+        # 'biofa_prices': biofa_price_data,
     })
 
     return render(request, 'index/index.html', context)

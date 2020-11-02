@@ -7,7 +7,11 @@ from Product.models import Product, ProductOptionPrice, ProductAttribute, Produc
 from Product.services import random_relevant_products
 
 
-def product(request, vendor_url, category_url, product_url):
+def product(request, root_url, vendor_url, category_url, product_url):
+    root_category = ProductCategory.objects.get(category_url=root_url)
+    vendor_category = ProductVendor.objects.get(vendor_url=vendor_url)
+    current_category = ProductCategory.objects.get(category_url=category_url)
+
     product = Product.objects.get(product_url=product_url)
     price_data = OptionGroup.objects.filter(product__product_url=product_url).order_by('options_sort')
     attributes = ProductAttribute.objects.filter(attribute_product__product_url=product_url)
@@ -17,6 +21,10 @@ def product(request, vendor_url, category_url, product_url):
     random_items = random_relevant_products(product.id)
 
     content = {
+        'root_category': root_category,
+        'vendor_category': vendor_category,
+        'current_category': current_category,
+
         'product': product,
         'options_price': price_data,
         'attributes': attributes,
@@ -27,48 +35,46 @@ def product(request, vendor_url, category_url, product_url):
     return render(request, 'product/product.html', content)
 
 
-def category(request, vendor_url, category_url):
-    category = ProductCategory.objects.filter(category_url=category_url)
-    all_category = ProductCategory.objects.filter(category_parent__category_url=vendor_url)
-    products = Product.objects.filter(product_category__category_url=category_url, product_show=True)
-    # price_data = ProductOptionPrice.objects.filter(volumeprice_product__product_category__category_url=category_url)
-    price_data = OptionGroup.objects.filter(product__product_category__category_url=category_url)
-    vendor = ProductVendor.objects.filter(vendor_url=vendor_url)[0]
+def category(request, root_url, vendor_url, category_url):
+    products = Product.objects.filter(product_show=True).filter(product_category__category_url=category_url)
+    root_category = ProductCategory.objects.get(category_url=root_url)
+    current_vendor = ProductCategory.objects.get(category_url=vendor_url)
+    current_category = ProductCategory.objects.get(category_url=category_url)
+    categories = ProductCategory.objects.filter(category_main_menu=True).filter(category_parent__category_url=vendor_url)
 
     content = {
         'products': products,
-        'options_price': price_data,
-        'all_category': all_category,
-        'category': category,
-        'biofa': False,
-        'vendor': vendor
+        'root_category': root_category,
+        'current_vendor': current_vendor,
+        'current_category': current_category,
+        'categories': categories,
     }
     return render(request,'product/category.html', content)
 
 
-def vendor_category(request, vendor_url):
-    all_category = ProductCategory.objects.filter(category_parent__category_url=vendor_url)
-    category = ProductCategory.objects.filter(category_parent__category_url=vendor_url)
-    products = Product.objects.filter(product_vendor__vendor_url=vendor_url, product_show=True)
-    # price_data = ProductOptionPrice.objects.filter(volumeprice_product__product_vendor__vendor_url=vendor_url)
-    price_data = OptionGroup.objects.filter(product__product_vendor__vendor_url=vendor_url)
-    vendor = ProductVendor.objects.filter(vendor_url=vendor_url)[0]
+def vendor_category(request, root_url, vendor_url):
+    products = Product.objects.filter(product_show=True).filter(product_vendor__vendor_url=vendor_url)
+    root_category = ProductCategory.objects.get(category_url=root_url)
+    current_vendor = ProductCategory.objects.get(category_url=vendor_url)
+    categories = ProductCategory.objects.filter(category_main_menu=True).filter(category_parent__category_url=vendor_url)
 
     content = {
-        'category': category,
-        'all_category': all_category,
         'products': products,
-        'prices': price_data,
-        'biofa': False,
-        'vendor': vendor
+        'root_category': root_category,
+        'current_vendor': current_vendor,
+        'categories': categories,
     }
     return render(request,'product/category.html', content)
 
-def all_category(request):
-    vendor = ProductVendor.objects.all()
+
+def root_category(request, root_url):
+    # products = Product.objects.filter(product_vendor__vendor_url=root_url, product_show=True)
+    root_category = ProductCategory.objects.get(category_url=root_url)
+    categories = ProductCategory.objects.filter(category_main_menu=True)
 
     content = {
-        'biofa': False,
-        'vendor': vendor
+        # 'products': products,
+        'root_category': root_category,
+        'categories': categories,
     }
-    return render(request, 'product/category.html', content)
+    return render(request,'product/category.html', content)

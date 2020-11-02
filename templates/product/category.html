@@ -24,60 +24,78 @@
 
 {% block breadcrumb-category %}
     <!-- Хлебные крошки -->
-    {% url 'vendor-paints' vendor.vendor_url as main_category %}
-    {% if request.path == main_category %}
-        <li class="breadcrumb-item active">{{ vendor.vendor_title }}</li>
+    {% url 'root-category-url' root_url=root_category.category_url as root_url %}
+    {% url 'vendor-category-url' root_url=root_category.category_url vendor_url=current_vendor.category_url as vendor_url %}
+    {% url 'category-url' root_url=root_category.category_url vendor_url=current_vendor.category_url category_url=current_category.category_url as category_url %}
+
+    {% if root_url == request.path %}
+        <li class="breadcrumb-item active">{{ root_category.category_title }}</li>
     {% else %}
-        <li class="breadcrumb-item"><a href="{{ main_category }}">{{ vendor.vendor_title }}</a></li>
-        {% for cat in category %}
-            <li class="breadcrumb-item active">{{ cat.category_title }}</li>
-        {% endfor %}
+        <li class="breadcrumb-item"><a href="{{ root_url }}">{{ root_category.category_title }}</a></li>
+        {% if request.path == vendor_url %}
+            <li class="breadcrumb-item active"><div>{{ current_vendor.category_title|safe }}</div></li>
+        {% else %}
+            <li class="breadcrumb-item"><a href="{{ vendor_url }}">{{ current_vendor.category_title|safe }}</a></li>
+            <li class="breadcrumb-item active">{{ current_category.category_title|safe  }}</li>
+        {% endif %}
     {% endif %}
 {% endblock breadcrumb-category %}
 
 
 {% block content_product %}
 
-    {# краски и масла #}
-    {% url 'paints' as paints_url %}
-
-    {# краски и масла / производитель #}
-    {% url 'vendor-paints' vendor.vendor_url as vendor_paints %}
-
-    {# краски и масла / производитель / категориия #}
-    {% url 'category' vendor.vendor_url category.first.category_url as category_url %}
+    {% url 'root-category-url' root_url=root_category.category_url as root_url %}
+    {% url 'vendor-category-url' root_url=root_category.category_url vendor_url=current_vendor.category_url as vendor_url %}
+    {% url 'category-url' root_url=root_category.category_url vendor_url=current_vendor.category_url category_url=current_category.category_url as category_url %}
 
     <div class="row mb-3">
         <div class="col">
 
-            {# Подсказки категорий на странице КРАСКИ И МАСЛА #}
-            {% if request.path == paints_url %}
-                {% for v in vendor %}
-                    <a role="button" class="btn btn-outline-secondary m-1"
-                       href="{% url 'vendor-paints' v.vendor_url %}">{{ v.vendor_title }}</a>
-                {% endfor %}
+            {# Подсказки категорий на странице ГЛАВНАЯ КАТЕГОРИЯ #}
+            {% if root_url == request.path %}
+{#                <div class="row mb-3">#}
+{#                    {% for cat in categories %}#}
+{#                        {% if not cat.category_parent %}#}
+{#                            <div class="col">#}
+{#                                <div class="list-group list-group-flush small">#}
+{#                                    {% url 'root-category-url' root_url=cat.category_url as root_url %}#}
+{#                                    <a class="list-group-item list-group-item-action"#}
+{#                                       href="{{ root_url }}">{{ cat.category_title }}</a>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        {% endif %}#}
+{#                    {% endfor %}#}
+{#                </div>#}
+                <div class="row">
+                    <div class="col">
+                        {% for cat in categories %}
+                            {% if cat.category_parent == root_category %}
+                                {% url 'vendor-category-url' root_url=root_category.category_url vendor_url=cat.category_url as vendor_url %}
+                                <a role="button" class="btn m-1 btn-outline-secondary"
+                                   href="{{ vendor_url }}">{{ cat.category_title|safe }}</a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
             {% endif %}
-            {# / Подсказки категорий на странице КРАСКИ И МАСЛА #}
 
-            {# Подсказки категорий на странице Производителя красок #}
-            {% if request.path == vendor_paints %}
-                {% for cat in all_category %}
+            {# Подсказки категорий на странице Производителя #}
+            {% if request.path == vendor_url %}
+                {% for cat in categories %}
                     <a role="button" class="btn btn-outline-secondary m-1"
                        href="{{ cat.category_url }}/">{{ cat.category_title }}</a>
                 {% endfor %}
             {% endif %}
-            {# / Подсказки категорий на странице Производителя красок #}
 
             {# Подсказки категорий на странице Категории #}
             {% if request.path == category_url %}
-                {% for cat in all_category %}
-                    {% url 'category' vendor.vendor_url cat.category_url as current_category_url %}
+                {% for cat in categories %}
+                    {% url 'category-url' root_url=root_category.category_url vendor_url=current_vendor.category_url category_url=cat.category_url as cat_url %}
                     <a role="button" class="btn m-1
-                        {% if request.path == current_category_url %}btn-secondary{% else %}btn-outline-secondary{% endif %}"
-                       href="../{{ cat.category_url }}/">{{ cat.category_title }}</a>
+                        {% if cat == current_category %}btn-secondary{% else %}btn-outline-secondary{% endif %}"
+                       href="{{ cat_url }}">{{ cat.category_title }}</a>
                 {% endfor %}
             {% endif %}
-            {# / Подсказки категорий на странице Категории #}
 
         </div>
     </div>
@@ -86,6 +104,11 @@
     <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-4 mb-5">
 
         {% for product in products %}
+            {% url 'root-category-url' root_url=product.product_category.category_parent.category_parent.category_url as root_url %}
+            {% url 'vendor-category-url' root_url=product.product_category.category_parent.category_parent.category_url vendor_url=product.product_category.category_parent.category_url as vendor_url %}
+            {% url 'category-url' root_url=product.product_category.category_parent.category_parent.category_url vendor_url=product.product_category.category_parent.category_url category_url=product.product_category.category_url as category_url %}
+            {% url 'product-url' root_url=product.product_category.category_parent.category_parent.category_url vendor_url=product.product_category.category_parent.category_url category_url=product.product_category.category_url product_url=product.product_url as product_url %}
+
             <div class="col">
                 <div class="card h-100 text-center">
                     <div class="card-header text-muted small">
@@ -97,13 +120,13 @@
                         <div class="col">
                             {% if product.product_img %}
                                 {% thumbnail product.product_img "300x300" padding=True format="WEBP" as im %}
-                                    <a href="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}">
+                                    <a href="{{ product_url }}">
                                         <img src="{{ im.url }}" class="img-fluid my-2"
                                              alt="{{ product.product_title }}">
                                     </a>
                                 {% endthumbnail %}
                             {% else %}
-                                <a href="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}">
+                                <a href="{{ product_url }}">
                                     <div class="img-fluid my-2 no-photo" style="padding: 50% 0"></div>
                                 </a>
                             {% endif %}
@@ -112,7 +135,7 @@
 
                     <div class="card-body p-1">
                         <!-- Название товара -->
-                        <a href="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}"
+                        <a href="{{ product_url }}"
                            class="card-title text-dark text-decoration-none">{{ product.product_title }}</a>
 
                         <!-- Цена товара -->
@@ -120,7 +143,7 @@
                             {% if product.product_price_choice == '1' %}{# ('1', 'Простая цена'),#}
                                 {{ product.product_price }}.00
                             {% elif product.product_price_choice == '2' %} {# ('2', 'Цена с опциями'),#}
-{#                                {{ product.product_price_options.first.productoptionprice_set.first.product_option_price }}#}
+                                {#                                {{ product.product_price_options.first.productoptionprice_set.first.product_option_price }}#}
                                 {% for option in product.product_price_options.all %}
                                     {% if option.productoptionprice_set.first.product_option_price %}
                                         от {{ option.productoptionprice_set.first.product_option_price }}.00
@@ -132,11 +155,11 @@
                     </div>
 
                     <!-- Ссылка на категорию -->
-                    {% if request.path == vendor_paints %}
+                    {% if request.path == vendor_url %}
                         <div class="row mb-1">
                             <div class="col">
 
-                                <a href="{{ product.product_category.category_url }}/"
+                                <a href="{{ category_url }}"
                                    class="text-muted small text-decoration-none">
                                     {{ product.product_category.category_title }}
                                 </a>
@@ -145,7 +168,7 @@
                     {% endif %}
 
                     <div class="card-footer bg-transparent">
-                        <a href="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}"
+                        <a href="{{ product_url }}"
                            class="btn btn-primary">Посмотреть</a>
 
                     </div>

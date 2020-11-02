@@ -1,22 +1,46 @@
 {# templatetag #}
 
-    {% for category in categories %}
-        {% if not category.category_parent %}
-            <div class="col-6 col-md-4 col-lg-3 mb-3">
-                <div class="list-group list-group-flush small">
-                    <a href="{% url 'vendor-paints' category.category_url %}" class="list-group-item list-group-item-action
-                            {% if category.category_url == 'consumables' %} bg-secondary text-white{% else %} bg-danger text-white{% endif %} bg-gradient">
-                        {{ category.category_title|safe }}
-                    </a>
-                    {% for cat in categories %}
-                        {% if cat.category_parent == category %}
-                            <a href="{% url 'category' category.category_url cat.category_url %}"
-                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                                {{ cat.category_title }}
-                                <span class="badge bg-primary rounded-pill">{{ cat.product_set.count }}</span></a>
-                        {% endif %}
-                    {% endfor %}
-                </div>
+{% for category in categories %}
+    {% if not category.category_parent %}
+
+        {% url 'root-category-url' root_url=category.category_url as root_url %}
+        <a class="flex-sm-fill text-center nav-link dropdown-toggle
+           {% if paints in request.path %}btn btn-danger link-light{% else %} link-dark{% endif %}"
+           data-toggle="dropdown"
+           data-reference="parent"
+           href="#">{{ category.category_title }}</a>
+
+        <div class="dropdown-menu fade w-100 p-3 ml-n1">
+            <div class="row">
+                {% for cat in categories %}
+                    {% if cat.category_parent == category %}
+                        <div class="col-6 col-md-4 col-lg-3 mb-3">
+                            <div class="list-group list-group-flush small">
+                            {% url 'vendor-category-url' root_url=category.category_url vendor_url=cat.category_url as vendor_url %}
+                                <a href="{{ vendor_url }}"
+                                   class="list-group-item list-group-item-action
+                                   {% if cat.category_url == 'consumables' %}
+                                   bg-secondary text-white
+                                   {% else %}
+                                   bg-danger text-white
+                                   {% endif %}
+                                   bg-gradient">
+                                   {{ cat.category_title|safe }}
+                                </a>
+                                {% for c in categories %}
+                                    {% if c.category_parent == cat %}
+                                        {% url 'category-url' root_url=category.category_url vendor_url=cat.category_url category_url=c.category_url as category_url %}
+                                        <a href="{{ category_url }}"
+                                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                            {{ c.category_title }}
+                                            <span class="badge bg-primary rounded-pill">{{ c.product_set.count }}</span></a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
             </div>
-        {% endif %}
-    {% endfor %}
+        </div>
+    {% endif %}
+{% endfor %}
