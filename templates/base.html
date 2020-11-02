@@ -144,7 +144,6 @@
     {# / Логотип, поиск, корзина #}
 
     <!-- Меню сайта -->
-    {% url 'paints' as paints %}
     <div class="row px-1 px-xl-3 py-2 mx-0 mb-3 bg-gradient bg-light position-relative">
         <nav class="nav nav-pills flex-column flex-sm-row" id="main_menu">
 
@@ -152,32 +151,8 @@
             {% if request.path == '/' %}btn btn-danger link-light{% else %} link-dark{% endif %}"
                aria-current="page" href="/">Главная</a>
 
+            {% categories %}
 
-            <a class="flex-sm-fill text-center nav-link
-            {% if paints in request.path %}btn btn-danger link-light{% else %} link-dark{% endif %}
-             dropdown-toggle" data-toggle="dropdown" data-reference="parent" href="#">
-                Краски и масла</a>
-
-            <div class="dropdown-menu fade w-100 p-3 ml-n1">
-                <div class="row">
-                    {% categories vendor %}
-                </div>
-                <div class="row">
-                    <div class="col-12 text-center align-middle"><h3>Не знаете что выбрать?</h3></div>
-                </div>
-            </div>
-
-
-            <a class="flex-sm-fill text-center nav-link link-dark dropdown-toggle" data-toggle="dropdown"
-               data-reference="parent" href="#">Столярные изделия</a>
-            <div class="dropdown-menu fade w-100 p-3 ml-n1">
-                Столярные изделия
-            </div>
-            <a class="flex-sm-fill text-center nav-link link-dark dropdown-toggle" data-toggle="dropdown"
-               data-reference="parent" href="#">Услуги</a>
-            <div class="dropdown-menu fade w-100 p-3 ml-n1">
-                Услуги
-            </div>
             <a class="flex-sm-fill text-center nav-link link-dark" href="/contacts/">Контакты</a>
             <a class="flex-sm-fill text-center nav-link link-dark" href="#">Оплата и доставка</a>
             <a class="flex-sm-fill text-center nav-link link-dark" href="#">Блог</a>
@@ -196,93 +171,94 @@
 
 <footer class="bg-dark text-white">
     <div class="container">
-        <div class="row py-4 justify-content-between">
+        <div class="row row-cols-2 row-cols-md-4 py-4 small g-4">
 
-            <div class="col col-md-3 col-sm-6">
-                <h5>Свяжитесь с нами</h5>
+            <div class="col">
+                <h5 class="mb-3">Свяжитесь с нами</h5>
                 <ul class="list-unstyled">
-                    <li class="address"><b>Наш адрес: </b>г. Казань, ул. Сибирский тракт, д. 34А, офис 136</li>
-                    <li class="row row-cols-2 my-3">
-                        <div class="col">
-                            
-                        <a href="https://goo.gl/maps/p9Ude12ALTBFFBF18" target="blank"><img
-                                src="{% static 'img/google_maps_icon.jpg' %}"
-                                style="width: 85px; border-radius: 13px;" alt="ООО Империал на google картах"></a>
-                        </div>
-                        <div class="col">
-                        <a href="https://yandex.ru/maps/-/CGhy4OLZ" target="blank"><img
-                                src="{% static 'img/yandex-maps.jpg' %}"
-                                style="width: 85px; border-radius: 13px;" alt="ООО Империал на yandex картах"></a>
+                    <li class="mb-3"><b>Наш адрес: </b>г. Казань, ул. Сибирский тракт, д. 34А, офис 136</li>
+                    <li class="row mb-3">
+                        <div class="row w-100 gx-3">
+                            <div class="col-6">
+                                <a href="https://goo.gl/maps/p9Ude12ALTBFFBF18" target="blank"><img
+                                        src="{% static 'img/google_maps_icon.jpg' %}" class="img-fluid"
+                                        style="border-radius: 13px;" alt="ООО Империал на google картах"></a>
+                            </div>
+                            <div class="col-6">
+                                <a href="https://yandex.ru/maps/-/CGhy4OLZ" target="blank"><img
+                                        src="{% static 'img/yandex-maps.jpg' %}" class="img-fluid"
+                                        style="border-radius: 13px;" alt="ООО Империал на yandex картах"></a>
+                            </div>
                         </div>
                     </li>
-                    <li class="email"><b>Техподдержка:</b> <a class="link-light text-decoration-none"
-                                                                      href="mailto:support@derevo116.ru">support@derevo116.ru</a>
+                    <li class="email mb-3"><b>Техподдержка:</b> <a class="link-light text-decoration-none"
+                                                                   href="mailto:support@derevo116.ru">support@derevo116.ru</a>
                     </li>
-                    <li class="phone"><b>Телефон:</b> <a class="link-light text-decoration-none"
-                                                                 href="tel:78432739196">8-843-273-91-96</a>
+                    <li class="phone mb-3"><b>Телефон:</b> <a class="link-light text-decoration-none text-nowrap"
+                                                              href="tel:78432739196">8-843-273-91-96</a>
                     </li>
                 </ul>
             </div>
-            <div class="col col-md-2 col-sm-6">
-                <h5>Информация</h5>
+            <div class="col">
+                <h5 class="mb-3">Информация</h5>
                 <ul class="list-unstyled">
                     <li class="mb-2"><a class="link-light text-decoration-none" href="/about_us/">О нас</a></li>
-                    <li class="mb-2"><a class="link-light text-decoration-none" href="/delivery/">Доставка и оплата</a></li>
+                    <li class="mb-2"><a class="link-light text-decoration-none" href="/delivery/">Доставка и оплата</a>
+                    </li>
                     <li class="mb-2"><a class="link-light text-decoration-none" href="/privacy/">Приватность</a></li>
-                    <li class="mb-2"><a class="link-light text-decoration-none" href="/contact-us/">Свяжитесь с нами</a></li>
+                    <li class="mb-2"><a class="link-light text-decoration-none" href="/contact-us/">Свяжитесь с нами</a>
+                    </li>
                     <li class="mb-2"><a class="link-light text-decoration-none" href="/sitemap/">Карта сайта</a></li>
                 </ul>
             </div>
-            <div class="col col-md-2 col-sm-6">
+            <div class="col">
                 <h5>Социальные сети</h5>
 
-                        <div class="text-nowrap mb-3"><a class="text-muted" href="https://www.facebook.com/biofa16/" target="_blank">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 46 46"
-                                     role="img">
-                                    <title id="facebook-icon">Facebook</title>
-                                    <path fill="#E5E5E5"
-                                          d="M18.896 20.12h1.758v-1.708c0-.753.02-1.915.566-2.635.576-.762 1.368-1.28 2.73-1.28 2.218 0 3.15.316 3.15.316l-.438 2.605s-.73-.212-1.417-.212c-.684 0-1.296.245-1.296.93v1.985h2.803l-.194 2.547h-2.61v8.84h-3.297v-8.84h-1.758V20.12z"></path>
-                                    <path class="button--svg__border" fill="#3C599A"
-                                          d="M23 3c11.027 0 20 8.972 20 20 0 11.027-8.973 20-20 20-11.028 0-20-8.973-20-20C3 11.972 11.972 3 23 3m0-2C10.85 1 1 10.85 1 23s9.85 22 22 22 22-9.85 22-22S35.15 1 23 1z"></path>
-                                </svg>
-                            </a>
+                <div class="text-nowrap mb-4">
+                    <a class="text-decoration-none" href="https://www.facebook.com/biofa16/" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 46 46" role="img">
+                            <title id="facebook-icon">Facebook</title>
+                            <path fill="#E5E5E5"
+                                  d="M18.896 20.12h1.758v-1.708c0-.753.02-1.915.566-2.635.576-.762 1.368-1.28 2.73-1.28 2.218 0 3.15.316 3.15.316l-.438 2.605s-.73-.212-1.417-.212c-.684 0-1.296.245-1.296.93v1.985h2.803l-.194 2.547h-2.61v8.84h-3.297v-8.84h-1.758V20.12z"></path>
+                            <path class="button--svg__border" fill="#3C599A"
+                                  d="M23 3c11.027 0 20 8.972 20 20 0 11.027-8.973 20-20 20-11.028 0-20-8.973-20-20C3 11.972 11.972 3 23 3m0-2C10.85 1 1 10.85 1 23s9.85 22 22 22 22-9.85 22-22S35.15 1 23 1z"></path>
+                        </svg>
+                    </a>
 
-                                <a class="text-muted" href="https://www.instagram.com/imperial_biofa_kzn/"
-                                   target="_blank">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 46 46"
-                                         role="img">
-                                        <title id="instagram-icon">Instagram</title>
-                                        <path class="button--svg__border" fill="#b18f49"
-                                              d="M23 3c11.028 0 20 8.972 20 20s-8.972 20-20 20S3 34.028 3 23 11.972 3 23 3m0-2C10.85 1 1 10.85 1 23s9.85 22 22 22 22-9.85 22-22S35.15 1 23 1z"></path>
-                                        <path fill="#E5E5E5"
-                                              d="M29.76 29.03v-7.373h-1.537c.152.48.23.975.23 1.49 0 .958-.243 1.838-.73 2.647-.485.807-1.146 1.447-1.98 1.918-.834.47-1.744.705-2.73.705-1.495 0-2.773-.514-3.835-1.543-1.062-1.027-1.593-2.27-1.593-3.726 0-.517.076-1.013.228-1.49H16.21v7.373c0 .2.065.37.2.5.13.14.296.2.494.2H29.07c.188 0 .352-.06.488-.2s.202-.3.202-.49zm-3.233-6.064c0-.94-.343-1.743-1.03-2.406-.686-.664-1.515-.996-2.486-.996-.96 0-1.78.332-2.47.996-.68.663-1.03 1.466-1.03 2.406 0 .942.35 1.743 1.03 2.407s1.51.996 2.48.996c.975 0 1.8-.34 2.49-1s1.03-1.47 1.03-2.41zm3.233-4.097v-1.88c0-.22-.076-.4-.23-.56-.15-.158-.336-.235-.556-.235h-1.98c-.22 0-.406.08-.558.233-.15.155-.228.34-.228.552v1.876c0 .22.076.404.228.556s.337.23.558.23h1.98c.22 0 .406-.078.557-.23.16-.15.23-.338.23-.558zm1.98-2.37v12.99c0 .61-.22 1.14-.66 1.58-.44.44-.967.66-1.582.66H16.502c-.614 0-1.142-.22-1.582-.66-.44-.44-.66-.97-.66-1.586V16.5c0-.614.22-1.142.66-1.582.44-.44.967-.66 1.582-.66h12.996c.615 0 1.14.22 1.582.66.44.44.66.967.66 1.58z"></path>
-                                    </svg>
-                                </a>
-                                <a class="text-muted" href="https://vk.com/biofa_kzn"
-                                   target="_blank">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 46 46"
-                                         role="img">
-                                        <title id="vk-icon">VK</title>
-                                        <path class="button--svg__border" fill="#2f4d6d"
-                                              d="M23 3c11.028 0 20 8.972 20 20s-8.972 20-20 20S3 34.028 3 23 11.972 3 23 3m0-2C10.85 1 1 10.85 1 23s9.85 22 22 22 22-9.85 22-22S35.15 1 23 1z"></path>
-
-                                        <path fill="#E5E5E5"
-                                              d="M 24.162 29.994 c 0.609 0 0.858 -0.406 0.851 -0.915 c -0.031 -1.917 0.714 -2.949 2.059 -1.604 c 1.488 1.488 1.796 2.519 3.603 2.519 h 3.2 c 0.808 0 1.126 -0.26 1.126 -0.668 c 0 -0.863 -1.421 -2.386 -2.625 -3.504 c -1.686 -1.565 -1.765 -1.602 -0.313 -3.486 C 33.864 19.997 36.22 17 34.136 17 h -3.981 c -0.772 0 -0.828 0.435 -1.103 1.083 c -0.995 2.347 -2.886 5.387 -3.604 4.922 c -0.751 -0.485 -0.407 -2.406 -0.35 -5.261 c 0.015 -0.754 0.011 -1.271 -1.141 -1.539 A 8.07 8.07 0 0 0 22.148 16 c -2.273 0 -3.841 0.953 -2.95 1.119 c 1.571 0.293 1.42 3.692 1.054 5.16 c -0.638 2.556 -3.036 -2.024 -4.035 -4.305 C 15.976 17.426 15.902 17 15.042 17 H 11.787 C 11.295 17 11 17.16 11 17.516 c 0 0.602 2.96 6.72 5.786 9.77 c 2.756 2.975 5.48 2.708 7.376 2.708 z"></path>
-                                    </svg>
-                                </a>
-                            </div>
-                                            <h5>Инстаграм</h5>
+                    <a class="text-decoration-none" href="https://www.instagram.com/imperial_biofa_kzn/" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 46 46"
+                             role="img">
+                            <title id="instagram-icon">Instagram</title>
+                            <path class="button--svg__border" fill="#b18f49"
+                                  d="M23 3c11.028 0 20 8.972 20 20s-8.972 20-20 20S3 34.028 3 23 11.972 3 23 3m0-2C10.85 1 1 10.85 1 23s9.85 22 22 22 22-9.85 22-22S35.15 1 23 1z"></path>
+                            <path fill="#E5E5E5"
+                                  d="M29.76 29.03v-7.373h-1.537c.152.48.23.975.23 1.49 0 .958-.243 1.838-.73 2.647-.485.807-1.146 1.447-1.98 1.918-.834.47-1.744.705-2.73.705-1.495 0-2.773-.514-3.835-1.543-1.062-1.027-1.593-2.27-1.593-3.726 0-.517.076-1.013.228-1.49H16.21v7.373c0 .2.065.37.2.5.13.14.296.2.494.2H29.07c.188 0 .352-.06.488-.2s.202-.3.202-.49zm-3.233-6.064c0-.94-.343-1.743-1.03-2.406-.686-.664-1.515-.996-2.486-.996-.96 0-1.78.332-2.47.996-.68.663-1.03 1.466-1.03 2.406 0 .942.35 1.743 1.03 2.407s1.51.996 2.48.996c.975 0 1.8-.34 2.49-1s1.03-1.47 1.03-2.41zm3.233-4.097v-1.88c0-.22-.076-.4-.23-.56-.15-.158-.336-.235-.556-.235h-1.98c-.22 0-.406.08-.558.233-.15.155-.228.34-.228.552v1.876c0 .22.076.404.228.556s.337.23.558.23h1.98c.22 0 .406-.078.557-.23.16-.15.23-.338.23-.558zm1.98-2.37v12.99c0 .61-.22 1.14-.66 1.58-.44.44-.967.66-1.582.66H16.502c-.614 0-1.142-.22-1.582-.66-.44-.44-.66-.97-.66-1.586V16.5c0-.614.22-1.142.66-1.582.44-.44.967-.66 1.582-.66h12.996c.615 0 1.14.22 1.582.66.44.44.66.967.66 1.58z"></path>
+                        </svg>
+                    </a>
+                    <a class="text-decoration-none" href="https://vk.com/biofa_kzn" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 46 46"
+                             role="img">
+                            <title id="vk-icon">VK</title>
+                            <path class="button--svg__border" fill="#2f4d6d"
+                                  d="M23 3c11.028 0 20 8.972 20 20s-8.972 20-20 20S3 34.028 3 23 11.972 3 23 3m0-2C10.85 1 1 10.85 1 23s9.85 22 22 22 22-9.85 22-22S35.15 1 23 1z"></path>
+                            <path fill="#E5E5E5"
+                                  d="M 24.162 29.994 c 0.609 0 0.858 -0.406 0.851 -0.915 c -0.031 -1.917 0.714 -2.949 2.059 -1.604 c 1.488 1.488 1.796 2.519 3.603 2.519 h 3.2 c 0.808 0 1.126 -0.26 1.126 -0.668 c 0 -0.863 -1.421 -2.386 -2.625 -3.504 c -1.686 -1.565 -1.765 -1.602 -0.313 -3.486 C 33.864 19.997 36.22 17 34.136 17 h -3.981 c -0.772 0 -0.828 0.435 -1.103 1.083 c -0.995 2.347 -2.886 5.387 -3.604 4.922 c -0.751 -0.485 -0.407 -2.406 -0.35 -5.261 c 0.015 -0.754 0.011 -1.271 -1.141 -1.539 A 8.07 8.07 0 0 0 22.148 16 c -2.273 0 -3.841 0.953 -2.95 1.119 c 1.571 0.293 1.42 3.692 1.054 5.16 c -0.638 2.556 -3.036 -2.024 -4.035 -4.305 C 15.976 17.426 15.902 17 15.042 17 H 11.787 C 11.295 17 11 17.16 11 17.516 c 0 0.602 2.96 6.72 5.786 9.77 c 2.756 2.975 5.48 2.708 7.376 2.708 z"></path>
+                        </svg>
+                    </a>
+                </div>
+                <h5>Инстаграм</h5>
                 <a href="https://www.instagram.com/imperial_biofa_kzn/" target="blank">
-                    <img src="{% static 'img/instagram.jpg' %}" alt="Instagram @imperial_biofa_kzn" class="img-fluid mb-3" style="border-radius: 8px;"></a>
+                    <img src="{% static 'img/instagram.jpg' %}" alt="Instagram @imperial_biofa_kzn"
+                         class="img-fluid mb-3" style="border-radius: 8px;"></a>
             </div>
-            <div class="col col-md-2 col-sm-6">
+            <div class="col">
                 <h5>Новости</h5>
-                <label>
+                <label class="d-block">
                     <input type="text" class="newsletter_email mb-1 w-100" name="mail_subscribe" value=""
                            placeholder="Введите ваш email для получения полезных статей">
                 </label>
-                <a role="button" class="btn btn-primary"
-                        href='#'>
+                <a role="button" class="btn btn-primary btn-block"
+                   href='#'>
                     Подписаться
                 </a>
             </div>
@@ -291,7 +267,8 @@
 
         <div class="row py-4 text-center small border border-1 border-white border-left-0 border-right-0">
             <ul class="list-unstyled list-inline">
-                <li class="list-inline-item"><a class="link-light text-decoration-none" href="/brands/">Поставщики</a></li>
+                <li class="list-inline-item"><a class="link-light text-decoration-none" href="/brands/">Поставщики</a>
+                </li>
                 <li class="list-inline-item"><a class="link-light text-decoration-none" href="/specials/">Акции</a></li>
                 <li class="list-inline-item"><a class="link-light text-decoration-none" href="/account-return-add/">Возвраты</a></li>
                 <li class="list-inline-item"><a class="link-light text-decoration-none" href="/order-history/">История заказов</a></li>

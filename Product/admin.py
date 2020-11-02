@@ -34,14 +34,6 @@ class ProductCategoryList(admin.TabularInline):
 
 
 class ProductCategoryAdmin(admin.ModelAdmin):
-    def category_name(self, obj):
-        if obj.category_parent:
-            return mark_safe(f'{obj.category_parent.category_title} -- {obj.category_title}')
-        else:
-            return mark_safe(obj.category_title)
-
-    category_name.short_description = 'Категория'
-
     list_display = ['category_name', 'category_sort', 'category_main_menu']
     list_editable = ['category_sort', 'category_main_menu']
     inlines = [ProductCategoryList]
@@ -133,6 +125,13 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
                     'product_link']
     list_filter = ['product_vendor', 'product_show', 'product_price_choice', RefererFilter, 'product_count']
     filter_horizontal = ['product_images', 'product_color', 'product_tab', 'product_price_options']
+    save_on_top = True
+    list_display_links = ['image_preview', 'product_title']
+    readonly_fields = ('image_preview', 'product_link', 'fill_url', 'help_attr', 'fill_img_title', 'edit_images',
+                       'copy_url', 'edit_colors', 'edit_options')
+    # prepopulated_fields = {"product_price_options.option_group": ("product_title",)}
+    radio_fields = {"product_price_choice": admin.VERTICAL}
+    list_per_page = 20
     fieldsets_with_inlines = (
         (None, {
             'fields': ('product_show',
@@ -141,8 +140,7 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
                        'product_vendor',
                        'product_vendor_code',
                        'product_title',
-                       ('product_url',
-                       'fill_url'),
+                       ('product_url', 'fill_url'),
                        'product_count',
                        )
         }),
@@ -159,16 +157,14 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
         ('Изображение', {
             'classes': ('collapse',),
             'fields': (('image_preview', 'product_img'),
-                       ('product_img_title',
-                        'fill_img_title'),
+                       ('product_img_title', 'fill_img_title'),
                        'product_images',
                        'edit_images',
                        ),
         }),
         ('Дополнительно', {
             'classes': ('collapse',),
-            'fields': (('product_file',
-                        'copy_url'),
+            'fields': (('product_file', 'copy_url'),
                        'product_tab'),
         }),
         ('Цена', {
@@ -182,37 +178,27 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
                        )
         })
     )
-    save_on_top = True
-    list_display_links = ['image_preview', 'product_title']
-    readonly_fields = ('image_preview', 'product_link', 'fill_url', 'help_attr', 'fill_img_title', 'edit_images', 'copy_url', 'edit_colors', 'edit_options')
-    # prepopulated_fields = {"product_price_options.option_group": ("product_title",)}
-    radio_fields = {"product_price_choice": admin.VERTICAL}
-    list_per_page = 20
 
     def fill_url(self, obj):
-        snap='<snap style="cursor: pointer" class="text-primary" onclick="' \
-             'let vendor = Array.from(id_product_vendor.options).filter(option => option.selected).map(option => option.textContent);' \
-             'let code = id_product_vendor_code.value;' \
-             'let url_input = document.getElementById(\'id_product_url\');' \
-             'let slug = (code + \'-\' + vendor).toLowerCase().replace(/\\s+/g, \'-\');' \
-             'url_input.value = slug;' \
-             '">Заполнить (артикул-поставщик)</snap>'
+        snap = '<snap style="cursor: pointer" class="text-primary" onclick="' \
+               'let vendor = Array.from(id_product_vendor.options).filter(option => option.selected).map(option => option.textContent);' \
+               'let code = id_product_vendor_code.value;' \
+               'let url_input = document.getElementById(\'id_product_url\');' \
+               'let slug = (code + \'-\' + vendor).toLowerCase().replace(/\\s+/g, \'-\');' \
+               'url_input.value = slug;' \
+               '">Заполнить (артикул-поставщик)</snap>'
         return mark_safe(snap)
-
-    fill_url.short_description = ""
 
     def fill_img_title(self, obj):
-        snap='<snap style="cursor: pointer" class="text-primary" onclick="' \
-             'let title = id_product_title.value;' \
-             'id_product_img_title.value = title;' \
-             '">' \
-             'Заполнить это поле из названия</snap><br>' \
-             '<span class="text-primary" style="cursor:pointer;" ' \
-             'onclick="if (navigator.clipboard) navigator.clipboard.writeText(id_product_title.value)">' \
-             'Копировать название продукта</span>'
+        snap = '<snap style="cursor: pointer" class="text-primary" onclick="' \
+               'let title = id_product_title.value;' \
+               'id_product_img_title.value = title;' \
+               '">' \
+               'Заполнить это поле из названия</snap><br>' \
+               '<span class="text-primary" style="cursor:pointer;" ' \
+               'onclick="if (navigator.clipboard) navigator.clipboard.writeText(id_product_title.value)">' \
+               'Копировать название продукта</span>'
         return mark_safe(snap)
-
-    fill_img_title.short_description = ""
 
     def edit_images(self, obj):
         url = ''
@@ -253,20 +239,14 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
 
         return mark_safe(url)
 
-    edit_options.short_description = "Дополнительно"
-
     def help_attr(self, obj):
         return '<sup>2</sup>\n<sup>3</sup>\n°C'
 
-    help_attr.short_description = 'Подсказки для копирования'
-
-    def copy_url(self,obj):
+    def copy_url(self, obj):
         snap = '<span class="text-primary" style="cursor:pointer;" ' \
                'onclick="if (navigator.clipboard) navigator.clipboard.writeText(id_product_url.value)">' \
                'Копировать URL продукта</span>'
         return mark_safe(snap)
-
-    copy_url.short_description = ''
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         field = super(ProductAdmin, self).formfield_for_dbfield(db_field, **kwargs)
@@ -278,15 +258,14 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
 
     def product_link(self, obj):
         if obj.product_url:
-            vendor_link = obj.product_vendor.vendor_url
-            category_link = f'{obj.product_category.category_url}'
-            product_link = f'{obj.product_url}'
-            url = reverse('product', args=(vendor_link, category_link, product_link,))
+            root_link = obj.product_category.category_parent.category_parent.category_url
+            vendor_link = obj.product_category.category_parent.category_url
+            category_link = obj.product_category.category_url
+            product_link = obj.product_url
+            url = reverse('product-url', args=(root_link, vendor_link, category_link, product_link,))
             return mark_safe(f'<a href="{url}" target="_blank"><i class="fas fa-external-link-alt fa-2x"></i></i></a>')
         else:
             return '(No link)'
-
-    product_link.short_description = 'Перейти'
 
     def image_preview(self, obj):
         """либо показывает изображение в поле Обзор, либо пишет No image"""
@@ -296,13 +275,18 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
         else:
             return '(No image)'
 
-    image_preview.short_description = 'Просмотр'
-
     def product_category_with_html(self, obj):
         if obj.product_category:
             return mark_safe(obj.product_category)
 
+    image_preview.short_description = 'Изображение'
     product_category_with_html.short_description = 'Категория'
+    fill_url.short_description = ""
+    fill_img_title.short_description = ""
+    edit_options.short_description = "Дополнительно"
+    help_attr.short_description = 'Подсказки для копирования'
+    copy_url.short_description = ''
+    product_link.short_description = 'Перейти'
 
     class Media:
         css = {

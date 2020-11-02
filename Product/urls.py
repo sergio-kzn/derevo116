@@ -14,14 +14,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path, include
+
+from Index import views as index
 from . import views
 
 
 urlpatterns = [
     # path('biofa/', include('BiofaImportBD.urls'), name='biofa_paints'),
-    path('<slug:vendor_url>/<slug:category_url>/<slug:product_url>/', views.product, name='product'),
-    path('<slug:vendor_url>/<slug:category_url>/', views.category, name='category'),
-    path('<slug:vendor_url>/', views.vendor_category, name='vendor-paints'),
-    path('', views.all_category, name='paints'),
+    path('<slug:root_url>/<slug:vendor_url>/<slug:category_url>/<slug:product_url>/', views.product, name='product-url'),
+    path('<slug:root_url>/<slug:vendor_url>/<slug:category_url>/', views.category, name='category-url'),
+    path('<slug:root_url>/<slug:vendor_url>/', views.vendor_category, name='vendor-category-url'),
+    path('<slug:root_url>/', views.root_category, name='root-category-url'),
+    # path('', views.root_category, name='root-category'),
+    # path('', index.index),
 
 ]

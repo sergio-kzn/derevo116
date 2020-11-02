@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.safestring import mark_safe
 from sorl.thumbnail import ImageField
 
 
@@ -7,18 +8,25 @@ class ProductCategory(models.Model):
     category_parent = models.ForeignKey("self", verbose_name='Родительская категория', null=True, blank=True, on_delete=models.DO_NOTHING)
     category_title = models.CharField(verbose_name='Категория', max_length=100)
     category_sort = models.IntegerField(verbose_name='Сортировка', default=0)
-    category_url = models.SlugField(verbose_name='Ссылка url (проверьте vendor_url)', unique=True)
+    category_url = models.SlugField(verbose_name='Ссылка url (проверьте root_url)', unique=True)
     category_main_menu = models.BooleanField(verbose_name='Показывать в главном меню?', default=False)
-    def __str__(self):
-        from django.utils.safestring import mark_safe
-        if self.category_parent:
-            return mark_safe(f'{self.category_parent.category_title} -- {self.category_title}')
-        else:
-            return mark_safe(self.category_title)
+
     class Meta:
-        ordering = ['category_parent__id', 'category_sort']
-        verbose_name = 'Категория (Краски и масла)'
-        verbose_name_plural = 'Категории (Краски и масла)'
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
+        ordering = ['category_sort']
+
+    def __str__(self):
+        return self.category_title
+
+    def category_name(self):
+        name = self.category_title
+        if self.category_parent:
+            name = f'{self.category_parent.category_title}  --  {name}'
+            if self.category_parent.category_parent:
+                name = f'{self.category_parent.category_parent.category_title}  --  {name}'
+        return mark_safe(name)
+
 
 
 class ProductVendor(models.Model):

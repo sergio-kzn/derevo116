@@ -42,21 +42,41 @@
         #number-of-goods-input input[type=number] {
             -moz-appearance: textfield;
         }
+
+        .no-photo:before {
+            content: '\f1c5';
+            font-family: 'Font Awesome 5 Free', serif;
+            color: #80808042;
+            font-size: xx-large;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 50%;
+            margin-top: 50%;
+            margin-left: -50%;
+        }
     </style>
 {% endblock %}
 
 {% block title %}{{ product.product_title }} - купить в Казани{% endblock title %}
 
 {% block breadcrumb-category %}
-    <li class="breadcrumb-item"><a
-            href="{% url 'vendor-paints' product.product_vendor.vendor_url %}">{{ product.product_vendor.vendor_title }}</a>
-    <li class="breadcrumb-item"><a
-            href="{% url 'category' product.product_vendor.vendor_url product.product_category.category_url %}">{{ product.product_category.category_title }}</a>
-    </li>
+    <!-- Хлебные крошки -->
+    {% url 'root-category-url' root_url=root_category.category_url as root_url %}
+    {% url 'vendor-category-url' root_url=root_category.category_url vendor_url=current_category.category_parent.category_url as vendor_url %}
+    {% url 'category-url' root_url=root_category.category_url vendor_url=current_category.category_parent.category_url category_url=current_category.category_url as category_url %}
+
+    <li class="breadcrumb-item"><a href="{{ root_url }}">{{ root_category.category_title }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ vendor_url }}">{{ current_category.category_parent.category_title|safe  }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ category_url }}">{{ current_category.category_title }}</a></li>
     <li class="breadcrumb-item active">{{ product.product_title }}</li>
 {% endblock breadcrumb-category %}
 
 {% block content_product %}
+    {% url 'root-category-url' root_url=root_category.category_url as root_url %}
+    {% url 'vendor-category-url' root_url=root_category.category_url vendor_url=current_category.category_parent.category_url as vendor_url %}
+    {% url 'category-url' root_url=root_category.category_url vendor_url=current_category.category_parent.category_url category_url=current_category.category_url as category_url %}
+    {% url 'product-url' root_url=root_category.category_url vendor_url=current_category.category_parent.category_url category_url=current_category.category_url product_url=product.product_url as product_url %}
 
     <!-- Modal window for COLORS -->
     {% if colors.all|length > 0 %}
@@ -202,7 +222,7 @@
             <!-- Поставщик, артикул, наличие -->
             <ul class="small list-unstyled text-muted my-3">
                 <li>Поставщик: <a
-                        href="{% url 'vendor-paints' product.product_vendor.vendor_url %}">{{ product.product_vendor.vendor_title }}</a>
+                        href="{{ vendor_url }}">{{ product.product_vendor.vendor_title }}</a>
                 </li>
                 <li>Артикул: {{ product.product_vendor_code }}</li>
                 <li>Наличие: <span class="text-success font-weight-bold">{{ product.product_count }}</span>
@@ -340,7 +360,7 @@
                             class="btn btn-primary btn-lg {% if product.product_img %} btn-block {% endif %} my-3"
                             id="add-to-basket"
                             data-title="{{ product.product_title }}"
-                            data-url="{% url 'product' product.product_vendor.vendor_url product.product_category.category_url product.product_url %}"
+                            data-url="{{ product_url }}"
                             data-count="1"
                             {% if colors %}
                             data-color-check
@@ -349,8 +369,8 @@
                                 {% for option in options_price %}
                             data-title-option-{{ forloop.counter }}="{{ option.product_price_option }}"
                             data-option-{{ forloop.counter }}="{{ option.productoptionprice_set.first.product_option }}"
-                        data-price-option-{{ forloop.counter }}="{{ option.productoptionprice_set.first.product_option_price|default_if_none:0 }}"
-                            {% endfor %}
+                            data-price-option-{{ forloop.counter }}="{{ option.productoptionprice_set.first.product_option_price|default_if_none:0 }}"
+                                {% endfor %}
                         data-max-options="{{ options_price.count }}"
                         {% endif %}
                         data-price-product="{{ product.product_price }}"
@@ -532,10 +552,13 @@
 
     <!-- Похожие товары -->
     <div class="row mb-3">
-        <h2>Похожие <i class="font-weight-normal">товары от</i> {{ product.product_vendor.vendor_title }}</h2>
+        <h2>Похожие <i class="font-weight-normal">товары</i> от <i class="font-weight-normal">{{ product.product_vendor.vendor_title }}</i></h2>
 
         <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 mb-3 g-4">
             {% for item in random_items %}
+                {% url 'product-url' root_url=item.product_category.category_parent.category_parent.category_url vendor_url=item.product_category.category_parent.category_url category_url=item.product_category.category_url product_url=item.product_url as random_product_url %}
+                {% url 'category-url' root_url=item.product_category.category_parent.category_parent.category_url vendor_url=item.product_category.category_parent.category_url category_url=item.product_category.category_url as random_category_url %}
+
                 <div class="col
                 {% if forloop.counter == 5 %} d-none d-lg-flex {% endif %}
                 {% if forloop.counter == 4 %} d-none d-md-flex {% endif %}
@@ -550,13 +573,13 @@
                             <div class="col">
                                 {% if item.product_img %}
                                     {% thumbnail item.product_img "300x300" padding=True format="WEBP" as im %}
-                                        <a href="{% url 'product' item.product_vendor.vendor_url item.product_category.category_url item.product_url %}">
+                                        <a href="{{ random_product_url }}">
                                             <img src="{{ im.url }}" class="img-fluid my-2"
                                                  alt="{{ item.product_title }}">
                                         </a>
                                     {% endthumbnail %}
                                 {% else %}
-                                    <a href="{% url 'product' item.product_vendor.vendor_url item.product_category.category_url item.product_url %}">
+                                    <a href="{{ random_product_url }}">
                                         <div class="img-fluid my-2 no-photo" style="padding: 50% 0"></div>
                                     </a>
                                 {% endif %}
@@ -565,7 +588,7 @@
 
                         <div class="card-body p-1">
                             <!-- Название товара -->
-                            <a href="{% url 'product' item.product_vendor.vendor_url item.product_category.category_url item.product_url %}"
+                            <a href="{{ random_product_url }}"
                                class="card-title text-dark text-decoration-none">{{ item.product_title }}</a>
 
                             <!-- Цена товара -->
@@ -583,8 +606,8 @@
 
                         <!-- Ссылка на категорию -->
                         <div class="row mb-1">
-                            <div class="col">
-                                <a href="{{ item.product_category.category_url }}/"
+                            <div class="col" style="line-height: 1.2;">
+                                <a href="{{ random_category_url }}"
                                    class="text-muted small text-decoration-none">
                                     {{ item.product_category.category_title }}
                                 </a>
@@ -592,7 +615,7 @@
                         </div>
 
                         <div class="card-footer bg-transparent">
-                            <a href="{% url 'product' item.product_vendor.vendor_url item.product_category.category_url item.product_url %}"
+                            <a href="{{ random_product_url }}"
                                class="btn btn-primary">Посмотреть</a>
 
                         </div>
@@ -601,9 +624,9 @@
                 </div>
             {% endfor %}
         </div>
-        {% url 'paints' as paints %}
-        <h3 class="text-center "><a href="{{ paints }}" class="text-decoration-none text-muted">Посмотреть <i
-                class="font-weight-normal">весь</i> каталог</a></h3>
+        <h3 class="text-center mb-5"><a href="{{ vendor_url }}" class="text-decoration-none text-muted">Посмотреть <i
+                class="font-weight-normal">весь</i> каталог <i
+                class="font-weight-normal">{{ product.product_vendor.vendor_title }}</i></a></h3>
 
     </div>
 
@@ -613,18 +636,8 @@
     <!-- FancyBox3 JS -->
     <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
     <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
-
-    {#    <!-- открываем галерею при клике на главное изображение -->#}
-    {#    {% if images %}#}
-    {#        <script>#}
-    {#            $('#main-image').on('click', function () {#}
-    {#                $.fancybox.open($('.big-additional-images'), {#}
     {#                    // настройки галереи#}
     {#                    // http://fancyapps.com/fancybox/3/docs/#options#}
-    {#                });#}
-    {#            });#}
-    {#        </script>#}
-    {#    {% endif %}#}
 
     <script src="{% static 'js/scripts.js' %}"></script>
     <script src="{% static 'js/add-to-basket.js' %}"></script>

@@ -76,7 +76,6 @@ def random_from_all_products(total_items:int = 5) -> Product:
     random_items = random_items[:total_items]
 
     products = Product.objects.filter(id__in=random_items)
-
     return products
 
 
@@ -86,7 +85,4 @@ def last_products(total_items:int = 4) -> Product:
     :param total_items: количество товаров, которое нужно вернуть.
     :return: возвращает QuerySet с товарами
     """
-
-    all_items = Product.objects.filter(product_show=True).order_by('-id')[:total_items]
-
-    return all_items
+    return Product.objects.filter(product_show=True).order_by('-id')[:total_items]

@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='productcategory',
             name='category_url',
-            field=models.SlugField(unique=True, verbose_name='Ссылка url (проверьте vendor_url)'),
+            field=models.SlugField(unique=True, verbose_name='Ссылка url (проверьте root_url)'),
         ),
         migrations.AlterField(
             model_name='volume',

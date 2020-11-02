@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('vendor_title', models.CharField(max_length=100, verbose_name='Поставщик')),
-                ('vendor_url', models.SlugField(unique=True, verbose_name='Ссылка url')),
+                ('root_url', models.SlugField(unique=True, verbose_name='Ссылка url')),
                 ('vendor_img', models.ImageField(blank=True, upload_to='vendors', verbose_name='Изображение')),
                 ('vendor_show', models.BooleanField(default=True, verbose_name='Показывать?')),
             ],
