@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}{{ page.simple_page_title }} - ООО Империал, г. Казань{% endblock title %}
-{% block custom_head %}{% endblock %}
+{% block custom_head %}
+        <!-- FancyBox3 CSS -->
+        <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.fancybox.min.css' %}">
+{% endblock %}
 
 {# Содержимое страницы. Разное для всех приложений джанго   #}
 {% block content %}
     <div class="container mt-5">
         {% autoescape off %}
-            <h1>{{ page.simple_page_title }}</h1>
             {{ page.simple_page_context }}
         {% endautoescape %}
     </div>
@@ -14,15 +17,9 @@
 {# / Содержимое страницы #}
 
 {% block custom_footer %}
-    <script>
-        checkLoad();
-        function checkLoad() {
-            if (document.readyState === "complete") {
-                document.body.innerHTML = document.body.innerHTML.replace('<img src="/media/django-summernote/', '<img src="https://биофа-казань.рф/media/django-summernote/');
-                document.body.innerHTML = document.body.innerHTML.replace('<img src="/media/django-summernote/', '<img src="https://биофа-казань.рф/media/django-summernote/');
-            } else {
-                setTimeout('checkLoad();', 500)
-            }
-        }
-    </script>
-{% endblock custom_footer %}
+    <!-- FancyBox3 JS -->
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+    {#                    // настройки галереи#}
+    {#                    // http://fancyapps.com/fancybox/3/docs/#options#}
+{% endblock %}
