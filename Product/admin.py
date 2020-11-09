@@ -8,7 +8,7 @@ from .models import ProductCategory, Product, ProductOptionPrice, ProductAttribu
     ColorGroup, ProductVendor, ProductTab, ProductImage, ProductImageGroup, OptionGroup, OptionPrice
 
 
-class RefererFilter(admin.SimpleListFilter):
+class OptionPriceFilter(admin.SimpleListFilter):
     """Новый фильтр для Опций цен. Показыавет установлена какая либо опция или нет"""
 
     title = 'Опции цен'
@@ -26,6 +26,25 @@ class RefererFilter(admin.SimpleListFilter):
             return queryset.filter(product_price_options__isnull=False)
         if self.value() == 'True':
             return queryset.filter(product_price_options__isnull=True)
+
+
+class ColorFilter(admin.SimpleListFilter):
+    """Фильтр для Цвета. Показыавет установлены ли цвета для товара"""
+
+    title = 'Выбор цвета'
+    parameter_name = 'product_color'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('False', 'Товары с выбором Цвета'),
+            ('True', 'Товары без выбора Цвета'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'False':
+            return queryset.filter(product_color__isnull=False)
+        if self.value() == 'True':
+            return queryset.filter(product_color__isnull=True)
 
 
 class ProductCategoryList(admin.TabularInline):
@@ -123,7 +142,7 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
     summernote_fields = '__all__'
     list_display = ['image_preview', 'product_title', 'product_category_with_html', 'product_vendor_code',
                     'product_link']
-    list_filter = ['product_vendor', 'product_show', 'product_price_choice', RefererFilter, 'product_count']
+    list_filter = ['product_vendor', 'product_show', 'product_price_choice', OptionPriceFilter, ColorFilter, 'product_count']
     filter_horizontal = ['product_images', 'product_color', 'product_tab', 'product_price_options']
     save_on_top = True
     list_display_links = ['image_preview', 'product_title']

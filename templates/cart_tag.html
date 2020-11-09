@@ -1,0 +1,82 @@
+{# templatetag #}
+
+    <div class="row bg-light p-2 align-items-center">
+        <div class="col-6 text-muted">
+            <i class="fas fa-2x fa-shopping-cart"></i>
+        </div>
+        <div class="col-6 text-right">
+            <a class="stretched-link" href="#" data-toggle="modal" data-target="#basket-modal">
+                <span class="badge bg-primary" id="basket-count">{% if cart_count %}{{ cart_count }}{% else %}
+                    0{% endif %}</span><br>
+                <span class="badge bg-secondary"><span
+                        id="basket-sum">{{ cart_sum|default_if_none:0 }}</span> руб.</span>
+            </a>
+        </div>
+    </div>
+    <div class="modal fade h-auto p-0 position-absolute right-0" style="width: 296px;"
+         tabindex="-1" id="basket-modal" aria-labelledby="basket-modal" aria-hidden="true"
+         data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog m-0">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Корзина</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Закрыть корзину">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-1 overflow-auto" style="max-height: 350px">
+                    <ul class="list-group list-group-flush" id="basket-list">
+                        {% if cart_item %}
+                            {% for item in cart_item %}
+                                <li class="list-group-item list-group-item-action px-1" id="{{ item.li_id }}">
+                                    <div class="basket-list-title-item d-flex justify-content-between">
+                                        <a class="text-decoration-none text-dark font-weight-bolder mb-1"
+                                           href="{{ item.title_href }}">
+                                            {{ item.title }}
+                                        </a>
+                                        <span class="badge bg-primary rounded-pill basket-list-count h-25">
+                                            {{ item.count }}
+                                        </span>
+                                    </div>
+                                    <div class="basket-list-options text-muted small d-flex justify-content-between align-items-center">
+                                        <div class="basket-list-color">
+                                            {% if item.color %}
+                                                Цвет: {{ item.color }}<br>
+                                            {% endif %}
+                                            {% if item.options %}
+                                                {{ item.options|safe }}
+                                            {% endif %}
+                                            <span>Цена: <b>{{ item.price }} ₽</b></span>
+                                        </div>
+                                        <span class="btn btn-outline-danger btn-sm delete_from_basket px-2"
+                                              role="button"
+                                              onclick="delete_item_from_basket('{{ item.li_id }}', {{ item.cart_count }}, {{ item.cart_sum }})">x</span>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+                        <li class="list-group-item list-group-item-action px-1 disabled {% if cart_item %}d-none{% endif %}"
+                            id="empty-basket">Корзина
+                            совсем пустая :(
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <p class="w-100" id="basket-sum-footer"></p>
+                    <div class="row row-cols-3 w-100 justify-content-around align-items-center">
+                        <div class="col p-0 small">
+                            <a href="{% url 'clear_cart' %}" class="text-danger">Очистить</a>
+                        </div>
+                        <div class="col p-0">
+                            <button type="button" class="col btn btn-secondary btn-sm" data-dismiss="modal">Скрыть
+                            </button>
+                        </div>
+                        <div class="col p-0">
+                            <a role="button" href="{% url 'cart' %}" class="col btn btn-sm btn-primary">ОФОРМИТЬ</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- / Корзина -->

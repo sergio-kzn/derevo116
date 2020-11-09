@@ -1,5 +1,5 @@
 <!doctype html>
-{% load static categories %}
+{% load static cart_tag categories %}
 <html lang="ru">
 
 <head>
@@ -89,45 +89,10 @@
         </div>
 
         <!-- Корзина -->
-        <div class="col-12 col-sm-4 col-md-3 col-lg-2 my-3 my-sm-0 order-lg-5 position-relative" id="basket">
-            <div class="row bg-light p-2 align-items-center">
-                <div class="col-6 text-muted">
-                    <i class="fas fa-2x fa-shopping-cart"></i>
-                </div>
-                <div class="col-6 text-right">
-                    <a class="stretched-link" href="#" data-toggle="modal" data-target="#basket-modal">
-                        <span class="badge bg-primary" id="basket-count">0</span><br>
-                        <span class="badge bg-secondary"><span id="basket-sum">0</span> руб.</span>
-                    </a>
-                </div>
-            </div>
-            <div class="modal fade h-auto p-0 position-absolute right-0" style="width: 296px;"
-                 tabindex="-1" id="basket-modal" aria-labelledby="basket-modal" aria-hidden="true"
-                 data-backdrop="static" data-keyboard="false">
-                <div class="modal-dialog m-0">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Корзина</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Закрыть корзину">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body p-1 overflow-auto" style="max-height: 350px">
-                            <ul class="list-group list-group-flush" id="basket-list">
-                                <li class="list-group-item list-group-item-action px-1 disabled" id="empty-basket">Корзина совсем пустая :(
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="modal-footer">
-                            <p class="w-100" id="basket-sum-footer"></p>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Скрыть</button>
-                            <a role="button" href="#" class="btn btn-primary">ОФОРМИТЬ</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="col-12 col-sm-4 col-md-3 col-lg-2 my-3 my-sm-0 order-lg-5 position-relative"
+             id="basket">
+        {% cart_tag %}
         </div>
-        <!-- / Корзина -->
 
         <div class="col-12 col-lg order-lg-3">
             <div class="input-group my-2 px-lg-5">

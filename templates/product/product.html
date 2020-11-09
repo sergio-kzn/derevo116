@@ -359,6 +359,7 @@
                     <button type="button"
                             class="btn btn-primary btn-lg {% if product.product_img %} btn-block {% endif %} my-3"
                             id="add-to-basket"
+                            data-product-id="{{ product.id }}"
                             data-title="{{ product.product_title }}"
                             data-url="{{ product_url }}"
                             data-count="1"
