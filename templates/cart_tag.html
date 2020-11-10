@@ -72,14 +72,14 @@
                     {% endif %}
                     <div class="row row-cols-3 w-100 justify-content-around align-items-center">
                         <div class="col p-0 small">
-                            <a href="{% url 'clear_cart' %}" class="text-danger">Очистить</a>
+                            {% if cart_item %}<a href="{% url 'clear_cart' %}" class="text-danger">Очистить</a>{% endif %}
                         </div>
                         <div class="col p-0">
-                            <button type="button" class="col btn btn-secondary btn-sm" data-dismiss="modal">Скрыть
+                            <button type="button" class="col btn btn-outline-secondary btn-sm" data-dismiss="modal">Скрыть
                             </button>
                         </div>
                         <div class="col p-0">
-                            <a role="button" href="{% url 'cart' %}" class="col btn btn-sm btn-primary">ОФОРМИТЬ</a>
+                            {% if cart_item %}<a role="button" href="{% url 'cart' %}" class="col btn btn-sm btn-primary">ОФОРМИТЬ</a>{% endif %}
                         </div>
                     </div>
                 </div>

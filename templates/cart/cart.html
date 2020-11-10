@@ -66,25 +66,27 @@
 
     <div class="input-group">
         <span class="input-group-text">Комментарий к заказу</span>
-        <textarea class="form-control" aria-label="With textarea"></textarea>
+        <textarea class="form-control" aria-label="Комментарий к заказу" id="comment"></textarea>
     </div>
 
     <div class="row my-5">
         <div class="col-12 text-center">
-            <div class="form-check form-check-inline border-bottom">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="radioPickup"
-                       aria-expanded="false">
-                <label class="form-check-label" for="radioPickup" style="cursor: pointer">
-                    Я сам заберу заказ
-                </label>
-            </div>
-            <div class="form-check form-check-inline border-bottom" style="cursor: pointer">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="radioDelivery"
-                       aria-expanded="false">
-                <label class="form-check-label" for="radioDelivery" style="cursor: pointer">
-                    Мне нужна доставка
-                </label>
-            </div>
+            <form id="delivery">
+                <div class="form-check form-check-inline border-bottom">
+                    <input class="form-check-input" type="radio" name="deliveryRadio" id="radioPickup"
+                           aria-expanded="false">
+                    <label class="form-check-label" for="radioPickup" style="cursor: pointer">
+                        Я сам заберу заказ
+                    </label>
+                </div>
+                <div class="form-check form-check-inline border-bottom" style="cursor: pointer">
+                    <input class="form-check-input" type="radio" name="deliveryRadio" id="radioDelivery"
+                           aria-expanded="false">
+                    <label class="form-check-label" for="radioDelivery" style="cursor: pointer">
+                        Мне нужна доставка
+                    </label>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -95,14 +97,13 @@
                 <div class="card card-body">
                     <h3 class="mb-5 mt-3 text-center">Выберите, откуда хотите забрать:</h3>
                     <p><label class="form-check-label" for="pickupImperial" style="cursor: pointer">
-                        <input type="radio" checked name="pickup" id="pickupImperial" class="form-check-input">
+                        <input type="radio" checked name="deliveryWay" id="pickupImperial" class="form-check-input">
                         <b>г. Казань, ул. Сибирский тракт, д. 34А, офис 136</b></label><br>
                         <a href="{% url 'simple_page_url' 'contacts' %}" target="_blank" class="text-muted small">Посмотреть
                             карту и вход <i class="fa fa-external-link-alt"></i> </a></p>
                     <p>Время работы: <br><b>Понедельник - пятница<br>с 9.00 до 18.00</b></p>
                     <span class="btn btn-danger my-5 mx-auto" style="width: fit-content" role="button"
-                          id="collapsePickupPaymentButton">Перейти к
-                        оплате</span>
+                          id="collapsePickupPaymentButton">Выбрать способ оплаты</span>
                 </div>
             </div>
         </div>
@@ -116,7 +117,7 @@
                     <h3 class="mb-5 mt-3 text-center">Как вам отправить заказ?</h3>
                     <div class="card-group mb-5">
                         <div class="card">
-                            <img src="{% static '/img/cdek.webp' %}" class="card-img-top">
+                            <img src="{% static '/img/cdek.webp' %}" class="card-img-top delivery-logo" alt="Служба доставки СДЕК">
                             <div class="card-body small text-muted">
                                 <p class="card-text">Доставка до пункта выдачи или до подъезда.</p>
                                 <p class="card-text">При заказе от 15 000 рублей:
@@ -126,14 +127,14 @@
                                     <br>оплата только СДЕКу за доставку.</p>
                             </div>
                             <div class="card-footer">
-                                <input type="radio" class="btn-check" name="delivery" id="delivery-cdek"
+                                <input type="radio" class="btn-check" name="deliveryWay" id="delivery-cdek"
                                        autocomplete="off" checked>
                                 <label class="btn btn-outline-danger" for="delivery-cdek">Выбрать</label></td>
                             </div>
                         </div>
 
                         <div class="card">
-                            <img src="{% static '/img/pochta_rossii.webp' %}" class="card-img-top">
+                            <img src="{% static '/img/pochta_rossii.webp' %}" class="card-img-top delivery-logo" alt="Служба доставки Почта России">
                             <div class="card-body small text-muted">
                                 <p class="card-text">Доставка до ближайшего к вам отделения почты.
                                 <p class="card-text">При заказе от 15 000 рублей:
@@ -143,21 +144,21 @@
                                     <br>оплата за доставку в отделении Почты России.</p>
                             </div>
                             <div class="card-footer">
-                                <input type="radio" class="btn-check" name="delivery" id="delivery-pochta"
+                                <input type="radio" class="btn-check" name="deliveryWay" id="delivery-pochta"
                                        autocomplete="off">
                                 <label class="btn btn-outline-danger" for="delivery-pochta">Выбрать</label></td>
                             </div>
                         </div>
 
                         <div class="card">
-                            <div class="d-flex justify-content-center align-items-center" style="height: 200px"><span>Другой способ</span>
+                            <div class="d-flex justify-content-center align-items-center" style="height: 146px" id="block-other-delivery"><span>Другой способ</span>
                             </div>
                             <div class="card-body">
                         <textarea class="form-control h-100" placeholder="Напишите свой вариант"
-                                  aria-label="With textarea"></textarea>
+                                  aria-label="With textarea" id="delivery-other-text"></textarea>
                             </div>
                             <div class="card-footer">
-                                <input type="radio" class="btn-check" name="delivery" id="delivery-other"
+                                <input type="radio" class="btn-check" name="deliveryWay" id="delivery-other"
                                        autocomplete="off">
                                 <label class="btn btn-outline-danger" for="delivery-other">Выбрать</label></td>
                             </div>
@@ -165,11 +166,11 @@
                     </div>
                     <div class="input-group input-group-sm mb-3">
                         <span class="input-group-text col-3">Страна, город, индекс</span>
-                        <select class="form-control" id="delivery-country">
+                        <select class="form-control" id="delivery_country">
                             <option selected>Россия</option>
                         </select>
-                        <input class="form-control" list="datalistOptions" id="delivery-city"
-                               placeholder="Казань">
+                        <input class="form-control" list="datalistOptions" id="delivery_city"
+                               value="Казань">
                         <datalist id="datalistOptions">
                             <option value="Казань">
                             <option value="Абакан">
@@ -936,27 +937,26 @@
                             <option value="рп Городище, Городищенский р-н">
 
                         </datalist>
-                        <input class="form-control" id="exampleDataList"
+                        <input class="form-control" id="delivery_index"
                                placeholder="Индекс">
                     </div>
                     <div class="input-group input-group-sm mb-3">
-                        <span class="input-group-text col-3 text-left">Адресс</span>
-                        <textarea class="form-control" aria-label="With textarea" id="delivery-street"
+                        <span class="input-group-text col-3 text-left">Адрес</span>
+                        <textarea class="form-control" aria-label="Адрес" id="delivery_street"
                                   placeholder="Улица, Подъезд, Этаж, Квартира (офис)"></textarea>
                     </div>
                     <div class="input-group input-group-sm mb-3">
                         <span class="input-group-text col-3 text-left">Контакты</span>
-                        <input type="text" class="form-control" id="delivery-fio"
+                        <input type="text" class="form-control" id="delivery_fio"
                                placeholder="Фамилия Имя Отчество">
                     </div>
                     <div class="input-group input-group-sm mb-3">
                         <span class="input-group-text col-3 text-left">Телефон</span>
-                        <input type="text" class="form-control" id="delivery-phone"
+                        <input type="text" class="form-control" id="delivery_phone"
                                placeholder="Номер телефона" style="max-width: 25%">
                     </div>
                     <span class="btn btn-danger my-5 mx-auto" style="width: fit-content" role="button"
-                          id="collapseDeliveryPaymentButton">Перейти к
-                        оплате</span>
+                          id="collapseDeliveryPaymentButton">Выбрать способ оплаты</span>
                 </div>
             </div>
         </div>
@@ -972,31 +972,42 @@
                         <div class="col-auto text-left">
                             <div class="col">
                                 <label class="form-check-label" for="pickupPaymentCashe" style="cursor: pointer">
-                                    <input type="radio" checked name="pickupPayment" id="pickupPaymentCashe"
+                                    <input type="radio" checked name="payment" id="pickupPaymentCashe"
                                            class="form-check-input">
                                     Наличные при получении</label>
                             </div>
                             <div class="col">
                                 <label class="form-check-label" for="pickupPaymentCart" style="cursor: pointer">
-                                    <input type="radio" name="pickupPayment" id="pickupPaymentCart"
+                                    <input type="radio" name="payment" id="pickupPaymentCart"
                                            class="form-check-input">
                                     Картой при получении</label>
                             </div>
                             <div class="col">
-                                <label class="form-check-label" for="pickupPaymentOnline">
-                                    <input type="radio" name="pickupPayment" id="pickupPaymentOnline"
+                                <label class="form-check-label text-muted" for="pickupPaymentOnline">
+                                    <input type="radio" name="payment" id="pickupPaymentOnline"
                                            class="form-check-input" disabled>
                                     Картой онлайн</label>
                             </div>
                             <div class="col">
                                 <label class="form-check-label" for="pickupPaymentСashless" style="cursor: pointer">
-                                    <input type="radio" name="pickupPayment" id="pickupPaymentСashless"
+                                    <input type="radio" name="payment" id="pickupPaymentСashless"
                                            class="form-check-input">
                                     Безналичный расчет</label>
                             </div>
                         </div>
                     </div>
-                    <a class="btn btn-danger my-5 mx-auto" style="width: fit-content" role="button" href="{% url 'confirm' %}">Далее</a>
+                    <div class="row row-cols-2">
+                        <div class="col text-right">
+                            <span class="btn btn-outline-secondary my-5 ml-auto" style="width: fit-content"
+                                  role="button"
+                                  onclick="radioPickup.onchange()">Назад</span>
+                        </div>
+                        <div class="col text-left">
+                            <span class="btn btn-danger my-5 mr-auto" style="cursor: pointer; width: fit-content"
+                                  role="button"
+                                  onclick="confirmOrder()">Далее</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1012,31 +1023,42 @@
                         <div class="col-auto text-left">
                             <div class="col">
                                 <label class="form-check-label" for="deliveryPaymentCashe" style="cursor: pointer">
-                                    <input type="radio" checked name="deliveryPayment" id="deliveryPaymentCashe"
+                                    <input type="radio" checked name="payment" id="deliveryPaymentCashe"
                                            class="form-check-input">
                                     Наличные при получении</label>
                             </div>
                             <div class="col">
-                                <label class="form-check-label" for="deliveryPaymentCart">
-                                    <input type="radio" name="deliveryPayment" id="deliveryPaymentCart"
+                                <label class="form-check-label text-muted" for="deliveryPaymentCart">
+                                    <input type="radio" name="payment" id="deliveryPaymentCart"
                                            class="form-check-input" disabled>
                                     Картой при получении</label>
                             </div>
                             <div class="col">
-                                <label class="form-check-label" for="deliveryPaymentOnline">
-                                    <input type="radio" name="deliveryPayment" id="deliveryPaymentOnline"
+                                <label class="form-check-label text-muted" for="deliveryPaymentOnline">
+                                    <input type="radio" name="payment" id="deliveryPaymentOnline"
                                            class="form-check-input" disabled>
                                     Картой онлайн</label>
                             </div>
                             <div class="col">
                                 <label class="form-check-label" for="deliveryPaymentСashless" style="cursor: pointer">
-                                    <input type="radio" name="deliveryPayment" id="deliveryPaymentСashless"
+                                    <input type="radio" name="payment" id="deliveryPaymentСashless"
                                            class="form-check-input">
                                     Безналичный расчет</label>
                             </div>
                         </div>
                     </div>
-                    <a class="btn btn-danger my-5 mx-auto" style="width: fit-content" role="button" href="{% url 'confirm' %}">Далее</a>
+                    <div class="row row-cols-2">
+                        <div class="col text-right">
+                            <span class="btn btn-outline-secondary my-5 ml-auto" style="width: fit-content"
+                                  role="button"
+                                  onclick="radioDelivery.onchange()">Назад</span>
+                        </div>
+                        <div class="col text-left">
+                            <span class="btn btn-danger my-5 mr-auto" style="cursor: pointer; width: fit-content"
+                                  role="button"
+                                  onclick="confirmOrder()">Далее</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

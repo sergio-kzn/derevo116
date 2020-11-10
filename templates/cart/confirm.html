@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static thumbnail %}
 {% block title %}Подтверждение заказа{% endblock title %}
 {% block custom_head %}{% endblock %}
 
@@ -21,102 +21,83 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td style="width: 100px; height: 100px;" class="bg-secondary text-center align-middle">фото</td>
-                <td><b>2043 Масло защитное для наружных работ с антисептиком</b><br>
-                    <span class="text-muted text-nowrap">Поставщик: Biofa</span><br>
-                    <span class="text-muted text-nowrap">Артикул: 2043</span>
-                </td>
-                <td class="text-nowrap">Цвет: 8537 Махагон<br>
-                    Объем: 0.125 л.
-                </td>
-                <td class="text-nowrap">1000 ₽</td>
-                <td class="text-nowrap">2</td>
-                <td class="text-nowrap">2000 ₽</td>
-            </tr>
-
-            <tr>
-                <th scope="row">2</th>
-                <td style="width: 100px; height: 100px;" class="bg-secondary text-center align-middle">фото</td>
-                <td><b>2043 Масло защитное для наружных работ с антисептиком</b><br>
-                    <span class="text-muted text-nowrap">Поставщик: Biofa</span><br>
-                    <span class="text-muted text-nowrap">Артикул: 2043</span>
-                </td>
-                <td class="text-nowrap">Цвет: 8537 Махагон<br>
-                    Объем: 0.125 л.
-                </td>
-                <td class="text-nowrap">1000 ₽</td>
-                <td class="text-nowrap">2</td>
-                <td class="text-nowrap">2000 ₽</td>
-            </tr>
-
-            <tr>
-                <th scope="row">3</th>
-                <td style="width: 100px; height: 100px;" class="bg-secondary text-center align-middle">фото</td>
-                <td><b>2043 Масло защитное для наружных работ с антисептиком</b><br>
-                    <span class="text-muted text-nowrap">Поставщик: Biofa</span><br>
-                    <span class="text-muted text-nowrap">Артикул: 2043</span>
-                </td>
-                <td class="text-nowrap">Цвет: 8537 Махагон<br>
-                    Объем: 0.125 л.
-                </td>
-                <td class="text-nowrap">1000 ₽</td>
-                <td class="text-nowrap">2</td>
-                <td class="text-nowrap">2000 ₽</td>
-            </tr>
+            {% for key, item in cart_item %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td class="">
+                        {% thumbnail item.img "100x100" padding=True format="WEBP" as im %}
+                            <img src="{{ im.url }}" alt="{{ item.title }}">
+                        {% endthumbnail %}
+                    </td>
+                    <td><b>{{ item.title }}</b><br>
+                        <span class="small text-muted text-nowrap">Поставщик: {{ item.vendor }}<br>
+                        Артикул: {{ item.vendor_code }}</span>
+                    </td>
+                    <td class="text-nowrap small">
+                        {% if item.color %}<p>
+                            {% thumbnail item.color_img "150x50" format="WEBP" as im %}
+                                <img src="{{ im.url }}" alt="{{ item.color }}">
+                            {% endthumbnail %}<br>{{ item.color }}{% endif %}
+                        {% if item.options %}<p>{{ item.options|safe }}{% endif %}
+                        {% if not item.color and not item.options %}--{% endif %}
+                    </td>
+                    <td class="text-nowrap">{{ item.price }} ₽</td>
+                    <td class="text-nowrap">{{ item.count }}</td>
+                    <td class="text-nowrap font-weight-bold">{{ item.sum }} ₽</td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
     </div>
     <table class="table">
         <tbody>
         <tr>
-            <td class="text-right">Сумма: 6 000 ₽</td>
+            <td class="text-right font-weight-bold">Сумма: {{ cart_sum }} ₽</td>
         </tr>
         </tbody>
     </table>
 
-
     <div class="input-group mb-5">
         <span class="input-group-text">Комментарий к заказу</span>
-        <textarea readonly class="form-control" aria-label="With textarea"></textarea>
+        <textarea readonly class="form-control" aria-label="Комментарий к заказу">{{ order_data.orderComment }}</textarea>
     </div>
 
     <!-- Доставка -->
     <div class="row justify-content-center">
-    <div class="col-auto text-left">
-        <div class="row row-cols-1">
-            <div class="col">
-                <div class="card mb-3">
-                    <div class="card-header">Мне нужна доставка:</div>
-                    <div class="row g-0">
-                        <div class="col-md-4 align-content-center">
-                            <img src="{% static '/img/cdek.webp' %}" class="card-img-top">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body small text-muted">
-                                <p class="card-text">Доставка до пункта выдачи или до подъезда.</p>
-                                <p class="card-text">При заказе от 15 000 рублей:
-                                    <br>доставка полностью бесплатно.</p>
-                                <p class="card-text">При заказе до 15 000 рублей:
-                                    <br>доставка до СДЕК - бесплатно;
-                                    <br>оплата только СДЕКу за доставку.</p>
+        <div class="col-auto text-left">
+            <div class="row row-cols-1">
+                <div class="col">
+                    <div class="card mb-3">
+                        <div class="card-header">{{ order_data.orderDelivery }}:</div>
+                        <div class="row g-0">
+                            <div class="col-md-4 align-content-center">
+                                <img src="{% static '/img/cdek.webp' %}" class="card-img-top"
+                                     alt="Служба доставки СДЕК">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body small text-muted">
+                                    <p class="card-text">Доставка до пункта выдачи или до подъезда.</p>
+                                    <p class="card-text">При заказе от 15 000 рублей:
+                                        <br>доставка полностью бесплатно.</p>
+                                    <p class="card-text">При заказе до 15 000 рублей:
+                                        <br>доставка до СДЕК - бесплатно;
+                                        <br>оплата только СДЕКу за доставку.</p>
+                                </div>
                             </div>
                         </div>
+                        <div class="card-footer">
+                            <p class="card-text">{{ order_data.orderDeliveryCountryAndCity }}
+                                <br>{{ order_data.orderDeliveryAdress }}
+                                <br>{{ order_data.orderDeliveryContact }}
+                                <br>{{ order_data.orderDeliveryContactPhone }}
+                        </div>
                     </div>
-                    <div class="card-footer">
-                        <p class="card-text">Россия, Казань, Индекс
-                            <br>Улица, Подъезд, Этаж, Квартира (офис)"
-                            <br>Фамилия Имя Отчество
-                            <br>Телефон
-                    </div>
-                </div>
 
-                <div class="col">
+                    <div class="col">
                     <div class="card mb-3">
                         <div class="card-header">Опалата:</div>
                         <div class="card-body">
-                            <p class="card-text">Наличные при получении</p>
+                            <p class="card-text">{{ order_data.orderPay }}</p>
                         </div>
                     </div>
                 </div>
@@ -143,14 +124,16 @@
                     </div>
                 </div>
 
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col text-center">
-            <a class="btn btn-outline-secondary my-5 mx-auto" style="width: fit-content" role="button" href="#">Назад</a>
-            <a class="btn btn-danger my-5 mx-auto" style="width: fit-content" role="button" href="#">ОФОРМИТЬ</a>
+        <div class="row">
+            <div class="col text-center">
+                <a class="btn btn-outline-secondary my-5 mx-auto" style="width: fit-content" role="button"
+                   href="{% url 'cart' %}">Назад</a>
+                <a class="btn btn-danger my-5 mx-auto" style="width: fit-content" role="button" href="#">ОФОРМИТЬ</a>
+            </div>
         </div>
     </div>
 {% endblock content %}
