@@ -1,19 +1,16 @@
 def prepare_cart(request):
     cart_count = 0
     cart_sum = 0
+
+    if len(request.session['products'].values()) < 1:
+        items = {}
+
     if 'products' in request.session:
-        items = request.session['products'].values()
-        cart_count = len(items)
-        print(items)
+        items = request.session['products'].items()
+        cart_count = len(request.session['products'].values())
         cart_sum = sum(int(request.session['products'][item]['price']) * int(request.session['products'][item]['count']) for item in request.session['products'])
     else:
         items = {}
-
-    #
-    # if 'cart_sum' in request.session:
-    #     cart_sum = request.session['cart_sum']
-    # else:
-    #     cart_sum = 0
 
     content = {
         'cart_item': items,

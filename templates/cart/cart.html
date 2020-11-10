@@ -2,6 +2,8 @@
 {% load static %}
 {% block title %}Корзина товаров{% endblock title %}
 {% block custom_head %}{% endblock %}
+{% block basket %}{% endblock %}
+
 
 {# Содержимое страницы. Разное для всех приложений джанго   #}
 {% block content %}
@@ -22,22 +24,24 @@
             </tr>
             </thead>
             <tbody>
+            {% for key, item in cart_item %}
             <tr>
-                <th scope="row">1</th>
+                <th scope="row">{{ forloop.counter }}</th>
                 <td style="width: 100px; height: 100px;" class="bg-secondary text-center align-middle">фото</td>
-                <td><b>2043 Масло защитное для наружных работ с антисептиком</b><br>
+                <td><b>{{ item.title }}</b><br>
                     <span class="text-muted text-nowrap">Поставщик: Biofa</span><br>
                     <span class="text-muted text-nowrap">Артикул: 2043</span>
                 </td>
-                <td class="text-nowrap">Цвет: 8537 Махагон<br>
-                    Объем: 0.125 л.
+                <td class="text-nowrap">{% if item.color %}{{ item.color }}<br>{% endif %}
+                    {% if item.options %}{{ item.options|safe }}{% endif %}
+                {% if not item.color and not item.options %}--{% endif %}
                 </td>
-                <td class="text-nowrap">1000 ₽</td>
-                <td class="text-nowrap">2</td>
-                <td class="text-nowrap">2000 ₽</td>
+                <td class="text-nowrap">{{ item.price }} ₽</td>
+                <td class="text-nowrap">{{ item.count }}</td>
+                <td class="text-nowrap"> ₽</td>
                 <td><i class="fa fa-trash"></i></td>
             </tr>
-
+            {% endfor %}
             <tr>
                 <th scope="row">2</th>
                 <td style="width: 100px; height: 100px;" class="bg-secondary text-center align-middle">фото</td>

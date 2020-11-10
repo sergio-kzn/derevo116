@@ -29,7 +29,7 @@
         }
 
         .modal-backdrop.show {
-            opacity: .2;
+            opacity: .4;
         }
 
     </style>
@@ -89,10 +89,18 @@
         </div>
 
         <!-- Корзина -->
-        <div class="col-12 col-sm-4 col-md-3 col-lg-2 my-3 my-sm-0 order-lg-5 position-relative"
-             id="basket">
-        {% cart_tag %}
+        {% block basket %}
+        <div class="
+            position-relative
+            col-12 my-3
+            col-sm-4 my-sm-0
+            col-md-3
+            col-lg-2 order-lg-5
+            "
+            id="basket">
+            {% cart_tag %}
         </div>
+        {% endblock %}
 
         <div class="col-12 col-lg order-lg-3">
             <div class="input-group my-2 px-lg-5">
@@ -253,6 +261,7 @@
 
 <!-- Option 1: Bootstrap Bundle with Popper.js -->
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/basket.js' %}"></script>
 {% block custom_footer %}{% endblock custom_footer %}
 </body>
 </html>

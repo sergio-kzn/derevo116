@@ -379,21 +379,19 @@
                     </button>
                 </div>
             </div>
-            <!--  -->
-            <div
-                    class="toast fade hide position-absolute w-100 bg-success bg-gradient text-white"
-                    style="z-index: 10"
-                    id="toast"
-                    role="alert"
-                    aria-live="assertive"
-                    aria-atomic="true"
-                    data-autohide="true"
+            <!-- Модальные окна с подсказками -->
+            <div class="toast fade hide position-absolute w-100 bg-success bg-gradient text-white"
+                 style="z-index: 10"
+                 id="toast"
+                 role="alert"
+                 aria-live="assertive"
+                 aria-atomic="true"
+                 data-autohide="true"
             >
                 <div class="toast-header">
                     <strong class="mr-auto">Корзина</strong>
                     <small>Товар успешно добавлен</small>
-                    <button
-                            type="button"
+                    <button type="button"
                             class="btn-close"
                             data-dismiss="toast"
                             aria-label="Close"
@@ -421,6 +419,26 @@
                     ></button>
                 </div>
                 <div class="toast-body">Выберите цвет</div>
+            </div>
+            <div class="toast fade hide position-absolute w-100 bg-danger bg-gradient text-white"
+                 style="z-index: 10"
+                 id="color-error"
+                 role="alert"
+                 aria-live="assertive"
+                 aria-atomic="true"
+                 data-autohide="true"
+            >
+                <div class="toast-header">
+                    <strong class="mr-auto">Корзина</strong>
+                    <small>Ошибка</small>
+                    <button
+                            type="button"
+                            class="btn-close"
+                            data-dismiss="toast"
+                            aria-label="Close"
+                    ></button>
+                </div>
+                <div class="toast-body">Сервер не отвечает, попробуйте обновить страницу.</div>
             </div>
 
 
