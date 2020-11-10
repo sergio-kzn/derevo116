@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static thumbnail %}
 {% block title %}Корзина товаров{% endblock title %}
 {% block custom_head %}{% endblock %}
 {% block basket %}{% endblock %}
@@ -14,7 +14,7 @@
             <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Фото</th>
+                <th scope="col" class="text-center">Фото</th>
                 <th scope="col">Наименование</th>
                 <th scope="col">Опции</th>
                 <th scope="col">Цена</th>
@@ -25,61 +25,40 @@
             </thead>
             <tbody>
             {% for key, item in cart_item %}
-            <tr>
-                <th scope="row">{{ forloop.counter }}</th>
-                <td style="width: 100px; height: 100px;" class="bg-secondary text-center align-middle">фото</td>
-                <td><b>{{ item.title }}</b><br>
-                    <span class="text-muted text-nowrap">Поставщик: Biofa</span><br>
-                    <span class="text-muted text-nowrap">Артикул: 2043</span>
-                </td>
-                <td class="text-nowrap">{% if item.color %}{{ item.color }}<br>{% endif %}
-                    {% if item.options %}{{ item.options|safe }}{% endif %}
-                {% if not item.color and not item.options %}--{% endif %}
-                </td>
-                <td class="text-nowrap">{{ item.price }} ₽</td>
-                <td class="text-nowrap">{{ item.count }}</td>
-                <td class="text-nowrap"> ₽</td>
-                <td><i class="fa fa-trash"></i></td>
-            </tr>
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td class="">
+                        {% thumbnail item.img "100x100" padding=True format="WEBP" as im %}
+                            <img src="{{ im.url }}" alt="{{ item.title }}">
+                        {% endthumbnail %}
+                    </td>
+                    <td><b>{{ item.title }}</b><br>
+                        <span class="small text-muted text-nowrap">Поставщик: {{ item.vendor }}<br>
+                        Артикул: {{ item.vendor_code }}</span>
+                    </td>
+                    <td class="text-nowrap small">
+                        {% if item.color %}<p>
+                        {% thumbnail item.color_img "150x50" format="WEBP" as im %}
+                            <img src="{{ im.url }}" alt="{{ item.color }}">
+                        {% endthumbnail %}<br>{{ item.color }}{% endif %}
+                        {% if item.options %}<p>{{ item.options|safe }}{% endif %}
+                        {% if not item.color and not item.options %}--{% endif %}
+                    </td>
+                    <td class="text-nowrap">{{ item.price }} ₽</td>
+                    <td class="text-nowrap">{{ item.count }}</td>
+                    <td class="text-nowrap font-weight-bold">{{ item.sum }} ₽</td>
+                    <td><i class="fa fa-trash text-danger small"
+                           style="cursor: pointer"
+                            onclick="delete_item_from_basket('{{ key }}')"></i></td>
+                </tr>
             {% endfor %}
-            <tr>
-                <th scope="row">2</th>
-                <td style="width: 100px; height: 100px;" class="bg-secondary text-center align-middle">фото</td>
-                <td><b>2043 Масло защитное для наружных работ с антисептиком</b><br>
-                    <span class="text-muted text-nowrap">Поставщик: Biofa</span><br>
-                    <span class="text-muted text-nowrap">Артикул: 2043</span>
-                </td>
-                <td class="text-nowrap">Цвет: 8537 Махагон<br>
-                    Объем: 0.125 л.
-                </td>
-                <td class="text-nowrap">1000 ₽</td>
-                <td class="text-nowrap">2</td>
-                <td class="text-nowrap">2000 ₽</td>
-                <td><i class="fa fa-trash"></i></td>
-            </tr>
-
-            <tr>
-                <th scope="row">3</th>
-                <td style="width: 100px; height: 100px;" class="bg-secondary text-center align-middle">фото</td>
-                <td><b>2043 Масло защитное для наружных работ с антисептиком</b><br>
-                    <span class="text-muted text-nowrap">Поставщик: Biofa</span><br>
-                    <span class="text-muted text-nowrap">Артикул: 2043</span>
-                </td>
-                <td class="text-nowrap">Цвет: 8537 Махагон<br>
-                    Объем: 0.125 л.
-                </td>
-                <td class="text-nowrap">1000 ₽</td>
-                <td class="text-nowrap">2</td>
-                <td class="text-nowrap">2000 ₽</td>
-                <td><i class="fa fa-trash"></i></td>
-            </tr>
             </tbody>
         </table>
     </div>
     <table class="table">
         <tbody>
         <tr>
-            <td class="text-right">Сумма: 6 000 ₽</td>
+            <td class="text-right font-weight-bold">Сумма: {{ cart_sum }} ₽</td>
         </tr>
         </tbody>
     </table>

@@ -1,5 +1,19 @@
 document.addEventListener('DOMContentLoaded', function () {
 
+    // функция удалить товар из корзины
+    window.delete_item_from_basket = async function (key) {
+        let response = await fetch('/cart/deletefromcart/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({'key': key})
+        });
+        if (response.ok) {
+            location.reload();
+        }
+    };
+
     const collapseElementList = [].slice.call(document.querySelectorAll('.collapse'))
     const collapseList = collapseElementList.map(function (collapseEl) {
         return new bootstrap.Collapse(collapseEl, {

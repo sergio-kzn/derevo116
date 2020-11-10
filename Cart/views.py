@@ -6,12 +6,27 @@ from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 
 from Cart.services import prepare_cart
+from Product.models import Product, Color
 
 
 def cart(request):
-    # product_data = json.loads(request.body)
-    content = prepare_cart(request)
+    """Страница Корзина с товарами"""
+    for item in request.session['products']:
+        product = Product.objects.get(id=request.session['products'][item]['id'])
+        request.session['products'][item]['img'] = str(product.product_img)
+        request.session['products'][item]['vendor'] = product.product_vendor.vendor_title
+        request.session['products'][item]['vendor_code'] = product.product_vendor_code
+        if 'color' in request.session['products'][item]:
+            colors = Color.objects.filter(color_group__product__id=request.session['products'][item]['id'])
+            for color in colors:
+                if color.color_title == request.session['products'][item]['color']:
+                    request.session['products'][item]['color_img'] = str(color.color_image)
+        request.session['products'][item]['sum'] = int(request.session['products'][item]['price']) * int(request.session['products'][item]['count'])
 
+
+
+    request.session.modified = True
+    content = prepare_cart(request)
     return render(request, 'cart/cart.html', content)
 
 

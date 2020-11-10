@@ -51,9 +51,10 @@
                                             {% endif %}
                                             <span>Цена: <b>{{ item.price }} ₽</b></span>
                                         </div>
-                                        <span class="btn btn-outline-danger btn-sm delete_from_basket px-2"
-                                              role="button"
-                                              onclick="delete_item_from_basket('{{ key }}')">x</span>
+                                        <i class="fa fa-trash text-danger delete_from_basket mr-1"
+                                           style="cursor: pointer"
+                                           onclick="delete_item_from_basket('{{ key }}')"></i>
+
                                     </div>
                                 </li>
                             {% endfor %}
