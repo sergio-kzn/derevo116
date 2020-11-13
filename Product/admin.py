@@ -67,7 +67,7 @@ class AttributeInline(admin.TabularInline):
 class ColorInline(admin.TabularInline):
     model = Color
     extra = 0
-    fields = ['color_image', 'image_preview', 'color_html',  'color_title', 'color_sort']
+    fields = ['color_image', 'image_preview', 'color_html', 'color_title', 'color_sort']
     readonly_fields = ('image_preview',)
 
     def image_preview(self, obj):
@@ -142,7 +142,8 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
     summernote_fields = '__all__'
     list_display = ['image_preview', 'product_title', 'product_category_with_html', 'product_vendor_code',
                     'product_link']
-    list_filter = ['product_vendor', 'product_show', 'product_price_choice', OptionPriceFilter, ColorFilter, 'product_count']
+    list_filter = ['product_vendor', 'product_show', 'product_price_choice', OptionPriceFilter, ColorFilter,
+                   'product_count']
     filter_horizontal = ['product_images', 'product_color', 'product_tab', 'product_price_options']
     save_on_top = True
     list_display_links = ['image_preview', 'product_title']
@@ -200,7 +201,8 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
 
     def fill_url(self, obj):
         snap = '<snap style="cursor: pointer" class="text-primary" onclick="' \
-               'let vendor = Array.from(id_product_vendor.options).filter(option => option.selected).map(option => option.textContent);' \
+               'let vendor = Array.from(id_product_vendor.options).' \
+               'filter(option => option.selected).map(option => option.textContent);' \
                'let code = id_product_vendor_code.value;' \
                'let url_input = document.getElementById(\'id_product_url\');' \
                'let slug = (code + \'-\' + vendor).toLowerCase().replace(/\\s+/g, \'-\');' \
@@ -224,7 +226,11 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
         if obj.product_images.all():
             url += '<div class="list-group list-group-flush">'
             for opt in obj.product_images.all():
-                url += '<a href="/admin/Product/productimagegroup/' + str(opt.id) + '/change/" target="blank" class="list-group-item list-group-item-action">' + opt.img_group + '</a><br>'
+                url += '<a href="/admin/Product/productimagegroup/' + \
+                       str(opt.id) + \
+                       '/change/" target="blank" class="list-group-item list-group-item-action">' + \
+                       opt.img_group + \
+                       '</a><br>'
             url += '</div>'
 
         return mark_safe(url)
@@ -234,7 +240,11 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
         if obj.product_color.all():
             url += '<div class="list-group list-group-flush">'
             for opt in obj.product_color.all():
-                url += '<a href="/admin/Product/colorgroup/' + str(opt.id) + '/change/" target="blank" class="list-group-item list-group-item-action">' + opt.color_group_name + '</a><br>'
+                url += '<a href="/admin/Product/colorgroup/' + \
+                       str(opt.id) + \
+                       '/change/" target="blank" class="list-group-item list-group-item-action">' + \
+                       opt.color_group_name + \
+                       '</a><br>'
             url += '</div>'
 
         return mark_safe(url)
@@ -244,16 +254,24 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
         if obj.product_vendor_code:
             url += '<p>Артикул:<br>' + obj.product_vendor_code + '</p>'
         if obj.product_title:
-             url += '<p>Название:<br>' + obj.product_title + '  <span class="text-primary" onclick="if (navigator.clipboard) navigator.clipboard.writeText(\'' + obj.product_title + '\')" style="cursor:pointer;">(copy)</span></p>'
+            url += '<p>Название:<br>' + \
+                   obj.product_title + \
+                   '  <span class="text-primary" onclick="' \
+                   'if (navigator.clipboard) navigator.clipboard.writeText(\'' + \
+                   obj.product_title + \
+                   '\')" style="cursor:pointer;">(copy)</span></p>'
         if obj.product_images.all():
             count = 0
             for img in obj.product_images.all():
-                 count += img.productimage_set.all().count()
+                count += img.productimage_set.all().count()
             url += '<p>Доп. изображения: ' + str(count) + '</p>'
         if obj.product_price_options.all():
             url += '<p>Опции:</p><div class="list-group list-group-flush">'
             for opt in obj.product_price_options.all():
-                url += '<a href="/admin/Product/optiongroup/' + str(opt.id) + '/change/" target="blank" class="list-group-item list-group-item-action">' + opt.option_group + '</a>'
+                url += '<a href="/admin/Product/optiongroup/' + \
+                       str(opt.id) + \
+                       '/change/" target="blank" class="list-group-item list-group-item-action">' + \
+                       opt.option_group + '</a>'
             url += '</div>'
 
         return mark_safe(url)
@@ -319,7 +337,7 @@ class OptionGroupInlines(admin.TabularInline):
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         field = super(OptionGroupInlines, self).formfield_for_dbfield(db_field, **kwargs)
-        if db_field.name == 'product_option_extra_2' or db_field.name == 'product_option_price'\
+        if db_field.name == 'product_option_extra_2' or db_field.name == 'product_option_price' \
                 or db_field.name == 'product_option_extra_1':
             field.widget.attrs['style'] = 'width: 10em;'
         return field

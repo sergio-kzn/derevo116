@@ -1,0 +1,32 @@
+<div class="card card-body">
+    <h3 class="mb-5 mt-3 text-center">Как хотите оплатить?</h3>
+    <div class="row justify-content-center">
+        <div class="col-auto text-left">
+            {% for p in payment %}
+                <div class="col">
+                    <label class="form-check-label
+                                           {% if p.payment_enable == 0 %}text-muted{% endif %}"
+                           for="payment_{{ p.payment_API }}" style="cursor: pointer">
+                        <input type="radio" name="payment" id="payment_{{ p.payment_API }}"
+                               data-api="{{ p.payment_API }}"
+                               class="form-check-input"
+                               {% if p.payment_enable == 0 %}disabled{% endif %}
+                               {% if forloop.first %}checked{% endif %}>
+                        {{ p.payment_title }}</label>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row row-cols-2">
+        <div class="col text-right">
+                            <span class="btn btn-outline-secondary my-5 ml-auto" style="width: fit-content"
+                                  role="button"
+                                  onclick="radioDelivery.onchange()">Назад</span>
+        </div>
+        <div class="col text-left">
+                            <span class="btn btn-danger my-5 mr-auto" style="cursor: pointer; width: fit-content"
+                                  role="button"
+                                  onclick="confirmOrder('{% url 'confirm' %}')">Далее</span>
+        </div>
+    </div>
+</div>

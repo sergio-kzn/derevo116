@@ -21,7 +21,7 @@ class Slide(models.Model):
     slide_description = models.TextField(verbose_name='Текст / Описание (h2 / p)', blank=True, null=True)
     slide_link_name = models.CharField(verbose_name='Название кнопки', blank=True, null=True, max_length=100,
                                        default='Перейти')
-    slide_link_url = models.URLField(verbose_name='Ссылка', blank=True, null=True)
+    slide_link_url = models.CharField(verbose_name='Ссылка', blank=True, null=True, max_length=250)
     slide_order = models.IntegerField(verbose_name='Порядок', default='0')
     slide_visible = models.BooleanField(verbose_name='Показывать?', default=True)
 

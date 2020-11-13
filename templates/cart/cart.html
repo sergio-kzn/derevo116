@@ -96,12 +96,17 @@
             <div class="collapse" id="collapsePickup">
                 <div class="card card-body">
                     <h3 class="mb-5 mt-3 text-center">Выберите, откуда хотите забрать:</h3>
-                    <p><label class="form-check-label" for="pickupImperial" style="cursor: pointer">
-                        <input type="radio" checked name="deliveryWay" id="pickupImperial" class="form-check-input">
-                        <b>г. Казань, ул. Сибирский тракт, д. 34А, офис 136</b></label><br>
-                        <a href="{% url 'simple_page_url' 'contacts' %}" target="_blank" class="text-muted small">Посмотреть
-                            карту и вход <i class="fa fa-external-link-alt"></i> </a></p>
-                    <p>Время работы: <br><b>Понедельник - пятница<br>с 9.00 до 18.00</b></p>
+
+                    {% for p in pickup %}
+                    <p><label class="form-check-label" for="delivery-{{ p.delivery_API }}" style="cursor: pointer">
+                        <input type="radio" name="deliveryWay"
+                               id="delivery-{{ p.delivery_API }}"
+                               data-api="{{ p.delivery_API }}"
+                               class="form-check-input">
+                        <b>{{ p.delivery_title }}</b></label><br>
+                        {{ p.delivery_description|safe }}
+                    {% endfor %}
+
                     <span class="btn btn-danger my-5 mx-auto" style="width: fit-content" role="button"
                           id="collapsePickupPaymentButton">Выбрать способ оплаты</span>
                 </div>
@@ -115,897 +120,97 @@
             <div class="collapse" id="collapseDelivery">
                 <div class="card card-body">
                     <h3 class="mb-5 mt-3 text-center">Как вам отправить заказ?</h3>
-                    <div class="card-group mb-5">
-                        <div class="card">
-                            <img src="{% static '/img/cdek.webp' %}" class="card-img-top delivery-logo" alt="Служба доставки СДЕК">
-                            <div class="card-body small text-muted">
-                                <p class="card-text">Доставка до пункта выдачи или до подъезда.</p>
-                                <p class="card-text">При заказе от 15 000 рублей:
-                                    <br>доставка полностью бесплатно.</p>
-                                <p class="card-text">При заказе до 15 000 рублей:
-                                    <br>доставка до СДЕК - бесплатно;
-                                    <br>оплата только СДЕКу за доставку.</p>
-                            </div>
-                            <div class="card-footer">
-                                <input type="radio" class="btn-check" name="deliveryWay" id="delivery-cdek"
-                                       autocomplete="off" checked>
-                                <label class="btn btn-outline-danger" for="delivery-cdek">Выбрать</label></td>
-                            </div>
-                        </div>
 
-                        <div class="card">
-                            <img src="{% static '/img/pochta_rossii.webp' %}" class="card-img-top delivery-logo" alt="Служба доставки Почта России">
-                            <div class="card-body small text-muted">
-                                <p class="card-text">Доставка до ближайшего к вам отделения почты.
-                                <p class="card-text">При заказе от 15 000 рублей:
-                                    <br>доставка полностью бесплатно.</p>
-                                <p class="card-text">При заказе до 15 000 рублей:
-                                    <br>доставка до Почты - 500 рублей;
-                                    <br>оплата за доставку в отделении Почты России.</p>
-                            </div>
-                            <div class="card-footer">
-                                <input type="radio" class="btn-check" name="deliveryWay" id="delivery-pochta"
-                                       autocomplete="off">
-                                <label class="btn btn-outline-danger" for="delivery-pochta">Выбрать</label></td>
-                            </div>
-                        </div>
+                    <div class="row row-cols-1 row-cols-md-2">
+                        <div class="col col-md-5">
 
-                        <div class="card">
-                            <div class="d-flex justify-content-center align-items-center" style="height: 146px" id="block-other-delivery"><span>Другой способ</span>
-                            </div>
-                            <div class="card-body">
-                        <textarea class="form-control h-100" placeholder="Напишите свой вариант"
-                                  aria-label="With textarea" id="delivery-other-text"></textarea>
-                            </div>
-                            <div class="card-footer">
-                                <input type="radio" class="btn-check" name="deliveryWay" id="delivery-other"
-                                       autocomplete="off">
-                                <label class="btn btn-outline-danger" for="delivery-other">Выбрать</label></td>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="input-group input-group-sm mb-3">
-                        <span class="input-group-text col-3">Страна, город, индекс</span>
-                        <select class="form-control" id="delivery_country">
-                            <option selected>Россия</option>
-                        </select>
-                        <input class="form-control" list="datalistOptions" id="delivery_city"
-                               value="Казань">
-                        <datalist id="datalistOptions">
-                            <option value="Казань">
-                            <option value="Абакан">
-                            <option value="Абинск">
-                            <option value="Адыгейск">
-                            <option value="Азнакаево">
-                            <option value="Азов">
-                            <option value="Аксай">
-                            <option value="Алапаевск">
-                            <option value="Александров">
-                            <option value="Алексеевка">
-                            <option value="Алексин">
-                            <option value="Алушта">
-                            <option value="Альметьевск">
-                            <option value="Амурск">
-                            <option value="Анапа">
-                            <option value="Анапская">
-                            <option value="Ангарск">
-                            <option value="Анжеро-Судженск">
-                            <option value="Апатиты">
-                            <option value="Апрелевка">
-                            <option value="Апшеронск">
-                            <option value="Арамиль">
-                            <option value="Арзамас">
-                            <option value="Армавир">
-                            <option value="Арсеньев">
-                            <option value="Артем">
-                            <option value="Артёмовский">
-                            <option value="Архангельск">
-                            <option value="Асбест">
-                            <option value="Асино">
-                            <option value="Астрахань">
-                            <option value="Афипский">
-                            <option value="Ахтубинск">
-                            <option value="Ачинск">
-                            <option value="Аша, Ашинский р-н">
-                            <option value="Бавлы">
-                            <option value="Баксан">
-                            <option value="Балабаново">
-                            <option value="Балаково">
-                            <option value="Балахна">
-                            <option value="Балашиха">
-                            <option value="Балашов">
-                            <option value="Балезино">
-                            <option value="Барнаул">
-                            <option value="Батайск">
-                            <option value="Бахчисарай">
-                            <option value="Белая Калитва">
-                            <option value="Белгород">
-                            <option value="Белебей">
-                            <option value="Белово">
-                            <option value="Белогорск">
-                            <option value="Белогорск (Крым)">
-                            <option value="Белокуриха">
-                            <option value="Белоозерский, Воскресенский р-н">
-                            <option value="Белорецк">
-                            <option value="Белореченск">
-                            <option value="Бердск">
-                            <option value="Березники">
-                            <option value="Березовский">
-                            <option value="Бийск">
-                            <option value="Бикин">
-                            <option value="Биробиджан">
-                            <option value="Бирск">
-                            <option value="Благовещенск">
-                            <option value="Благовещенск, Башкортостан респ.">
-                            <option value="Боброво, Ленинский окр.">
-                            <option value="Богданович">
-                            <option value="Богородск">
-                            <option value="Богучар">
-                            <option value="Бодайбо">
-                            <option value="Бологое">
-                            <option value="Большой Камень">
-                            <option value="Бор">
-                            <option value="Борзя">
-                            <option value="Борисоглебск">
-                            <option value="Боровичи">
-                            <option value="Бородино">
-                            <option value="Братск">
-                            <option value="Бронницы">
-                            <option value="Брянск">
-                            <option value="Бугульма">
-                            <option value="Бугуруслан">
-                            <option value="Буденновск">
-                            <option value="Бузулук">
-                            <option value="Буинск">
-                            <option value="Буй">
-                            <option value="Буйнакск">
-                            <option value="Бутово">
-                            <option value="ВНИИССОК, Одинцовский р-н">
-                            <option value="Валдай">
-                            <option value="Валуйки, Валуйский р-н">
-                            <option value="Ванино">
-                            <option value="Великие Луки">
-                            <option value="Великий Новгород">
-                            <option value="Великий Устюг">
-                            <option value="Вельск">
-                            <option value="Верещагино">
-                            <option value="Верхний Тагил">
-                            <option value="Верхняя Пышма">
-                            <option value="Верхняя Салда">
-                            <option value="Вешенская">
-                            <option value="Видное">
-                            <option value="Вичуга">
-                            <option value="Владивосток">
-                            <option value="Владикавказ">
-                            <option value="Владимир">
-                            <option value="Волгоград">
-                            <option value="Волгодонск">
-                            <option value="Волжск, Волжский р-н">
-                            <option value="Волжский">
-                            <option value="Вологда">
-                            <option value="Володарск">
-                            <option value="Волоколамск">
-                            <option value="Волосово">
-                            <option value="Волхов">
-                            <option value="Вольск">
-                            <option value="Воркута">
-                            <option value="Воронеж">
-                            <option value="Воротынск">
-                            <option value="Ворсма">
-                            <option value="Воскресенск">
-                            <option value="Воскресенское поселение">
-                            <option value="Воткинск">
-                            <option value="Всеволожск">
-                            <option value="Выборг">
-                            <option value="Выкса">
-                            <option value="Выселки">
-                            <option value="Высокая Гора">
-                            <option value="Вышний Волочёк, гор.окр. Вышний Волочёк">
-                            <option value="Вязники">
-                            <option value="Вязьма">
-                            <option value="Вятские Поляны">
-                            <option value="Гагарин">
-                            <option value="Гай">
-                            <option value="Галич">
-                            <option value="Гатчина">
-                            <option value="Геленджик">
-                            <option value="Георгиевск">
-                            <option value="Глазов">
-                            <option value="Голицыно">
-                            <option value="Голубое, Солнечногорский р-он">
-                            <option value="Голышманово">
-                            <option value="Горелово">
-                            <option value="Горки-10, Одинцовский р-н">
-                            <option value="Горно-Алтайск">
-                            <option value="Городец">
-                            <option value="Горячий Ключ">
-                            <option value="Григорово, Новгород. р-н">
-                            <option value="Грозный">
-                            <option value="Грязи">
-                            <option value="Губаха">
-                            <option value="Губкин">
-                            <option value="Губкинский">
-                            <option value="Гудермес">
-                            <option value="Гуково">
-                            <option value="Гулькевичи">
-                            <option value="Гусь-Хрустальный">
-                            <option value="Далматово">
-                            <option value="Дальнегорск">
-                            <option value="Дедовск">
-                            <option value="Дербент">
-                            <option value="Десеновское">
-                            <option value="Джанкой">
-                            <option value="Дзержинск, Ниже. обл.">
-                            <option value="Димитровград">
-                            <option value="Динская">
-                            <option value="Дмитров">
-                            <option value="Добрянка">
-                            <option value="Долгодеревенское">
-                            <option value="Долгопрудный">
-                            <option value="Домодедово">
-                            <option value="Донецк">
-                            <option value="Дрезна">
-                            <option value="Дубна">
-                            <option value="Дубовое">
-                            <option value="Дюртюли">
-                            <option value="Дятьково">
-                            <option value="Евпатория">
-                            <option value="Егорьевск">
-                            <option value="Ейск">
-                            <option value="Екатеринбург">
-                            <option value="Елабуга">
-                            <option value="Елец">
-                            <option value="Елизаветинская">
-                            <option value="Елизово">
-                            <option value="Еманжелинск">
-                            <option value="Енисейск">
-                            <option value="Ессентуки">
-                            <option value="Железногорск, Красноярский край">
-                            <option value="Железногорск, Курская обл.">
-                            <option value="Железнодорожный, Балашиха">
-                            <option value="Жигулёвск">
-                            <option value="Жирновск">
-                            <option value="Жуковский">
-                            <option value="Забайкальск">
-                            <option value="Заводоуковск">
-                            <option value="Заволжье">
-                            <option value="Завьялово">
-                            <option value="Заинск">
-                            <option value="Заозерный">
-                            <option value="Западный">
-                            <option value="Зарайск">
-                            <option value="Заречный, Свердловская обл.">
-                            <option value="Заринск">
-                            <option value="Звенигород">
-                            <option value="Зеленогорск, Красноярский край">
-                            <option value="Зеленогорск, Курортный р-н">
-                            <option value="Зеленоград">
-                            <option value="Зеленодольск">
-                            <option value="Зеленокумск">
-                            <option value="Зерноград">
-                            <option value="Златоуст">
-                            <option value="Ивангород">
-                            <option value="Иваново">
-                            <option value="Ивантеевка">
-                            <option value="Ивдель">
-                            <option value="Иглино">
-                            <option value="Игра">
-                            <option value="Ижевск">
-                            <option value="Избербаш">
-                            <option value="Изобильный">
-                            <option value="Иноземцево">
-                            <option value="Ирбит">
-                            <option value="Иркутск">
-                            <option value="Искитим">
-                            <option value="Истра">
-                            <option value="Ишим">
-                            <option value="Ишимбай">
-                            <option value="Йошкар-Ола">
-                            <option value="Казань">
-                            <option value="Калач-на-Дону">
-                            <option value="Калининград">
-                            <option value="Калуга">
-                            <option value="Каменка, Каменский район">
-                            <option value="Каменск-Уральский">
-                            <option value="Каменск-Шахтинский">
-                            <option value="Камышин">
-                            <option value="Камышлов">
-                            <option value="Канаш">
-                            <option value="Кандалакша">
-                            <option value="Каневская">
-                            <option value="Канск">
-                            <option value="Карабаново">
-                            <option value="Карталы">
-                            <option value="Касимов">
-                            <option value="Каспийск">
-                            <option value="Качканар">
-                            <option value="Кашира">
-                            <option value="Кемерово">
-                            <option value="Керчь">
-                            <option value="Кимры">
-                            <option value="Кингисепп">
-                            <option value="Кинель">
-                            <option value="Кинешма">
-                            <option value="Киржач">
-                            <option value="Кириши">
-                            <option value="Киров">
-                            <option value="Киров.">
-                            <option value="Кировград">
-                            <option value="Кирово-Чепецк">
-                            <option value="Кировск, Ленинградская обл.">
-                            <option value="Киселёвск">
-                            <option value="Кисловодск">
-                            <option value="Климовск мкр, Подольск">
-                            <option value="Клин">
-                            <option value="Клинцы">
-                            <option value="Ковдор">
-                            <option value="Ковров">
-                            <option value="Когалым">
-                            <option value="Козельск">
-                            <option value="Кокошкино">
-                            <option value="Коломна">
-                            <option value="Колпашево">
-                            <option value="Колпино">
-                            <option value="Кольцово">
-                            <option value="Кольчугино">
-                            <option value="Коммунарка">
-                            <option value="Комсомольск-на-Амуре">
-                            <option value="Конаково">
-                            <option value="Кондопога">
-                            <option value="Кондрово">
-                            <option value="Копейск">
-                            <option value="Кореновск">
-                            <option value="Коркино">
-                            <option value="Королев">
-                            <option value="Корсаков">
-                            <option value="Костомукша">
-                            <option value="Кострома">
-                            <option value="Котельники">
-                            <option value="Котельнич">
-                            <option value="Котлас">
-                            <option value="Кочубеевское">
-                            <option value="Красково">
-                            <option value="Красная Поляна">
-                            <option value="Красноармейск">
-                            <option value="Красногвардейское">
-                            <option value="Красногвардейское, Красногвардейский р-н">
-                            <option value="Красногорск">
-                            <option value="Краснодар">
-                            <option value="Красное Село">
-                            <option value="Красное-на-Волге">
-                            <option value="Краснознаменск">
-                            <option value="Краснокамск">
-                            <option value="Краснообск">
-                            <option value="Красноперекопск">
-                            <option value="Краснослободск">
-                            <option value="Краснотурьинск">
-                            <option value="Красноуральск">
-                            <option value="Красноуфимск">
-                            <option value="Красноярск">
-                            <option value="Красный Сулин">
-                            <option value="Красный Яр">
-                            <option value="Кременкуль">
-                            <option value="Кронштадт">
-                            <option value="Кропоткин">
-                            <option value="Крыловская">
-                            <option value="Крымск">
-                            <option value="Кстово">
-                            <option value="Кубинка">
-                            <option value="Кувандык">
-                            <option value="Кугеси">
-                            <option value="Кудрово">
-                            <option value="Кудымкар">
-                            <option value="Кузнецк">
-                            <option value="Куйбышев">
-                            <option value="Кукмор">
-                            <option value="Кулебаки">
-                            <option value="Кумертау">
-                            <option value="Кунгур">
-                            <option value="Курган">
-                            <option value="Курганинск">
-                            <option value="Куровское">
-                            <option value="Курск">
-                            <option value="Курчатов">
-                            <option value="Кушва">
-                            <option value="Кущёвская, Кущёвский р-н">
-                            <option value="Кызыл">
-                            <option value="Кыштым">
-                            <option value="Кяхта">
-                            <option value="Лабинск">
-                            <option value="Лабытнанги">
-                            <option value="Лазаревское">
-                            <option value="Лаишево">
-                            <option value="Лангепас">
-                            <option value="Ленинградская">
-                            <option value="Ленино">
-                            <option value="Лениногорск">
-                            <option value="Ленинск-Кузнецкий">
-                            <option value="Лермонтов">
-                            <option value="Лесной">
-                            <option value="Лесной Городок">
-                            <option value="Лесосибирск">
-                            <option value="Ливны">
-                            <option value="Ликино-Дулево">
-                            <option value="Линево">
-                            <option value="Липецк">
-                            <option value="Лиски, Лискинский р-н">
-                            <option value="Лобня">
-                            <option value="Лодейное Поле">
-                            <option value="Ломоносов">
-                            <option value="Лопатино">
-                            <option value="Луга">
-                            <option value="Луховицы">
-                            <option value="Лучегорск">
-                            <option value="Лысково">
-                            <option value="Лысьва">
-                            <option value="Лыткарино">
-                            <option value="Люберцы">
-                            <option value="Людиново">
-                            <option value="Магадан">
-                            <option value="Магнитогорск">
-                            <option value="Майкоп">
-                            <option value="Малаховка">
-                            <option value="Малоярославец">
-                            <option value="Маркс">
-                            <option value="Матвеев Курган">
-                            <option value="Махачкала">
-                            <option value="Мегион">
-                            <option value="Междуреченск">
-                            <option value="Мелеуз">
-                            <option value="Менделеевск">
-                            <option value="Мензелинск">
-                            <option value="Металлострой">
-                            <option value="Миасс">
-                            <option value="Миллерово, Миллеровский р-н">
-                            <option value="Минеральные Воды">
-                            <option value="Минусинск">
-                            <option value="Мирный, Саха респ. (Якутия)">
-                            <option value="Мисайлово">
-                            <option value="Митино">
-                            <option value="Михайлов">
-                            <option value="Михайловка">
-                            <option value="Михайловск">
-                            <option value="Михайловск, Свердловская область">
-                            <option value="Михнево, Ступинский р-н">
-                            <option value="Мичуринск">
-                            <option value="Можайск">
-                            <option value="Можга">
-                            <option value="Моздок">
-                            <option value="Молоково">
-                            <option value="Мончегорск">
-                            <option value="Морозовск">
-                            <option value="Москва">
-                            <option value="Московский">
-                            <option value="Мосрентген, Москва">
-                            <option value="Мостовской">
-                            <option value="Муравленко">
-                            <option value="Мурино, Всеволожский р-н">
-                            <option value="Мурманск">
-                            <option value="Муром">
-                            <option value="Мценск">
-                            <option value="Мытищи">
-                            <option value="Набережные Челны">
-                            <option value="Надым">
-                            <option value="Назарово">
-                            <option value="Назрань">
-                            <option value="Нальчик">
-                            <option value="Наро-Фоминск">
-                            <option value="Нарьян-Мар">
-                            <option value="Нахабино">
-                            <option value="Находка">
-                            <option value="Невинномысск">
-                            <option value="Невьянск">
-                            <option value="Некрасовка">
-                            <option value="Немчиновка">
-                            <option value="Нерехта">
-                            <option value="Нерюнгри">
-                            <option value="Нефтекамск">
-                            <option value="Нефтеюганск">
-                            <option value="Нижневартовск">
-                            <option value="Нижнекамск">
-                            <option value="Нижний Новгород">
-                            <option value="Нижний Тагил">
-                            <option value="Нижняя Тура">
-                            <option value="Новая Адыгея">
-                            <option value="Новая Усмань">
-                            <option value="Ново-Переделкино">
-                            <option value="Новоалександровск">
-                            <option value="Новоалтайск">
-                            <option value="Нововоронеж">
-                            <option value="Новое Девяткино">
-                            <option value="Новозыбков">
-                            <option value="Новокосино">
-                            <option value="Новокубанск">
-                            <option value="Новокузнецк">
-                            <option value="Новокуйбышевск">
-                            <option value="Новомосковск">
-                            <option value="Новопавловск">
-                            <option value="Новороссийск">
-                            <option value="Новоселье, Ломоносовский р-он">
-                            <option value="Новосибирск">
-                            <option value="Новотитаровская">
-                            <option value="Новотроицк">
-                            <option value="Новоуральск">
-                            <option value="Новочебоксарск">
-                            <option value="Новочеркасск">
-                            <option value="Новошахтинск">
-                            <option value="Новый Уренгой">
-                            <option value="Ногинск">
-                            <option value="Норильск">
-                            <option value="Ноябрьск">
-                            <option value="Нурлат">
-                            <option value="Нытва">
-                            <option value="Нягань">
-                            <option value="Обнинск">
-                            <option value="Обухово, Ногинский р-н">
-                            <option value="Обь">
-                            <option value="Одинцово">
-                            <option value="Озерск">
-                            <option value="Озёры">
-                            <option value="Октябрьский, Башкортостан респ.">
-                            <option value="Октябрьский, гор. окр. Люберцы">
-                            <option value="Оленегорск">
-                            <option value="Омск">
-                            <option value="Орел">
-                            <option value="Оренбург">
-                            <option value="Орехово-Зуево">
-                            <option value="Орск">
-                            <option value="Оса">
-                            <option value="Осиново, Зеленодольский р-н">
-                            <option value="Остров">
-                            <option value="Островцы">
-                            <option value="Острогожск, Острогожский р-н">
-                            <option value="Отрадный">
-                            <option value="Очер">
-                            <option value="Павлово">
-                            <option value="Павловск">
-                            <option value="Павловск, Алтай. край">
-                            <option value="Павловск, Воронежская обл.">
-                            <option value="Павловская">
-                            <option value="Павловский Посад">
-                            <option value="Пенза">
-                            <option value="Первомайское, Первомайский р-н">
-                            <option value="Первоуральск">
-                            <option value="Переславль-Залесский">
-                            <option value="Пермь">
-                            <option value="Пестрецы, Пестречинский р-н">
-                            <option value="Петергоф (Петродворец)">
-                            <option value="Петрозаводск">
-                            <option value="Петропавловск-Камчатский">
-                            <option value="Печора">
-                            <option value="Пограничный">
-                            <option value="Подольск">
-                            <option value="Покров">
-                            <option value="Полазна">
-                            <option value="Полевской">
-                            <option value="Полтавская">
-                            <option value="Полярные Зори">
-                            <option value="Похвистнево">
-                            <option value="Починки">
-                            <option value="Приволжск">
-                            <option value="Приморско-Ахтарск">
-                            <option value="Приозерск">
-                            <option value="Приютово">
-                            <option value="Прокопьевск">
-                            <option value="Пролетарий">
-                            <option value="Промышленная">
-                            <option value="Протвино">
-                            <option value="Прохладный">
-                            <option value="Прохладный, Белоярск окрг.">
-                            <option value="Псков">
-                            <option value="Пугачев">
-                            <option value="Путилково">
-                            <option value="Пушкин">
-                            <option value="Пушкино">
-                            <option value="Пущино">
-                            <option value="Пятигорск">
-                            <option value="Радужный">
-                            <option value="Радужный, Кол. р-он">
-                            <option value="Раменское">
-                            <option value="Ревда">
-                            <option value="Реж">
-                            <option value="Реутов">
-                            <option value="Ржев">
-                            <option value="Рославль">
-                            <option value="Россошь">
-                            <option value="Ростов-на-Дону">
-                            <option value="Рощино, Выборгский р-н">
-                            <option value="Ртищево, Ртищевский р-он">
-                            <option value="Рубцовск">
-                            <option value="Руза">
-                            <option value="Румянцево, пос. Моск-ий">
-                            <option value="Рыбинск">
-                            <option value="Рыбное">
-                            <option value="Ряжск">
-                            <option value="Рязань">
-                            <option value="Саки">
-                            <option value="Салават">
-                            <option value="Салехард">
-                            <option value="Сальск">
-                            <option value="Самара">
-                            <option value="Санкт-Петербург">
-                            <option value="Саранск">
-                            <option value="Сарапул">
-                            <option value="Саратов">
-                            <option value="Саров">
-                            <option value="Сатка">
-                            <option value="Сафоново">
-                            <option value="Саяногорск">
-                            <option value="Саянск">
-                            <option value="Свердловский гор.окр. Лосино-Петровский">
-                            <option value="Светлоград">
-                            <option value="Свободный">
-                            <option value="Себеж">
-                            <option value="Севастополь">
-                            <option value="Северный (Москва)">
-                            <option value="Северобайкальск">
-                            <option value="Северодвинск">
-                            <option value="Североморск">
-                            <option value="Североуральск">
-                            <option value="Северск">
-                            <option value="Северская">
-                            <option value="Сегежа">
-                            <option value="Селятино">
-                            <option value="Семенов">
-                            <option value="Семикаракорск">
-                            <option value="Сергиев Посад">
-                            <option value="Сердобск">
-                            <option value="Серов">
-                            <option value="Серпухов">
-                            <option value="Сертолово, Всеволожский р-н">
-                            <option value="Сестрорецк">
-                            <option value="Сибай">
-                            <option value="Симферополь">
-                            <option value="Сколково инновационный центр, Москва">
-                            <option value="Славгород">
-                            <option value="Славянск-на-Кубани">
-                            <option value="Сланцы">
-                            <option value="Смоленск">
-                            <option value="Снежинск">
-                            <option value="Собинка">
-                            <option value="Советская Гавань">
-                            <option value="Советский">
-                            <option value="Совхоз им Ленина">
-                            <option value="Совхозный, Славянский р-н">
-                            <option value="Сокол">
-                            <option value="Соликамск">
-                            <option value="Солнечногорск">
-                            <option value="Солнцево">
-                            <option value="Соль-Илецк">
-                            <option value="Сортавала">
-                            <option value="Сосенское">
-                            <option value="Сосновоборск">
-                            <option value="Сосновый Бор">
-                            <option value="Сочи">
-                            <option value="Спасск-Дальний">
-                            <option value="Ставрополь">
-                            <option value="Старая Купавна">
-                            <option value="Старая Русса">
-                            <option value="Старокорсунская станица">
-                            <option value="Староминская">
-                            <option value="Старый Оскол">
-                            <option value="Стерлитамак">
-                            <option value="Стрежевой">
-                            <option value="Стрельна">
-                            <option value="Строитель">
-                            <option value="Строитель, Яковлевский р-н">
-                            <option value="Ступино">
-                            <option value="Судак">
-                            <option value="Суздаль">
-                            <option value="Супсех">
-                            <option value="Сураж">
-                            <option value="Сургут">
-                            <option value="Сухиничи">
-                            <option value="Суходол">
-                            <option value="Сухой Лог">
-                            <option value="Сходня">
-                            <option value="Сызрань">
-                            <option value="Сыктывкар">
-                            <option value="Сысерть">
-                            <option value="Тавда">
-                            <option value="Таганрог">
-                            <option value="Тайшет">
-                            <option value="Талдом, Талдомский район">
-                            <option value="Талнах">
-                            <option value="Тальменка">
-                            <option value="Тамбов">
-                            <option value="Тарасково, Наро-Фоминский р-н">
-                            <option value="Тарасовский">
-                            <option value="Тбилисская">
-                            <option value="Тверь">
-                            <option value="Тейково">
-                            <option value="Темрюк">
-                            <option value="Терек">
-                            <option value="Тимашевск, Тимашевский р-н">
-                            <option value="Тихвин">
-                            <option value="Тихорецк">
-                            <option value="Тобольск">
-                            <option value="Тольятти">
-                            <option value="Томилино">
-                            <option value="Томск">
-                            <option value="Топки">
-                            <option value="Торжок">
-                            <option value="Тосно">
-                            <option value="Трехгорный">
-                            <option value="Троицк, Москов. обл.">
-                            <option value="Троицк, Чел. обл">
-                            <option value="Трубичино">
-                            <option value="Туапсе">
-                            <option value="Туймазы">
-                            <option value="Тула">
-                            <option value="Тульский">
-                            <option value="Туринск">
-                            <option value="Тутаев">
-                            <option value="Тучково">
-                            <option value="Тында">
-                            <option value="Тюмень">
-                            <option value="Ува">
-                            <option value="Удельная">
-                            <option value="Удомля">
-                            <option value="Ужур">
-                            <option value="Узловая">
-                            <option value="Улан-Удэ">
-                            <option value="Ульяновск">
-                            <option value="Унеча">
-                            <option value="Урай">
-                            <option value="Урус-Мартан">
-                            <option value="Урюпинск">
-                            <option value="Усады, Лаишевский р-н">
-                            <option value="Усинск">
-                            <option value="Усмань">
-                            <option value="Усолье-Сибирское">
-                            <option value="Уссурийск">
-                            <option value="Усть-Джегута">
-                            <option value="Усть-Илимск">
-                            <option value="Усть-Катав">
-                            <option value="Усть-Кокса">
-                            <option value="Усть-Кут">
-                            <option value="Усть-Лабинск">
-                            <option value="Уфа">
-                            <option value="Ухта">
-                            <option value="Учалы">
-                            <option value="Феодосия">
-                            <option value="Фокино">
-                            <option value="Фролово">
-                            <option value="Фролы">
-                            <option value="Фрязино">
-                            <option value="Хабаровск">
-                            <option value="Ханты-Мансийск">
-                            <option value="Хасавюрт">
-                            <option value="Химки">
-                            <option value="Химки Новые">
-                            <option value="Хотьково, Сергиево-Посадский р-н">
-                            <option value="Цивильск">
-                            <option value="Цимлянск">
-                            <option value="Чайковский">
-                            <option value="Чалтырь">
-                            <option value="Чапаевск">
-                            <option value="Чебаркуль">
-                            <option value="Чебоксары">
-                            <option value="Чегдомын">
-                            <option value="Челябинск">
-                            <option value="Черемхово">
-                            <option value="Череповец">
-                            <option value="Черкесск">
-                            <option value="Черная Грязь, Солнечногорский р-н">
-                            <option value="Черноголовка">
-                            <option value="Черногорск">
-                            <option value="Черноморское">
-                            <option value="Чернушка">
-                            <option value="Чехов">
-                            <option value="Чистополь">
-                            <option value="Чита">
-                            <option value="Чудово">
-                            <option value="Чусовой">
-                            <option value="Шадринск">
-                            <option value="Шарыпово">
-                            <option value="Шарья">
-                            <option value="Шатура">
-                            <option value="Шаховская, Шаховской р-н">
-                            <option value="Шахты">
-                            <option value="Шахунья">
-                            <option value="Шебекино, Шебекинский р-н">
-                            <option value="Шелехов">
-                            <option value="Шилово">
-                            <option value="Шушары">
-                            <option value="Шуя">
-                            <option value="Щекино">
-                            <option value="Щелково">
-                            <option value="Щербинка">
-                            <option value="Электрогорск">
-                            <option value="Электросталь">
-                            <option value="Электроугли">
-                            <option value="Элиста">
-                            <option value="Энгельс">
-                            <option value="Юбилейный">
-                            <option value="Югорск">
-                            <option value="Южно-Сахалинск">
-                            <option value="Южноуральск">
-                            <option value="Южный город, Волжский р-н.">
-                            <option value="Юрга">
-                            <option value="Юрлово, Солнечногорский р-н">
-                            <option value="Юрьев-Польский">
-                            <option value="Юрюзань">
-                            <option value="Яблоновский">
-                            <option value="Якутск">
-                            <option value="Ялта">
-                            <option value="Ялуторовск">
-                            <option value="Янино-1, Всеволожский р-он">
-                            <option value="Ярославль">
-                            <option value="Ярцево">
-                            <option value="Яхрома, Дмитровский район">
-                            <option value="рп Городище, Городищенский р-н">
+                            {% for d in delivery %}
+                                <div class="card mb-3">
+                                    <div class="row g-0">
+                                        <div class="col-4">
+                                            <div class="card-body text-left">
+                                                <img src="{{ d.delivery_img.url }}" class="img-fluid"
+                                                     alt="{{ d.delivery_title }}">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="card-body small text-muted text-left">
+                                                {{ d.delivery_description|safe }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer small text-muted">
+                                        <input type="radio" class="btn-check" name="deliveryWay"
+                                               id="delivery-{{ d.delivery_API }}"
+                                               data-api="{{ d.delivery_API }}"
+                                               autocomplete="off" {% if forloop.first %}checked{% endif %}>
+                                        <label class="btn btn-outline-danger btn-sm"
+                                               for="delivery-{{ d.delivery_API }}">Выбрать</label>
+                                    </div>
+                                </div>
+                            {% endfor %}
 
-                        </datalist>
-                        <input class="form-control" id="delivery_index"
-                               placeholder="Индекс">
-                    </div>
-                    <div class="input-group input-group-sm mb-3">
-                        <span class="input-group-text col-3 text-left">Адрес</span>
-                        <textarea class="form-control" aria-label="Адрес" id="delivery_street"
-                                  placeholder="Улица, Подъезд, Этаж, Квартира (офис)"></textarea>
-                    </div>
-                    <div class="input-group input-group-sm mb-3">
-                        <span class="input-group-text col-3 text-left">Контакты</span>
-                        <input type="text" class="form-control" id="delivery_fio"
-                               placeholder="Фамилия Имя Отчество">
-                    </div>
-                    <div class="input-group input-group-sm mb-3">
-                        <span class="input-group-text col-3 text-left">Телефон</span>
-                        <input type="text" class="form-control" id="delivery_phone"
-                               placeholder="Номер телефона" style="max-width: 25%">
-                    </div>
-                    <span class="btn btn-danger my-5 mx-auto" style="width: fit-content" role="button"
-                          id="collapseDeliveryPaymentButton">Выбрать способ оплаты</span>
-                </div>
-            </div>
-        </div>
-    </div>
+                            <div class="card mb-3">
+                                <div class="card-header">Другой способ</div>
+                                <div class="row g-0">
+                                    <div class="col">
+                                        <div class="card-body small text-muted text-left">
+                                            <textarea class="form-control h-100" placeholder="Напишите свой вариант"
+                                                      aria-label="Напишите свой вариант"
+                                                      id="delivery-other-text"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card-body small text-muted">
+                                        <input type="radio" class="btn-check" name="deliveryWay"
+                                               id="delivery-other"
+                                               data-api="other"
+                                               autocomplete="off">
+                                        <label class="btn btn-outline-danger btn-sm"
+                                               for="delivery-other">Выбрать</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-md-7">
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-3 col-md-4">Страна</span>
+                                <select class="form-control" id="delivery_country">
+                                    <option selected>Россия</option>
+                                </select>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-3 col-md-4">Город, индекс</span>
+                                <input class="form-control" list="datalistOptions" id="delivery_city"
+                                       value="Казань">
+                                <datalist id="datalistOptions">
+                                    {% for city in cities %}
+                                        <option value="{{ city.city_name }}">
+                                    {% endfor %}
+                                </datalist>
+                                <input class="form-control" id="delivery_index"
+                                       placeholder="Индекс">
+                            </div>
 
-    <!-- Оплата Самовывоз -->
-    <div class="row">
-        <div class="col text-center">
-            <div class="collapse" id="collapsePickupPayment">
-                <div class="card card-body">
-                    <h3 class="mb-5 mt-3 text-center">Как хотите оплатить?</h3>
-                    <div class="row justify-content-center">
-                        <div class="col-auto text-left">
-                            <div class="col">
-                                <label class="form-check-label" for="pickupPaymentCashe" style="cursor: pointer">
-                                    <input type="radio" checked name="payment" id="pickupPaymentCashe"
-                                           class="form-check-input">
-                                    Наличные при получении</label>
+
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-3 col-md-4 text-left">Адрес</span>
+                                <textarea class="form-control" aria-label="Адрес" id="delivery_street"
+                                          placeholder="Улица, Дом, Квартира (офис). (Подъезд, Этаж, Домофон)"></textarea>
                             </div>
-                            <div class="col">
-                                <label class="form-check-label" for="pickupPaymentCart" style="cursor: pointer">
-                                    <input type="radio" name="payment" id="pickupPaymentCart"
-                                           class="form-check-input">
-                                    Картой при получении</label>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-3 col-md-4 text-left">ФИО</span>
+                                <input type="text" class="form-control" id="delivery_fio"
+                                       placeholder="Фамилия Имя Отчество">
                             </div>
-                            <div class="col">
-                                <label class="form-check-label text-muted" for="pickupPaymentOnline">
-                                    <input type="radio" name="payment" id="pickupPaymentOnline"
-                                           class="form-check-input" disabled>
-                                    Картой онлайн</label>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-3 col-md-4 text-left">Телефон</span>
+                                <input type="text" class="form-control" id="delivery_phone"
+                                       placeholder="Номер телефона" style="max-width: 25%">
                             </div>
-                            <div class="col">
-                                <label class="form-check-label" for="pickupPaymentСashless" style="cursor: pointer">
-                                    <input type="radio" name="payment" id="pickupPaymentСashless"
-                                           class="form-check-input">
-                                    Безналичный расчет</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row row-cols-2">
-                        <div class="col text-right">
-                            <span class="btn btn-outline-secondary my-5 ml-auto" style="width: fit-content"
-                                  role="button"
-                                  onclick="radioPickup.onchange()">Назад</span>
-                        </div>
-                        <div class="col text-left">
-                            <span class="btn btn-danger my-5 mr-auto" style="cursor: pointer; width: fit-content"
-                                  role="button"
-                                  onclick="confirmOrder()">Далее</span>
+                            <span class="btn btn-danger my-5 mx-auto" style="width: fit-content" role="button"
+                                  id="collapseDeliveryPaymentButton">Перейти к оплате</span>
                         </div>
                     </div>
                 </div>
@@ -1013,53 +218,11 @@
         </div>
     </div>
 
-    <!-- Оплата Доставка -->
+    <!-- Оплата -->
     <div class="row">
         <div class="col text-center">
             <div class="collapse" id="collapsePickupPayment">
-                <div class="card card-body">
-                    <h3 class="mb-5 mt-3 text-center">Как хотите оплатить?</h3>
-                    <div class="row justify-content-center">
-                        <div class="col-auto text-left">
-                            <div class="col">
-                                <label class="form-check-label" for="deliveryPaymentCashe" style="cursor: pointer">
-                                    <input type="radio" checked name="payment" id="deliveryPaymentCashe"
-                                           class="form-check-input">
-                                    Наличные при получении</label>
-                            </div>
-                            <div class="col">
-                                <label class="form-check-label text-muted" for="deliveryPaymentCart">
-                                    <input type="radio" name="payment" id="deliveryPaymentCart"
-                                           class="form-check-input" disabled>
-                                    Картой при получении</label>
-                            </div>
-                            <div class="col">
-                                <label class="form-check-label text-muted" for="deliveryPaymentOnline">
-                                    <input type="radio" name="payment" id="deliveryPaymentOnline"
-                                           class="form-check-input" disabled>
-                                    Картой онлайн</label>
-                            </div>
-                            <div class="col">
-                                <label class="form-check-label" for="deliveryPaymentСashless" style="cursor: pointer">
-                                    <input type="radio" name="payment" id="deliveryPaymentСashless"
-                                           class="form-check-input">
-                                    Безналичный расчет</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row row-cols-2">
-                        <div class="col text-right">
-                            <span class="btn btn-outline-secondary my-5 ml-auto" style="width: fit-content"
-                                  role="button"
-                                  onclick="radioDelivery.onchange()">Назад</span>
-                        </div>
-                        <div class="col text-left">
-                            <span class="btn btn-danger my-5 mr-auto" style="cursor: pointer; width: fit-content"
-                                  role="button"
-                                  onclick="confirmOrder()">Далее</span>
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>

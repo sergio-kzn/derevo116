@@ -19,6 +19,11 @@
             margin-left: -1rem;
         }
 
+        #find_order {
+            right: 0;
+            left: auto !important;
+        }
+
         #basket .modal {
             left: auto;
             top: 0;
@@ -66,15 +71,16 @@
                     class="link-secondary text-decoration-none dropdown-toggle"
                     href="#" role="button" id="dropdownMenuLink"
                     data-toggle="dropdown"
-                    aria-expanded="false"><i class="fas fa-user"></i> Мой аккаунт</a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    <li>
-                        <hr class="dropdown-divider">
+                    aria-expanded="false"><i class="fas fa-user"></i> Статус заказа</a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="find_order">
+                    <li><p class="dropdown-item disabled">Введите номер заказа</p></li>
+                    <li class="mx-3">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="2020-XXX-000"
+                                   aria-label="Recipient's username" aria-describedby="Введите номер заказа">
+                            <button class="btn btn-outline-secondary" type="button" id="button-addon2"><i class="fa fa-search"></i></button>
+                        </div>
                     </li>
-                    <li><a class="dropdown-item" href="#">Separated link</a></li>
                 </ul>
             </div>
         </div>
@@ -250,7 +256,6 @@
                 <li class="list-inline-item"><a class="link-light text-decoration-none" href="/specials/">Акции</a></li>
                 <li class="list-inline-item"><a class="link-light text-decoration-none" href="/account-return-add/">Возвраты</a></li>
                 <li class="list-inline-item"><a class="link-light text-decoration-none" href="/order-history/">История заказов</a></li>
-                <li class="list-inline-item"><a class="link-light text-decoration-none" href="/my-account/">Мой аккаунт</a></li>
             </ul>
             <p><b>Столярная мастерская Империал © 2020</b></p>
         </div>

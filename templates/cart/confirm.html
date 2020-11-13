@@ -52,91 +52,102 @@
     <table class="table">
         <tbody>
         <tr>
-            <td class="text-right font-weight-bold">Сумма: {{ cart_sum }} ₽</td>
+            <td class="text-right font-weight-bold w-100">Доставка:<br>
+                Сумма:
+            </td>
+            <td class="text-right font-weight-bold text-nowrap">0 ₽<br>
+                {{ cart_sum }} ₽
+            </td>
         </tr>
         </tbody>
     </table>
 
-    <div class="input-group mb-5">
-        <span class="input-group-text">Комментарий к заказу</span>
-        <textarea readonly class="form-control" aria-label="Комментарий к заказу">{{ order_data.orderComment }}</textarea>
-    </div>
-
     <!-- Доставка -->
-    <div class="row justify-content-center">
-        <div class="col-auto text-left">
-            <div class="row row-cols-1">
-                <div class="col">
-                    <div class="card mb-3">
-                        <div class="card-header">{{ order_data.orderDelivery }}:</div>
-                        <div class="row g-0">
-                            <div class="col-md-4 align-content-center">
-                                <img src="{% static '/img/cdek.webp' %}" class="card-img-top"
-                                     alt="Служба доставки СДЕК">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body small text-muted">
-                                    <p class="card-text">Доставка до пункта выдачи или до подъезда.</p>
-                                    <p class="card-text">При заказе от 15 000 рублей:
-                                        <br>доставка полностью бесплатно.</p>
-                                    <p class="card-text">При заказе до 15 000 рублей:
-                                        <br>доставка до СДЕК - бесплатно;
-                                        <br>оплата только СДЕКу за доставку.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <p class="card-text">{{ order_data.orderDeliveryCountryAndCity }}
-                                <br>{{ order_data.orderDeliveryAdress }}
+    <div class="row row-cols-1 row-cols-md-2">
+    <div class="col-6 mb-3">
+        <div class="card h-100">
+            <div class="card-header">{{ order_data.orderDelivery }}:</div>
+            <div class="row g-0">
+                <div class="col-md-4 align-content-center">
+                    {% if delivery.delivery_img %}
+                        <img src="{{ delivery.delivery_img.url }}" class="card-img-top"
+                             alt="{{ delivery.delivery_title }}">
+                    {% endif %}
+                </div>
+                <div class="col-md-8">
+                    {% if delivery.delivery_pickup == False %}
+                        <div class="card-body small text-muted">
+                            <p class="card-text">
+                                {{ order_data.orderDeliveryCountryAndCity }}
+                                <br>{{ order_data.orderDeliveryAddress }}
                                 <br>{{ order_data.orderDeliveryContact }}
                                 <br>{{ order_data.orderDeliveryContactPhone }}
                         </div>
-                    </div>
-
-                    <div class="col">
-                    <div class="card mb-3">
-                        <div class="card-header">Опалата:</div>
+                    {% else %}
                         <div class="card-body">
-                            <p class="card-text">{{ order_data.orderPay }}</p>
+                            {{ delivery.delivery_title }}
+                        <div class="small">
+                            {{ delivery.delivery_description|safe }}
                         </div>
-                    </div>
-                </div>
-
-                <div class="col">
-                    <div class="card mb-3">
-                        <div class="card-header">Дополнительно:</div>
-                        <div class="card-body">
-                            <div class="form-check form-switch mb-3">
-                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                                <label class="form-check-label" for="flexSwitchCheckDefault">Присылать уведомления на
-                                    email <input
-                                            type="email" class="form-control  form-control-sm"
-                                            id="exampleFormControlInput1"
-                                            placeholder="name@example.com"></label>
-                            </div>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-                                <label class="form-check-label" for="flexSwitchCheckChecked">Оператор свяжется с вами
-                                    для подтверждения
-                                    заказа</label>
-                            </div>
                         </div>
+                    {% endif %}
                     </div>
-                </div>
-
                 </div>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col text-center">
-                <a class="btn btn-outline-secondary my-5 mx-auto" style="width: fit-content" role="button"
-                   href="{% url 'cart' %}">Назад</a>
-                <a class="btn btn-danger my-5 mx-auto" style="width: fit-content" role="button" href="#">ОФОРМИТЬ</a>
+        <div class="col-6 mb-3">
+            <div class="card h-100">
+                <div class="card-header">Опалата:</div>
+                <div class="card-body">
+                    <p class="card-text">{{ payment.payment_title }}</p>
+                </div>
             </div>
+        </div>
+        <div class="col-6 mb-3">
+            <div class="card h-100">
+                <div class="card-header">Комментарий к заказу</div>
+                <div class="card-body small text-muted">
+                    <p class="card-text">{{ order_data.orderComment }}
+                </div>
+            </div>
+        </div>
+        <div class="col-6 h-100">
+            <div class="card mb-3">
+                <div class="card-header">Дополнительно:</div>
+                <div class="card-body">
+                    <div class="form-check form-switch mb-2">
+                        <input class="form-check-input" type="checkbox" id="order_call_me" checked>
+                        <label class="form-check-label" for="order_call_me">Оператор свяжется с
+                            вами
+                            для подтверждения
+                            заказа</label>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="order_notification">
+                        <label class="form-check-label" for="order_notification">Присылать уведомления
+                            на
+                            email <input
+                                    type="email" class="form-control  form-control-sm"
+                                    id="order_email"
+                                    placeholder="name@example.com"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-1 pb-5 ">
+        <div class="col text-center">
+            <a class="btn btn-outline-secondary ml-auto mr-2" style="width: fit-content" role="button"
+               href="{% url 'cart' %}">Назад</a>
+            <spam class="btn btn-danger mx-auto" style="width: fit-content" role="button"
+                  onclick="sendOrder('{% url 'success' %}')">ОФОРМИТЬ
+            </spam>
         </div>
     </div>
 {% endblock content %}
 {# / Содержимое страницы #}
 
-{% block custom_footer %}{% endblock custom_footer %}
+{% block custom_footer %}
+    <script src="{% static '/js/cart_confirm.js' %}"></script>
+{% endblock custom_footer %}

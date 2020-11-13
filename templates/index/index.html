@@ -171,15 +171,8 @@
                                 </div>
                             </div>
                             <div class="card-footer">
-
-                                <a href="{{ root_url }}">
-                                    <small class="text-nowrap">{{ random_item.product_category.category_parent.category_parent.category_title }}</small>
-                                </a> -
-                                <a href="{{ vendor_url }}">
-                                    <small class="text-nowrap">{{ random_item.product_category.category_parent.category_title }}</small>
-                                </a> -
-                                <a href="{{ category_url }}">
-                                    <small class="text-nowrap">{{ random_item.product_category.category_title }}</small>
+                                <a href="{{ category_url }}" class=" text-decoration-none">
+                                    <small class="text-nowrap text-muted">{{ random_item.product_category.category_title }}</small>
                                 </a>
                             </div>
                         </div>
@@ -267,13 +260,7 @@
                                 </div>
                             </div>
                             <div class="card-footer">
-                                <a href="{{ root_url }}">
-                                    <small class="text-nowrap">{{ random_item.product_category.category_parent.category_parent.category_title }}</small>
-                                </a> -
-                                <a href="{{ vendor_url }}">
-                                    <small class="text-nowrap">{{ random_item.product_category.category_parent.category_title }}</small>
-                                </a> -
-                                <a href="{{ category_url }}">
+                                <a href="{{ category_url }}" class="text-decoration-none text-muted">
                                     <small class="text-nowrap">{{ random_item.product_category.category_title }}</small>
                                 </a>
                             </div>
