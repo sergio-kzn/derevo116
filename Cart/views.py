@@ -3,12 +3,10 @@ import json
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
-from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
-from Cart.models import Country, City, Delivery, Payment, Order, Item, Status
-from Cart.services import prepare_cart, generate_order_number
-from Derevo116 import settings
+from Cart.models import Country, City, Delivery, Payment
+from Cart.services import prepare_cart, create_new_order
 from Product.models import Product, Color
 
 
@@ -35,12 +33,12 @@ def cart(request):
     city = City.objects.all()
     delivery = Delivery.objects.filter(delivery_enable=True).filter(delivery_pickup=False)
     pickup = Delivery.objects.filter(delivery_pickup=True).filter(delivery_enable=True)
-    payment = Payment.objects.all()
+    # payment = Payment.objects.filter(payment_enable=True)
     content['countries'] = country
     content['cities'] = city
     content['delivery'] = delivery
     content['pickup'] = pickup
-    content['payment'] = payment
+    # content['payment'] = payment
 
     return render(request, 'cart/cart.html', content)
 
@@ -114,9 +112,8 @@ def clear_cart(request):
 def select_payment(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        payment = Payment.objects.filter(payment_delivery__delivery_API__exact=data['orderDeliveryWay'])
+        payment = Payment.objects.filter(payment_delivery__delivery_API__exact=data['orderDeliveryWay']).filter(payment_enable=True)
         html = render_to_string('cart/payments.html', {'payment': payment})
-        print(html)
         return HttpResponse(html)
 
 
@@ -124,48 +121,7 @@ def select_payment(request):
 def success(request):
     """страница успешного оформления заказа"""
     if request.method == 'POST':
-        data = json.loads(request.body)
-
-        order_number = generate_order_number()
-
-        request.session.setdefault('order_extra', {})
-        request.session['order_extra'] = data
-        request.session['order_extra']['order_number'] = order_number
-
-        print(request.session['products'].items())
-
-        new_order = Order.objects.create(
-            order_number=order_number,
-            order_delivery=Delivery.objects.get(id=request.session['order_data']['orderDeliveryWay']),
-            order_delivery_other=request.session['order_data']['orderDeliveryWayText'],
-            order_payment=Payment.objects.get(id=request.session['order_data']['orderPay']),
-            order_status=Status.objects.get(status_default=1),
-            order_history=f"{timezone.localtime(timezone.now())}  -  cтатус: {Status.objects.get(status_default=1)}",
-            order_comment=request.session['order_data']['orderComment'],
-            order_comment_admin="",
-            order_country_city_index=request.session['order_data']['orderDeliveryCountryAndCity'],
-            order_address=request.session['order_data']['orderDeliveryAddress'],
-            order_client_name=request.session['order_data']['orderDeliveryContact'],
-            order_phone=request.session['order_data']['orderDeliveryContactPhone'],
-            order_notification=request.session['order_extra']['order_notification'],
-            order_email=request.session['order_extra']['order_email'],
-            order_call_me=request.session['order_extra']['order_call_me'],
-        )
-
-        for key, value in request.session['products'].items():
-            print(value['id'])
-            new_item = Item.objects.create(
-                item_product=Product.objects.get(id=value['id']),
-                item_id=key,
-                item_color=value['color'],
-                item_options=value['options'],
-                item_price=value['price'],
-                item_count=value['count'],
-                item_sale=0,
-                item_sum=value['sum'],
-                item_order=Order.objects.get(order_number=order_number),
-            )
-
+        create_new_order(request)
         return HttpResponse('ok')
     else:
         order_number = request.session['order_extra']['order_number']

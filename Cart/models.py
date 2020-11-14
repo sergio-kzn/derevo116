@@ -95,10 +95,11 @@ class Order(models.Model):
     order_notification = models.BooleanField(verbose_name='Уведомлять по email?', default=0)
     order_email = models.EmailField(verbose_name='Email для уведомлений', null=True, blank=True)
     order_call_me = models.BooleanField(verbose_name='Позвонить для подтверждения?', default=1)
+    order_sum = models.IntegerField(verbose_name='Сумма заказа', default=0)
 
     class Meta:
-        verbose_name = 'Заказ'
-        verbose_name_plural = 'Заказы'
+        verbose_name = 'ЗАКАЗ'
+        verbose_name_plural = 'ЗАКАЗЫ'
 
     def __str__(self):
         return self.order_number
