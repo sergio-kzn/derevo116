@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 
-from Cart.models import Country, City, Delivery, Payment
+from Cart.models import Country, City, Delivery, Payment, Order
 from Cart.services import prepare_cart, create_new_order
 from Product.models import Product, Color
 
@@ -52,7 +52,6 @@ def confirm(request):
         request.session['order_data'] = order_data
         request.session.modified = True
 
-        print(request.session['order_data'])
         return HttpResponse('OK')
     else:
         content = prepare_cart(request)
@@ -76,11 +75,9 @@ def add_to_cart(request):
             if id_item in request.session['products']:  # print('Уже есть такой товар')
                 request.session['products'][id_item]['count'] = int(
                     request.session['products'][id_item]['count']) + int(product_data['count'])
-            else:
-                print('Нет такого товара')
+            else: # print('Нет такого товара')
                 request.session['products'][id_item] = product_data
-        except KeyError:
-            print('корзина была пуста')
+        except KeyError: # print('корзина была пуста')
             request.session.setdefault('products', {id_item: product_data})
             # request.session['products'][id_item] = product_data
 
@@ -129,3 +126,25 @@ def success(request):
 
         request.session.flush()
         return render(request, 'cart/success.html', content)
+
+
+def search_order(request):
+    order = ""
+    if request.GET.__contains__('q'):
+        try:
+            order = Order.objects.get(order_number=request.GET['q'])
+        except:
+            pass
+
+    if request.GET.__contains__('p'):
+        try:
+            order = Order.objects.get(order_phone=request.GET['p'])
+        except:
+            pass
+
+    content = {
+        'search': request.GET.get('q', default=None),
+        'search_phone': request.GET.get('p', default=None),
+        'order': order,
+    }
+    return render(request, 'cart/search_order.html', content)

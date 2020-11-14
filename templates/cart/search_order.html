@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}Поиск заказа{% endblock title %}
+{% block custom_head %}{% endblock %}
+
+{# Содержимое страницы. Разное для всех приложений джанго   #}
+{% block content %}
+    <h1 class="mb-5">Поиск заказа</h1>
+    <div class="row">
+        <div class="col-auto">
+            <form action="{% url 'search_order' %}" method="get">
+                <div class="input-group input-group-sm mb-3">
+                    <span class="input-group-text">Поиск по номеру заказа</span>
+                    <input type="text" class="form-control" placeholder="2020-ХХХ-000"
+                           aria-label="Поиск по номеру заказа"
+                           name="q" {% if search %}value="{{ search }}"{% endif %}>
+                    <button class="btn btn-outline-secondary" type="submit" id="button-addon1">Поиск</button>
+                </div>
+                <div class="input-group input-group-sm mb-3">
+                    <span class="input-group-text">Поиск по номеру телефона</span>
+                    <input type="text" class="form-control" placeholder="+7 (111) 222 3333"
+                           aria-label="Поиск по номеру телефона"
+                           name="p" id="phone"{% if search_phone %}value="{{ search_phone }}"{% endif %}>
+                    <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Поиск</button>
+                </div>
+            </form>
+        </div>
+        <div class="col" id="order-info">
+            {% if order %}
+                <p>Статус вашего заказа: <b>{{ order.order_status }}</b>
+                <p>История: <br><b>{{ order.order_history|safe }}</b>
+            {% else %}
+                Заказ не найден
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}
+{# / Содержимое страницы #}
+
+{% block custom_footer %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // маска для ввода телефона
+            function setCursorPosition(pos, elem) {
+                elem.focus();
+                if (elem.setSelectionRange) elem.setSelectionRange(pos, pos);
+                else if (elem.createTextRange) {
+                    var range = elem.createTextRange();
+                    range.collapse(true);
+                    range.moveEnd("character", pos);
+                    range.moveStart("character", pos);
+                    range.select()
+                }
+            }
+
+            function mask(event) {
+                var matrix = "+7 (___) ___ ____",
+                    i = 0,
+                    def = matrix.replace(/\D/g, ""),
+                    val = this.value.replace(/\D/g, "");
+                if (def.length >= val.length) val = def;
+                this.value = matrix.replace(/./g, function (a) {
+                    return /[_\d]/.test(a) && i < val.length ? val.charAt(i++) : i >= val.length ? "" : a
+                });
+                if (event.type === "blur") {
+                    if (this.value.length === 2) this.value = ""
+                } else setCursorPosition(this.value.length, this)
+            }
+
+            var input = document.querySelector("#phone");
+            input.addEventListener("input", mask, false);
+            input.addEventListener("focus", mask, false);
+            input.addEventListener("blur", mask, false);
+        })
+    </script>
+{% endblock custom_footer %}

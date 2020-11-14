@@ -1,8 +1,9 @@
+from django.db.models import Q
 from django.shortcuts import render
 
 from Product.services import random_from_all_products, last_products
 from .models import Slide
-from Product.models import Product, OptionGroup
+from Product.models import Product
 
 
 def index(request):
@@ -30,10 +31,31 @@ def index(request):
                }
 
     biofa_products = Product.objects.filter(product_vendor__vendor_url='biofa')[:5]
-    # biofa_price_data = OptionGroup.objects.filter(product__product_vendor__vendor_url='biofa')
     context.update({
         'biofa_products': biofa_products,
-        # 'biofa_prices': biofa_price_data,
     })
 
     return render(request, 'index/index.html', context)
+
+
+def search(request):
+    items = ""
+    if request.GET.__contains__('search'):
+        try:
+            items = Product.objects.filter(product_show=True)
+            q_list = Q()
+            for word in request.GET['search'].split():
+                q_list |= Q(product_title__icontains=word)
+                q_list |= Q(product_extra_desc__icontains=word)
+                q_list |= Q(product_vendor_code__icontains=word)
+                q_list |= Q(product_content__icontains=word)
+                q_list |= Q(product_vendor__vendor_title__icontains=word)
+            items = Product.objects.filter(q_list)[:20]
+        except:
+            pass
+
+    content = {
+        'search': request.GET.get('search', default=None),
+        'items': items,
+    }
+    return render(request, 'index/search.html', content)

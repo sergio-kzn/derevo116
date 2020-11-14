@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Поиск{% endblock title %}
+{% block custom_head %}{% endblock %}
+{% block search %}{% endblock %}
+
+{# Содержимое страницы. Разное для всех приложений джанго   #}
+{% block content %}
+    <h1 class="mb-5">Поиск товаров на сайте</h1>
+    <div class="row">
+        <div class="col-auto">
+            <form action="{% url 'search' %}" method="get">
+                <div class="input-group input-group-sm mb-3">
+                    <input type="text" class="form-control"
+                           aria-label="Поиск по номеру заказа"
+                           name="search" {% if search %}value="{{ search }}"{% endif %}>
+                    <button class="btn btn-outline-secondary" type="submit" id="button-addon1">Поиск</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <h2 class="my-3">Результаты поиска</h2>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Изображение</th>
+            <th scope="col">Название</th>
+            <th scope="col">Короткое описание</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+            {% url 'product-url' root_url=item.product_category.category_parent.category_parent.category_url vendor_url=item.product_category.category_parent.category_url category_url=item.product_category.category_url product_url=item.product_url as product_url %}
+            {% url 'vendor-category-url' root_url=item.product_category.category_parent.category_parent.category_url vendor_url=item.product_category.category_parent.category_url as vendor_url %}
+
+            <tr>
+
+                <th scope="row">{{ forloop.counter }}</th>
+                <td><a href="{{ product_url }}"><img src="{{ item.product_img.url }}" alt="{{ item.product_title }}"
+                                                     width="100"></a></td>
+                <td><a href="{{ product_url }}">{{ item.product_title }}</a>
+                    <div style="line-height: 1" class="mt-1">
+        <span class="small text-muted text-nowrap">Артикул: {{ item.product_vendor_code }}<br>
+            Поставщик: <a href="{{ vendor_url }}" class="text-muted">{{ item.product_vendor.vendor_title }}</a></span>
+                    </div>
+                </td>
+                <td>{{ item.product_extra_desc|safe }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}
+{# / Содержимое страницы #}
+
+{% block custom_footer %}{% endblock custom_footer %}

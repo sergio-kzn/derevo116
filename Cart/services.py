@@ -46,7 +46,7 @@ def generate_order_number():
         max_id = Order.objects.latest('id').id + 365
     except:
         max_id = 365
-    order_number = f'{timezone.now().strftime("%Y%m")}-{rnd}-{max_id}'
+    order_number = f'{timezone.now().strftime("%Y")}-{rnd}-{max_id}'
     return order_number
 
 
@@ -56,7 +56,9 @@ def send_telegram_message(new_order, item_list):
     item_list: Список товаров"""
     tg_message = f'Новый заказ с сайта derevo116.ru %0A%0A' \
                  f'Номер: {new_order.order_number}%0A' \
-                 f'Дата: {timezone.localtime(timezone.now()).strftime("%Y-%m-%d %H:%m")}%0A' \
+                 f'Дата: {timezone.localtime(timezone.now()).strftime("%Y-%m-%d %H:%m")}%0A%0A' \
+                 f'Имя: {new_order.order_client_name}%0A' \
+                 f'Телефон: {new_order.order_phone}%0A%0A' \
                  f'Доставка: {new_order.order_delivery}%0A' \
                  f'Оплата: {new_order.order_payment}%0A%0A' \
                  f'Товары :%0A{item_list}%0A' \
@@ -79,7 +81,7 @@ def create_new_order(request, telegram=True):
 
     new_order = Order.objects.create(
         order_number=order_number,
-        order_delivery=Delivery.objects.get(id=request.session['order_data']['orderDeliveryWay']),
+        order_delivery=Delivery.objects.filter(id=request.session['order_data']['orderDeliveryWay']).first(),
         order_delivery_other=request.session['order_data']['orderDeliveryWayText'],
         order_payment=Payment.objects.get(id=request.session['order_data']['orderPay']),
         order_status=Status.objects.get(status_default=1),

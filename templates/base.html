@@ -75,11 +75,14 @@
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="find_order">
                     <li><p class="dropdown-item disabled">Введите номер заказа</p></li>
                     <li class="mx-3">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="2020-XXX-000"
-                                   aria-label="Recipient's username" aria-describedby="Введите номер заказа">
-                            <button class="btn btn-outline-secondary" type="button" id="button-addon2"><i class="fa fa-search"></i></button>
-                        </div>
+                        <form action="{% url 'search_order' %}" method="get">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="2020-XXX-000" name="q"
+                                       aria-label="Введите номер заказа" aria-describedby="Введите номер заказа">
+                                <button class="btn btn-outline-secondary" type="submit" id="button-addon2"><i
+                                        class="fa fa-search"></i></button>
+                            </div>
+                        </form>
                     </li>
                 </ul>
             </div>
@@ -108,17 +111,21 @@
         </div>
         {% endblock %}
 
+    {% block search %}
         <div class="col-12 col-lg order-lg-3">
+            <form action="{% url 'search' %}" method="get">
             <div class="input-group my-2 px-lg-5">
                 <input type="text" class="form-control border-left-0 border-top-0 border-right-0" placeholder="Поиск"
-                       aria-label="Поиск"
+                       aria-label="Поиск" name="search"
                        aria-describedby="button-addon2">
-                <button class="btn btn-outline-secondary border-left-0 border-top-0 border-right-0" type="button"
+                <button class="btn btn-outline-secondary border-left-0 border-top-0 border-right-0" type="submit"
                         id="button-addon2" style="border: 1px solid #ced4da;">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
+            </form>
         </div>
+    {% endblock %}
     </div>
     {# / Логотип, поиск, корзина #}
 

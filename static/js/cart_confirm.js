@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function () {
             'order_notification': notification,
             'order_email': email,
         }
-        console.log(data)
         let response = await fetch(link, {
             method: 'POST',
             headers: {

@@ -94,7 +94,7 @@
     <div class="row">
         <div class="col text-center">
             <div class="collapse" id="collapsePickup">
-                <div class="card card-body">
+                <div class="card card-body align-items-center">
                     <h3 class="mb-5 mt-3 text-center">Выберите, откуда хотите забрать:</h3>
 
                     {% for p in pickup %}
@@ -107,6 +107,18 @@
                         {{ p.delivery_description|safe }}
                     {% endfor %}
 
+                    <div class="mt-5 w-autoS">
+                        <div class="input-group input-group-sm mb-3">
+                            <span class="input-group-text col-3 col-md-4 text-left">ФИО</span>
+                            <input type="text" class="form-control" id="pickup_fio"
+                                   placeholder="Фамилия Имя Отчество">
+                        </div>
+                        <div class="input-group input-group-sm mb-3">
+                            <span class="input-group-text col-3 col-md-4 text-left">Телефон*</span>
+                            <input type="tel" class="form-control" id="pickup_phone"
+                                   placeholder="+7 (111) 222 3333" style="max-width: 200px">
+                        </div>
+                    </div>
                     <span class="btn btn-danger my-5 mx-auto" style="width: fit-content" role="button"
                           id="collapsePickupPaymentButton">Перейти к оплате</span>
                 </div>
@@ -120,11 +132,11 @@
             <div class="collapse" id="collapseDelivery">
                 <div class="card card-body">
                     <h3 class="mb-5 mt-3 text-center">Как вам отправить заказ?</h3>
+                    <form id="form_delivery">
+                        <div class="row row-cols-1 row-cols-md-2">
+                            <div class="col col-md-5">
 
-                    <div class="row row-cols-1 row-cols-md-2">
-                        <div class="col col-md-5">
-
-                            {% for d in delivery %}
+                                {% for d in delivery %}
                                 <div class="card mb-3">
                                     <div class="row g-0">
                                         <div class="col-4">
@@ -205,14 +217,16 @@
                                        placeholder="Фамилия Имя Отчество">
                             </div>
                             <div class="input-group input-group-sm mb-3">
-                                <span class="input-group-text col-3 col-md-4 text-left">Телефон</span>
-                                <input type="text" class="form-control" id="delivery_phone"
-                                       placeholder="Номер телефона" style="max-width: 25%">
+                                <span class="input-group-text col-3 col-md-4 text-left">Телефон*</span>
+                                <input type="tel" class="form-control" id="delivery_phone"
+                                       placeholder="+7 (111) 222 3333" style="max-width: 200px">
+
                             </div>
                             <span class="btn btn-danger my-5 mx-auto" style="width: fit-content" role="button"
                                   id="collapseDeliveryPaymentButton">Перейти к оплате</span>
                         </div>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
