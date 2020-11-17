@@ -148,7 +148,7 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
     save_on_top = True
     list_display_links = ['image_preview', 'product_title']
     readonly_fields = ('image_preview', 'product_link', 'fill_url', 'help_attr', 'fill_img_title', 'edit_images',
-                       'copy_url', 'edit_colors', 'edit_options')
+                       'copy_url', 'edit_colors', 'edit_tabs', 'edit_options')
     # prepopulated_fields = {"product_price_options.option_group": ("product_title",)}
     radio_fields = {"product_price_choice": admin.VERTICAL}
     list_per_page = 20
@@ -185,7 +185,8 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
         ('Дополнительно', {
             'classes': ('collapse',),
             'fields': (('product_file', 'copy_url'),
-                       'product_tab'),
+                       'product_tab',
+                       'edit_tabs'),
         }),
         ('Цена', {
             # 'classes': ('collapse',),
@@ -230,6 +231,20 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
                        str(opt.id) + \
                        '/change/" target="blank" class="list-group-item list-group-item-action">' + \
                        opt.img_group + \
+                       '</a><br>'
+            url += '</div>'
+
+        return mark_safe(url)
+
+    def edit_tabs(self, obj):
+        url = ''
+        if obj.product_tab.all():
+            url += '<div class="list-group list-group-flush">'
+            for opt in obj.product_tab.all():
+                url += '<a href="/admin/Product/producttab/' + \
+                       str(opt.id) + \
+                       '/change/" target="blank" class="list-group-item list-group-item-action">' + \
+                       opt.tab_title_admin + \
                        '</a><br>'
             url += '</div>'
 

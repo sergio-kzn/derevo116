@@ -91,13 +91,14 @@
     </div>
 
     <!-- Самовывоз -->
-    <div class="row">
-        <div class="col text-center">
-            <div class="collapse" id="collapsePickup">
-                <div class="card card-body align-items-center">
-                    <h3 class="mb-5 mt-3 text-center">Выберите, откуда хотите забрать:</h3>
+    <form id="form_delivery">
+        <div class="row">
+            <div class="col text-center">
+                <div class="collapse" id="collapsePickup">
+                    <div class="card card-body align-items-center">
+                        <h3 class="mb-5 mt-3 text-center">Выберите, откуда хотите забрать:</h3>
 
-                    {% for p in pickup %}
+                        {% for p in pickup %}
                     <p><label class="form-check-label" for="delivery-{{ p.delivery_API }}" style="cursor: pointer">
                         <input type="radio" name="deliveryWay"
                                id="delivery-{{ p.delivery_API }}"
@@ -132,7 +133,6 @@
             <div class="collapse" id="collapseDelivery">
                 <div class="card card-body">
                     <h3 class="mb-5 mt-3 text-center">Как вам отправить заказ?</h3>
-                    <form id="form_delivery">
                         <div class="row row-cols-1 row-cols-md-2">
                             <div class="col col-md-5">
 
@@ -152,85 +152,87 @@
                                         </div>
                                     </div>
                                     <div class="card-footer small text-muted">
-                                        <input type="radio" class="btn-check" name="deliveryWay"
+                                        <input type="radio" name="deliveryWay"
                                                id="delivery-{{ d.delivery_API }}"
                                                data-api="{{ d.delivery_API }}"
-                                               autocomplete="off" {% if forloop.first %}checked{% endif %}>
+                                               class="btn-check"
+                                               {% if forloop.first %}checked{% endif %}>
                                         <label class="btn btn-outline-danger btn-sm"
                                                for="delivery-{{ d.delivery_API }}">Выбрать</label>
                                     </div>
                                 </div>
-                            {% endfor %}
+                                {% endfor %}
 
-                            <div class="card mb-3">
-                                <div class="card-header">Другой способ</div>
-                                <div class="row g-0">
-                                    <div class="col">
-                                        <div class="card-body small text-muted text-left">
+                                <div class="card mb-3">
+                                    <div class="card-header">Другой способ</div>
+                                    <div class="row g-0">
+                                        <div class="col">
+                                            <div class="card-body small text-muted text-left">
                                             <textarea class="form-control h-100" placeholder="Напишите свой вариант"
                                                       aria-label="Напишите свой вариант"
                                                       id="delivery-other-text"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="card-body small text-muted">
+                                            <input type="radio" name="deliveryWay"
+                                                   id="delivery-other"
+                                                   data-api="other"
+                                                   class="btn-check"
+                                            >
+                                            <label class="btn btn-outline-danger btn-sm"
+                                                   for="delivery-other">Выбрать</label>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col">
-                                    <div class="card-body small text-muted">
-                                        <input type="radio" class="btn-check" name="deliveryWay"
-                                               id="delivery-other"
-                                               data-api="other"
-                                               autocomplete="off">
-                                        <label class="btn btn-outline-danger btn-sm"
-                                               for="delivery-other">Выбрать</label>
-                                    </div>
+                            </div>
+                            <div class="col col-md-7">
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text col-3 col-md-4">Страна</span>
+                                    <select class="form-control" id="delivery_country">
+                                        <option selected>Россия</option>
+                                    </select>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-7">
-                            <div class="input-group input-group-sm mb-3">
-                                <span class="input-group-text col-3 col-md-4">Страна</span>
-                                <select class="form-control" id="delivery_country">
-                                    <option selected>Россия</option>
-                                </select>
-                            </div>
-                            <div class="input-group input-group-sm mb-3">
-                                <span class="input-group-text col-3 col-md-4">Город, индекс</span>
-                                <input class="form-control" list="datalistOptions" id="delivery_city"
-                                       value="Казань">
-                                <datalist id="datalistOptions">
-                                    {% for city in cities %}
-                                        <option value="{{ city.city_name }}">
-                                    {% endfor %}
-                                </datalist>
-                                <input class="form-control" id="delivery_index"
-                                       placeholder="Индекс">
-                            </div>
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text col-3 col-md-4">Город, индекс</span>
+                                    <input class="form-control" list="datalistOptions" id="delivery_city"
+                                           value="Казань">
+                                    <datalist id="datalistOptions">
+                                        {% for city in cities %}
+                                            <option value="{{ city.city_name }}">
+                                        {% endfor %}
+                                    </datalist>
+                                    <input class="form-control" id="delivery_index"
+                                           placeholder="Индекс">
+                                </div>
 
 
-                            <div class="input-group input-group-sm mb-3">
-                                <span class="input-group-text col-3 col-md-4 text-left">Адрес</span>
-                                <textarea class="form-control" aria-label="Адрес" id="delivery_street"
-                                          placeholder="Улица, Дом, Квартира (офис). (Подъезд, Этаж, Домофон)"></textarea>
-                            </div>
-                            <div class="input-group input-group-sm mb-3">
-                                <span class="input-group-text col-3 col-md-4 text-left">ФИО</span>
-                                <input type="text" class="form-control" id="delivery_fio"
-                                       placeholder="Фамилия Имя Отчество">
-                            </div>
-                            <div class="input-group input-group-sm mb-3">
-                                <span class="input-group-text col-3 col-md-4 text-left">Телефон*</span>
-                                <input type="tel" class="form-control" id="delivery_phone"
-                                       placeholder="+7 (111) 222 3333" style="max-width: 200px">
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text col-3 col-md-4 text-left">Адрес</span>
+                                    <textarea class="form-control" aria-label="Адрес" id="delivery_street"
+                                              placeholder="Улица, Дом, Квартира (офис). (Подъезд, Этаж, Домофон)"></textarea>
+                                </div>
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text col-3 col-md-4 text-left">ФИО</span>
+                                    <input type="text" class="form-control" id="delivery_fio"
+                                           placeholder="Фамилия Имя Отчество">
+                                </div>
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text col-3 col-md-4 text-left">Телефон*</span>
+                                    <input type="tel" class="form-control" id="delivery_phone"
+                                           placeholder="+7 (111) 222 3333" style="max-width: 200px">
 
+                                </div>
+                                <span class="btn btn-danger my-5 mx-auto" style="width: fit-content" role="button"
+                                      id="collapseDeliveryPaymentButton">Перейти к оплате</span>
                             </div>
-                            <span class="btn btn-danger my-5 mx-auto" style="width: fit-content" role="button"
-                                  id="collapseDeliveryPaymentButton">Перейти к оплате</span>
                         </div>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
     </div>
+    </form>
 
     <!-- Оплата -->
     <div class="row">

@@ -84,10 +84,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // функция составляет варианты оплаты, в зависимости от доставки
     let payment_view = async function () {
+        // проверяем заполненность номера телефона
         if ((document.querySelector('input[name=deliveryRadio]:checked').id === 'radioDelivery' && delivery_phone.value.length > 7) ||
-        (document.querySelector('input[name=deliveryRadio]:checked').id === 'radioPickup' && pickup_phone.value.length > 7))
-
-        {
+            (document.querySelector('input[name=deliveryRadio]:checked').id === 'radioPickup' && pickup_phone.value.length > 7)) {
             document.querySelector('#delivery_phone').classList.remove('border-danger')
             document.querySelector('#pickup_phone').classList.remove('border-danger')
 
@@ -109,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     behavior: "smooth",
                 })
             }
-        } else {
+        } else { // если номер телефона не заполнен
             document.querySelector('#delivery_phone').classList.add('border-danger')
             document.querySelector('#pickup_phone').classList.add('border-danger')
         }

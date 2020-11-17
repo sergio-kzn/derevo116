@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>convert_img_to_new_tab</title>
+    <!-- Bootstrap CSS v5.0.0-alpha2 -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+    {# font awesome #}
+    <link href="{% static 'css/all.min.css' %}" rel="stylesheet">
+</head>
+<body class="p-5">
+<h1>convert_img_to_new_tab</h1>
+
+<form name="convert_img_to_new_tab" method="post" action="">
+    {% csrf_token %}
+    <div class="row row-cols-2">
+        <div class="col">
+            Введите список из <i>< img ...></i> одной строкой
+            <label for="source"></label>
+            <textarea class="w-100" name="source" id="source" style="height: 150px">{{ source }}</textarea>
+        </div>
+        <div class="col">
+            Результат:
+            <label for="result"></label>
+            <textarea class="w-100" id="result" style="height: 150px">{{ convert_img_to_new_tab }}</textarea>
+        </div>
+    </div>
+    <div class="row mx-0 w-100 mb-5">
+        <div class="col pl-0">
+            <input type="submit" value="Выполнить" class="btn btn-secondary">
+        </div>
+        <div class="col pr-0 text-right">
+            <div role="button" class="btn btn-outline-secondary" onclick="if (navigator.clipboard) navigator.clipboard.writeText(result.value)">Копировать</div>
+        </div>
+    </div>
+</form>
+<div class="row w-100">
+    <div class="col">
+        Просмотр:
+        <div class="container overflow-auto w-100" style="max-height: 500px">
+            {{ convert_img_to_new_tab|safe }}
+        </div>
+    </div>
+</div>
+
+
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

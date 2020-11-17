@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.querySelector('.toast-body').innerHTML =
                     '<span class="font-weight-bolder mb-1" style="font-size: large">' + button.getAttribute("data-title") + '</span>' + '<br>'
                     + button.getAttribute("data-count") + ' шт. <br>'
-                    + color + options_in_item + 'Цена: <b>' + price + ' &#x20bd;</b>';
+                    + color + '<br>' + options_in_item + 'Цена: <b>' + price + ' &#x20bd;</b>';
                 toastList[0].show();
             } else
                 toastList[2].show();

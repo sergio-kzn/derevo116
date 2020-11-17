@@ -20,6 +20,7 @@ urlpatterns = [
     path('page/<slug:page_url>/', include('SimplePage.urls')),
     path('admin/', admin.site.urls),
     path('summernote/', include('django_summernote.urls')),
+    path('etc/', include('etc.urls')),
     path('cart/', include('Cart.urls')),
     path('', include('Index.urls')),
     path('', include('Product.urls')),
