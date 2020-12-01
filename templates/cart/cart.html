@@ -28,9 +28,10 @@
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
                     <td class="">
-                        {% thumbnail item.img "100x100" padding=True format="WEBP" as im %}
-                            <img src="{{ im.url }}" alt="{{ item.title }}">
-                        {% endthumbnail %}
+                            <picture>
+                                <source srcset="{% thumbnail item.img "100x100" padding=True format="WEBP" as im %}{{ im.url }}{% endthumbnail %}" type="image/webp">
+                                <img src="{% thumbnail item.img "100x100" padding=True format="JPEG" as im %}{{ im.url }}{% endthumbnail %}" alt="{{ item.title }}">
+                            </picture>
                     </td>
                     <td><b>{{ item.title }}</b><br>
                         <span class="small text-muted text-nowrap">Поставщик: {{ item.vendor }}<br>

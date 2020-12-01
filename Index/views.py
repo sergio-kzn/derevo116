@@ -7,6 +7,7 @@ from Product.models import Product
 
 
 def index(request):
+    """Главная домащняя страница"""
     main_slides = Slide.objects.filter(slide_group=1, slide_visible=True)
     slides_2 = Slide.objects.filter(slide_group=2, slide_visible=True)
     banner_1 = Slide.objects.filter(slide_group=3, slide_visible=True)[0]
@@ -39,6 +40,7 @@ def index(request):
 
 
 def search(request):
+    """Страница поиска товаров"""
     items = ""
     if request.GET.__contains__('search'):
         try:

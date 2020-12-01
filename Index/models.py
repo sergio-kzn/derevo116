@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Group(models.Model):
+    """Объединяем слайды для главной страницы в группы, для удобства редактирования и хранения"""
     name = models.CharField(verbose_name='Название группы', max_length=50)
 
     class Meta:
@@ -14,7 +15,7 @@ class Group(models.Model):
 
 
 class Slide(models.Model):
-    """Слайды на главной"""
+    """Слайды на главной странице сайта"""
 
     slide_group = models.ForeignKey(Group, on_delete=models.DO_NOTHING)
     slide_img = models.ImageField(verbose_name='Изображение слайда', upload_to='index/slide/')

@@ -1,3 +1,5 @@
+# подключаем корзину на все страницы сайта
+
 from django import template
 
 from Cart.services import prepare_cart

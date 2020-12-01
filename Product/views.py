@@ -5,6 +5,7 @@ from Product.services import random_relevant_products
 
 
 def product(request, root_url, vendor_url, category_url, product_url):
+    """страница с товаром"""
     root_category = ProductCategory.objects.get(category_url=root_url)
     vendor_category = ProductCategory.objects.get(category_url=vendor_url)
     current_category = ProductCategory.objects.get(category_url=category_url)
@@ -12,7 +13,8 @@ def product(request, root_url, vendor_url, category_url, product_url):
     product = Product.objects.get(product_url=product_url)
     price_data = OptionGroup.objects.filter(product__product_url=product_url).order_by('options_sort')
     attributes = ProductAttribute.objects.filter(attribute_product__product_url=product_url)
-    colors = Color.objects.filter(color_group__product__product_url=product_url)
+    colors = Color.objects.filter(color_group__product__product_url=product_url)\
+        .order_by('color_sort')
     images = ProductImage.objects.filter(img_group__product__product_url=product_url)\
         .order_by('img_group__img_group_sort')
 
@@ -34,6 +36,7 @@ def product(request, root_url, vendor_url, category_url, product_url):
 
 
 def category(request, root_url, vendor_url, category_url):
+    """Перечень товаров в категории (3 уровень)"""
     products = Product.objects.filter(product_show=True).filter(product_category__category_url=category_url)
     root_category = ProductCategory.objects.get(category_url=root_url)
     current_vendor = ProductCategory.objects.get(category_url=vendor_url)
@@ -52,6 +55,7 @@ def category(request, root_url, vendor_url, category_url):
 
 
 def vendor_category(request, root_url, vendor_url):
+    """Перечень товаров в категории (2 уровень)"""
     products = Product.objects.filter(product_show=True).filter(product_vendor__vendor_url=vendor_url)
     root_category = ProductCategory.objects.get(category_url=root_url)
     current_vendor = ProductCategory.objects.get(category_url=vendor_url)
@@ -68,6 +72,7 @@ def vendor_category(request, root_url, vendor_url):
 
 
 def root_category(request, root_url):
+    """Перечень товаров в категории (1 уровень)"""
     root_category = ProductCategory.objects.get(category_url=root_url)
     categories = ProductCategory.objects.filter(category_main_menu=True)
 

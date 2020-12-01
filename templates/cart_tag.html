@@ -7,16 +7,14 @@
             <i class="fas fa-2x fa-shopping-cart"></i>
         </div>
         <div class="col-6 text-right">
-{#            <a class="stretched-link" href="#">#}
-{#            <a class="stretched-link" href="#" data-toggle="modal" data-target="#basket-modal">#}
                 <span class="badge bg-primary" id="basket-count">
                     {% if cart_count %}{{ cart_count }}{% else %}0{% endif %}
                 </span><br>
                 <span class="badge bg-secondary">
                     <span id="basket-sum">{{ cart_sum|default_if_none:0 }}</span> руб.</span>
-{#            </a>#}
         </div>
     </div>
+
     <div class="modal fade h-auto p-0 position-absolute right-0" style="width: 296px;"
          tabindex="-1" id="basket-modal" aria-labelledby="basket-modal" aria-hidden="true">
         <div class="modal-dialog m-0">
@@ -51,10 +49,9 @@
                                             {% endif %}
                                             <span>Цена: <b>{{ item.price }} ₽</b></span>
                                         </div>
-                                        <i class="fa fa-trash text-danger delete_from_basket mr-1"
+                                        <i class="fa fa-trash text-danger delete_from_basket p-3 pr-1"
                                            style="cursor: pointer"
                                            onclick="delete_item_from_basket('{{ key }}')"></i>
-
                                     </div>
                                 </li>
                             {% endfor %}
@@ -66,6 +63,7 @@
                         {% endif %}
                     </ul>
                 </div>
+
                 <div class="modal-footer">
                     {% if cart_sum %}
                         <p class="w-100" id="basket-sum-footer">Сумма: <b> {{ cart_sum }} &#x20bd;</b></p>

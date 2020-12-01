@@ -45,6 +45,7 @@ def cart(request):
 
 @csrf_exempt
 def confirm(request):
+    """Страница подтверждения заказа"""
     if request.method == 'POST':
         order_data = json.loads(request.body)
 
@@ -107,6 +108,7 @@ def clear_cart(request):
 
 @csrf_exempt
 def select_payment(request):
+    """выбор варианта оплаты, зависит от доставки"""
     if request.method == 'POST':
         data = json.loads(request.body)
         payment = Payment.objects.filter(payment_delivery__delivery_API__exact=data['orderDeliveryWay']).filter(payment_enable=True)
@@ -129,6 +131,7 @@ def success(request):
 
 
 def search_order(request):
+    """поиск заказа по номеру телефона (р) или по номеру заказа (q)"""
     order = ""
     if request.GET.__contains__('q'):
         try:

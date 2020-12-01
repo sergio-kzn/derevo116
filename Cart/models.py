@@ -4,6 +4,7 @@ from Product.models import Product, Color
 
 
 class Country(models.Model):
+    """Страны для доставки"""
     country_name = models.CharField(verbose_name='Страна', max_length=100)
     country_default = models.BooleanField('По умолчанию', default=False)
     country_order = models.IntegerField('Сортировка', default=0)
@@ -18,6 +19,7 @@ class Country(models.Model):
 
 
 class City(models.Model):
+    """Город для доставки"""
     city_name = models.CharField(verbose_name='Город', max_length=100)
     city_country = models.ForeignKey(verbose_name='Страна', to=Country, on_delete=models.CASCADE)
     city_default = models.BooleanField('По умолчанию', default=False)
@@ -33,6 +35,7 @@ class City(models.Model):
 
 
 class Delivery(models.Model):
+    """Варианты доставки"""
     delivery_API = models.IntegerField('API номер', unique=True)
     delivery_title = models.CharField(verbose_name='Название', max_length=100)
     delivery_description = models.TextField(verbose_name='Описание')
@@ -50,6 +53,7 @@ class Delivery(models.Model):
 
 
 class Payment(models.Model):
+    """Варианты оплаты"""
     payment_API = models.IntegerField('API номер', unique=True)
     payment_title = models.CharField(verbose_name='Название', max_length=100)
     payment_description = models.TextField(verbose_name='Описание', null=True, blank=True)
@@ -80,6 +84,7 @@ class Status(models.Model):
 
 
 class Order(models.Model):
+    """Собственно сам заказ"""
     order_number = models.CharField(verbose_name='Номер заказа', unique=True, max_length=20)
     order_delivery = models.ForeignKey(Delivery, models.DO_NOTHING, verbose_name='Доставка')
     order_delivery_other = models.TextField(verbose_name='Своя доставка', null=True, blank=True)
@@ -106,6 +111,7 @@ class Order(models.Model):
 
 
 class Item(models.Model):
+    """Товар с выбранными опциями, который добавлется в заказ"""
     item_product = models.ForeignKey(Product, verbose_name="Товар из БД", on_delete=models.DO_NOTHING)
     item_id = models.CharField(verbose_name="ID", max_length=255)
     item_color = models.CharField(verbose_name="Цвет", max_length=255, null=True, blank=True)

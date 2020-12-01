@@ -149,7 +149,6 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
     list_display_links = ['image_preview', 'product_title']
     readonly_fields = ('image_preview', 'product_link', 'fill_url', 'help_attr', 'fill_img_title', 'edit_images',
                        'copy_url', 'edit_colors', 'edit_tabs', 'edit_options')
-    # prepopulated_fields = {"product_price_options.option_group": ("product_title",)}
     radio_fields = {"product_price_choice": admin.VERTICAL}
     list_per_page = 20
     fieldsets_with_inlines = (
@@ -201,6 +200,7 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
     )
 
     def fill_url(self, obj):
+        """добавляет кнопку для автоматического заполнения поля URL. Артикул + поставщик"""
         snap = '<snap style="cursor: pointer" class="text-primary" onclick="' \
                'let vendor = Array.from(id_product_vendor.options).' \
                'filter(option => option.selected).map(option => option.textContent);' \
@@ -292,6 +292,7 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
         return mark_safe(url)
 
     def help_attr(self, obj):
+        """Добавляет подсказки для копирования."""
         return '<sup>2</sup>\n<sup>3</sup>\n°C'
 
     def copy_url(self, obj):
@@ -301,6 +302,7 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
         return mark_safe(snap)
 
     def formfield_for_dbfield(self, db_field, **kwargs):
+        """Добавляем стили для полей в админке"""
         field = super(ProductAdmin, self).formfield_for_dbfield(db_field, **kwargs)
         if db_field.name == 'product_title':
             field.widget.attrs['style'] = 'display: flex; width: -webkit-fill-available;'
@@ -367,7 +369,7 @@ class OptionGroupAdmin(admin.ModelAdmin):
 
 
 class TabAdmin(SummernoteModelAdmin):
-    """Дополнительные вкладки в админке"""
+    """Дополнительные вкладки на странице товаров"""
     summernote_fields = "__all__"
     list_display = ['tab_title_admin', 'tab_title', 'tab_slug']
 

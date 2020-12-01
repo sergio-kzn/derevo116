@@ -3,6 +3,9 @@
 <html lang="ru">
 
 <head>
+
+    <link rel="icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -239,17 +242,17 @@
                     <li class="mb-2"><a class="link-light text-decoration-none" href="/page/privacy/">Приватность</a></li>
                     <li class="mb-2"><a class="link-light text-decoration-none" href="/page/contacts/">Свяжитесь с нами</a>
                     </li>
-                    <li class="mb-2"><a class="link-light text-decoration-none" href="/sitemap/">Карта сайта</a></li>
+{#                    <li class="mb-2"><a class="link-light text-decoration-none" href="/sitemap/">Карта сайта</a></li>#}
                 </ul>
             </div>
             <div class="col">
                 <h5>Новости</h5>
                 <label class="d-block">
-                    <input type="text" class="newsletter_email mb-1 w-100" name="mail_subscribe" value=""
-                           placeholder="Введите ваш email для получения полезных статей">
+                    <input type="text" disabled class="newsletter_email mb-1 w-100" name="mail_subscribe" value=""
+                           placeholder="Введите ваш email" aria-disabled="true" >
                 </label>
-                <a role="button" class="btn btn-primary btn-block"
-                   href='#'>
+                <a role="button" class="btn btn-primary btn-block disabled"
+                   href='#' aria-disabled="true">
                     Подписаться
                 </a>
             </div>

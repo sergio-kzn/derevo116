@@ -13,10 +13,10 @@ from Product.models import Product
 def prepare_cart(request):
     """обрабатывает данные из сессии и возвращает их в виде словаря для шаблона"""
 
-    cart_count = 0
-    cart_sum = 0
-    items = {}
-    order_data = {}
+    cart_count = 0      # количество товаров в корзине
+    cart_sum = 0        # сумма всей корзины
+    items = {}          # товары в корзине
+    order_data = {}     # данные о заказе (оплата, доставка, и т.п.)
 
     if 'products' in request.session:
         items = request.session['products'].items()
@@ -40,13 +40,14 @@ def prepare_cart(request):
 
 def generate_order_number():
     """Генерирует номер заказа.
-    Год + месяц + случайные символы + максимальный id заказа со сдвигом"""
+    Год + месяц + случайные символы + максимальный id заказа со сдвигом (+365)"""
     rnd = ''.join(choice(ascii_uppercase) for i in range(3))
     try:
         max_id = Order.objects.latest('id').id + 365
     except:
         max_id = 365
     order_number = f'{timezone.now().strftime("%Y")}-{rnd}-{max_id}'
+
     return order_number
 
 
