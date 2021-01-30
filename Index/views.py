@@ -61,3 +61,7 @@ def search(request):
         'items': items,
     }
     return render(request, 'index/search.html', content)
+
+def yandex(request):
+    """страница проверки прав в яндекс.вебмастер"""
+    return render(request, 'yandex_545a557cc12bb32d.html')

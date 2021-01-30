@@ -322,15 +322,15 @@
                                         {% endfor %}
                                     </div>
                                     <div class="text-muted small"
-                                         id="extra-0-{{ forloop.parentloop.counter }}">
+                                         id="extra-0-{{ forloop.counter }}">
                                     {% if option.product_price_option_price %}
                                         {{ option.product_price_option_price|safe }} {{ option.productoptionprice_set.first.product_option_price|safe }} &#x20bd;
                                     {% endif %}
                                         </div>
                                         <div class="text-muted small"
-                                         id="extra-1-{{ forloop.parentloop.counter }}">{{ option.product_price_option_extra_1|default_if_none:""|safe }} {{ option.productoptionprice_set.first.product_option_extra_1|default_if_none:""|safe }}</div>
+                                         id="extra-1-{{ forloop.counter }}">{{ option.product_price_option_extra_1|default_if_none:""|safe }} {{ option.productoptionprice_set.first.product_option_extra_1|default_if_none:""|safe }}</div>
                                     <div class="text-muted small"
-                                         id="extra-2-{{ forloop.parentloop.counter }}">{{ option.product_price_option_extra_2|default_if_none:""|safe }} {{ option.productoptionprice_set.first.product_option_extra_2|default_if_none:""|safe }}</div>
+                                         id="extra-2-{{ forloop.counter }}">{{ option.product_price_option_extra_2|default_if_none:""|safe }} {{ option.productoptionprice_set.first.product_option_extra_2|default_if_none:""|safe }}</div>
                                 {% endif %}
                             </div>
                         </div>

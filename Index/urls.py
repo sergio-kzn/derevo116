@@ -14,11 +14,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
+
 from . import views
 
 
 urlpatterns = [
 
+    path('yandex_545a557cc12bb32d.html', views.yandex, name='yandex'),
     path('search/', views.search, name='search'),
-    path('', views.index, name='main_page')
+    path('', views.index, name='main_page'),
+
 ]
