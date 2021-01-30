@@ -154,13 +154,13 @@
 
             <a class="flex-sm-fill text-center nav-link
             {% if request.path == '/' %}btn btn-danger link-light{% else %} link-dark{% endif %}"
-               aria-current="page" href="/">Главная</a>
+               aria-current="page" href="/"><i class="fas fa-home"></i></a>
 
             {% categories %}
 
             <a class="flex-sm-fill text-center nav-link link-dark" href="/page/contacts/">Контакты</a>
             <a class="flex-sm-fill text-center nav-link link-dark" href="/page/payment-and-delivery">Оплата и доставка</a>
-            <a class="flex-sm-fill text-center nav-link link-dark" href="#">Блог</a>
+{#            <a class="flex-sm-fill text-center nav-link link-dark" href="#">Блог</a>#}
         </nav>
     </div>
     {# / Меню сайта #}

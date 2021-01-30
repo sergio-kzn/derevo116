@@ -14,7 +14,7 @@
             <div class="row">
                 {% for cat in categories %}
                     {% if cat.category_parent == category %}
-                        <div class="col-6 col-md-4 col-lg-3 mb-3">
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                             <div class="list-group list-group-flush small">
                             {% url 'vendor-category-url' root_url=category.category_url vendor_url=cat.category_url as vendor_url %}
                                 <a href="{{ vendor_url }}"
