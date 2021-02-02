@@ -17,14 +17,16 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
+from django.contrib.auth import views as auth_views
+
 
 urlpatterns = [
     url(r'^yandex\W*.html$', TemplateView.as_view(template_name='../yandex_545a557cc12bb32d.html')),
-    path('page/<slug:page_url>/', include('SimplePage.urls')),
+    path('page/', include('SimplePage.urls')),
     path('admin/', admin.site.urls),
     path('summernote/', include('django_summernote.urls')),
-    # path('etc/', include('etc.urls')),
     path('cart/', include('Cart.urls')),
+    # path('accounts/login/', auth_views.LoginView.as_view()),
     path('', include('Index.urls')),
     path('', include('Product.urls')),
 ]

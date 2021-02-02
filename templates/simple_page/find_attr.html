@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{% endblock title %}
+{% block custom_head %}{% endblock %}
+
+{# Содержимое страницы. Разное для всех приложений джанго   #}
+{% block content %}
+
+    {#    <ul>#}
+    {#        {% for category, products in attr.items %}#}
+    {#            <li>{{ category }}#}
+    {#                <ul>#}
+    {#                    {% for product in products %}#}
+    {#                        {% for attribute, prod in product.items %}#}
+    {#                            <li>{{ attribute }} <span class="small text-muted">({{ prod }})</span></li>#}
+    {#                        {% endfor %}#}
+    {#                    {% endfor %}#}
+    {#                </ul>#}
+    {#            </li>#}
+    {##}
+    {#        {% endfor %}#}
+    {#    </ul>#}
+    <ul>
+    {% for category, attributes in attr.items %}
+        <li>{{ category }}
+            <ul>
+                {% for attribute in attributes %}
+                    <li>
+                        {{ attribute }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+
+
+{% endblock content %}
+{# / Содержимое страницы #}
+
+{% block custom_footer %}{% endblock custom_footer %}

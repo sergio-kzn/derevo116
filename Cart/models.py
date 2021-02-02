@@ -41,7 +41,7 @@ class Delivery(models.Model):
     delivery_description = models.TextField(verbose_name='Описание')
     delivery_img = models.ImageField(verbose_name='Изображение', upload_to='delivery', null=True, blank=True)
     delivery_enable = models.BooleanField(verbose_name='Включить', default=True)
-    delivery_city = models.ManyToManyField(City, verbose_name='Города для доставки', null=True, blank=True)
+    delivery_city = models.ManyToManyField(City, verbose_name='Города для доставки', blank=True)
     delivery_pickup = models.BooleanField('Самовывоз', default=0)
 
     class Meta:

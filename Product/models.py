@@ -8,7 +8,7 @@ class ProductCategory(models.Model):
     category_parent = models.ForeignKey("self", verbose_name='Родительская категория', null=True, blank=True, on_delete=models.DO_NOTHING)
     category_title = models.CharField(verbose_name='Категория', max_length=100)
     category_sort = models.IntegerField(verbose_name='Сортировка', default=0)
-    category_url = models.SlugField(verbose_name='Ссылка url (проверьте root_url)', unique=True)
+    category_url = models.SlugField(verbose_name='Ссылка url', unique=True)
     category_main_menu = models.BooleanField(verbose_name='Показывать в главном меню?', default=False)
 
     class Meta:

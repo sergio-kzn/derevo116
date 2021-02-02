@@ -292,8 +292,34 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
         return mark_safe(url)
 
     def help_attr(self, obj):
-        """Добавляет подсказки для копирования."""
-        return '<sup>2</sup>\n<sup>3</sup>\n°C'
+        """Добавляет подсказки для атрибутов."""
+        if obj.product_category:
+
+            category = obj.product_category
+
+            attributes = set()
+            for attribute in ProductAttribute.objects.filter(attribute_product__product_category=category).exclude(
+                    attribute_title=None):
+                attributes.add(str(attribute))
+
+            total_attr = str(len(attributes))
+            url = '<span class="text-primary" style="cursor:pointer;" ' \
+                  'onclick=\'let total_forms = document.getElementById("id_productattribute_set-TOTAL_FORMS");' \
+                  'if (total_forms >= ' + total_attr + ') console.log(total_forms);' \
+                                                       'let attributes = [' + ','.join(
+                '"{0}"'.format(a) for a in attributes) + '];' \
+                                                         'let input;' \
+                                                         'for (let i = 0; i <= ' + total_attr + '; i++) {' \
+                                                                                                'input = document.getElementById("id_productattribute_set-"+ i +"-attribute_title");' \
+                                                                                                'input.value = attributes[i];' \
+                                                                                                'document.getElementById("attribute_title_count").textContent = "Заполнено " + (i+1) + " из ' + total_attr + '"' \
+                                                                                                '}' \
+                                                                                                '\'>Заполнить</span><br><span id="attribute_title_count"></span>'
+
+            return mark_safe(url)
+                # '<sup>2</sup>\n<sup>3</sup>\n°C'
+        else:
+            return 'Выберите категорию и сохраните товар'
 
     def copy_url(self, obj):
         snap = '<span class="text-primary" style="cursor:pointer;" ' \
@@ -312,12 +338,16 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
 
     def product_link(self, obj):
         if obj.product_url:
-            root_link = obj.product_category.category_parent.category_parent.category_url
-            vendor_link = obj.product_category.category_parent.category_url
-            category_link = obj.product_category.category_url
-            product_link = obj.product_url
-            url = reverse('product-url', args=(root_link, vendor_link, category_link, product_link,))
-            return mark_safe(f'<a href="{url}" target="_blank"><i class="fas fa-external-link-alt fa-2x"></i></i></a>')
+            try:
+                product_link = obj.product_url
+                category_link = obj.product_category.category_url
+                vendor_link = obj.product_category.category_parent.category_url
+                root_link = obj.product_category.category_parent.category_parent.category_url
+                url = reverse('product-url', args=(root_link, vendor_link, category_link, product_link,))
+                return mark_safe(
+                    f'<a href="{url}" target="_blank"><i class="fas fa-external-link-alt fa-2x"></i></i></a>')
+            except:
+                pass
         else:
             return '(No link)'
 
@@ -338,7 +368,7 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
     fill_url.short_description = ""
     fill_img_title.short_description = ""
     edit_options.short_description = "Дополнительно"
-    help_attr.short_description = 'Подсказки для копирования'
+    help_attr.short_description = 'Заполнить атрибуты из других товаров в этой категории'
     copy_url.short_description = ''
     product_link.short_description = 'Перейти'
 
