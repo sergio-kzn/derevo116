@@ -78,13 +78,15 @@ class ProductTab(models.Model):
     class Meta:
         verbose_name = "Вкладка"
         verbose_name_plural = "Вкладки"
+        ordering = ['-id']
     def __str__(self):
         return str(self.tab_title_admin)
 
     tab_title_admin = models.CharField(verbose_name='Название (в админке)', max_length=200)
     tab_title = models.CharField(verbose_name='Название (в шаблоне)', max_length=200)
-    tab_content = models.TextField(verbose_name='Содержимое доп. вкладки', blank=True, null=True)
     tab_slug = models.SlugField(verbose_name='Ссылка href="# ..."', default='additionally')
+    tab_sort = models.IntegerField(verbose_name='Сортировка', default='0')
+    tab_content = models.TextField(verbose_name='Содержимое доп. вкладки', blank=True, null=True)
 
 
 class OptionGroup(models.Model):
@@ -121,7 +123,7 @@ class ProductImageGroup(models.Model):
 
 class ProductImage(models.Model):
     img_file = ImageField(verbose_name='Изображение товара', upload_to='products')
-    img_title = models.CharField(verbose_name='Подпись', max_length=100)
+    img_title = models.CharField(verbose_name='Подпись', max_length=100, blank=True, null=True)
     img_group = models.ForeignKey(ProductImageGroup, models.DO_NOTHING)
     img_sort = models.IntegerField(verbose_name='Сортировка', default=0)
 

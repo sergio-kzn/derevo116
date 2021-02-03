@@ -481,7 +481,7 @@
 
                 <!-- Дополнительные вкладки -->
                 {% if product.product_tab.count > 0 %}
-                    {% for tab in product.product_tab.all %}
+                    {% for tab in product.product_tab.all|dictsort:'tab_sort' %}
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#{{ tab.tab_slug }}" role="tab"
                                aria-controls="{{ tab.tab_slug }}" aria-selected="false">
@@ -539,22 +539,14 @@
                 </div>
 
                 <!-- Доп. вкладки -->
-                {% if biofa %}
-                    {% if product.product_description %}
-                        <div class="tab-pane fade" id="photo" role="tabpanel" aria-labelledby="photo-tab">
-                            {{ product.product_description|safe }}
-                        </div>
-                    {% endif %}
-                {% else %}
                     {% if product.product_tab.count > 0 %}
-                        {% for tab in product.product_tab.all %}
+                        {% for tab in product.product_tab.all|dictsort:'tab_sort' %}
                             <div class="tab-pane fade" id="{{ tab.tab_slug }}" role="tabpanel"
                                  aria-labelledby="{{ tab.tab_slug }}-tab">
                                 {{ tab.tab_content|safe }}
                             </div>
                         {% endfor %}
                     {% endif %}
-                {% endif %}
 
                 <!-- Отзывы -->
                 <div class="tab-pane fade 

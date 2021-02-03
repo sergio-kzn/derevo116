@@ -200,13 +200,15 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
     )
 
     def fill_url(self, obj):
-        """добавляет кнопку для автоматического заполнения поля URL. Артикул + поставщик"""
+        """заполнение поля URL. Артикул + поставщик (транслит)"""
         snap = '<snap style="cursor: pointer" class="text-primary" onclick="' \
                'let vendor = Array.from(id_product_vendor.options).' \
                'filter(option => option.selected).map(option => option.textContent);' \
                'let code = id_product_vendor_code.value;' \
                'let url_input = document.getElementById(\'id_product_url\');' \
-               'let slug = (code + \'-\' + vendor).toLowerCase().replace(/\\s+/g, \'-\');' \
+               'let slug = (code + \'-\' + vendor).toLowerCase().replace(/\\s+/g, \'-\').replace(/[\']/g, \'\');' \
+               'const keys = {\'а\': \'a\', \'б\': \'b\', \'в\': \'v\', \'г\': \'g\', \'д\': \'d\',\'е\': \'e\', \'ё\': \'e\', \'ж\': \'j\', \'з\': \'z\', \'и\': \'i\',\'к\': \'k\', \'л\': \'l\', \'м\': \'m\', \'н\': \'n\', \'о\': \'o\',\'п\': \'p\', \'р\': \'r\', \'с\': \'s\', \'т\': \'t\', \'у\': \'u\',\'ф\': \'f\', \'х\': \'h\', \'ц\': \'c\', \'ч\': \'ch\', \'ш\': \'sh\',\'щ\': \'shch\', \'ы\': \'y\', \'э\': \'e\', \'ю\': \'u\', \'я\': \'ya\'};' \
+               'slug = slug.split(\'\').map((char) => keys[char] || char).join(\'\');' \
                'url_input.value = slug;' \
                '">Заполнить (артикул-поставщик)</snap>'
         return mark_safe(snap)
@@ -316,7 +318,8 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
                                                                                                 '}' \
                                                                                                 '\'>Заполнить</span><br><span id="attribute_title_count"></span>'
 
-            return mark_safe(url)
+            if len(attributes) > 0:
+                return mark_safe(url)
                 # '<sup>2</sup>\n<sup>3</sup>\n°C'
         else:
             return 'Выберите категорию и сохраните товар'
