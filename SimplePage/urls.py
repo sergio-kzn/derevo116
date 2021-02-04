@@ -19,5 +19,6 @@ from . import views
 
 urlpatterns = [
     path('find_attr/', views.find_attr, name='find_attr'),
+    path('price_list_biofa/', views.price_list_biofa, name='price_list_biofa'),
     path('<slug:page_url>/', views.page, name='simple_page_url'),
 ]

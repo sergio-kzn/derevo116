@@ -27,3 +27,8 @@ def find_attr(request):
         'attr': attr,
     }
     return render(request, 'simple_page/find_attr.html', context)
+
+@login_required(login_url='/admin/login/')
+def price_list_biofa(request):
+    context = {}
+    return render(request, 'simple_page/price_list_biofa.html', context)
