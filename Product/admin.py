@@ -220,8 +220,8 @@ class ProductAdmin(FieldsetsInlineMixin, SummernoteModelAdmin):  # instead of Mo
                '">' \
                'Заполнить это поле из названия</snap><br>' \
                '<span class="text-primary" style="cursor:pointer;" ' \
-               'onclick="if (navigator.clipboard) navigator.clipboard.writeText(id_product_title.value)">' \
-               'Копировать название продукта</span>'
+               'onclick="if (navigator.clipboard) navigator.clipboard.writeText(id_product_img_title.value)">' \
+               'Копировать подпись</span>'
         return mark_safe(snap)
 
     def edit_images(self, obj):
