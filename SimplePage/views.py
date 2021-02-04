@@ -1,8 +1,14 @@
+import json
+
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import render
-from Product.models import ProductAttribute, ProductCategory, Product
+from django.views.decorators.csrf import csrf_exempt
+
+from Product.models import ProductAttribute, ProductCategory, Product, Color, ProductOptionPrice, OptionGroup
 
 from SimplePage.models import SimplePage
+from SimplePage.services import update_price
 
 
 def page(request, page_url):
@@ -12,6 +18,7 @@ def page(request, page_url):
         'page': selected_page,
     }
     return render(request, 'simple_page/page.html', context)
+
 
 @login_required(login_url='/admin/login/')
 def find_attr(request):
@@ -29,6 +36,20 @@ def find_attr(request):
     return render(request, 'simple_page/find_attr.html', context)
 
 @login_required(login_url='/admin/login/')
+@csrf_exempt
 def price_list_biofa(request):
-    context = {}
-    return render(request, 'simple_page/price_list_biofa.html', context)
+    if request.method == 'POST':
+        new_price = json.loads(request.body)
+        if update_price(new_price):
+            return HttpResponse('OK')
+    else:
+        categories = ProductCategory.objects.filter(category_parent=54)
+        biofa = Product.objects.filter(product_category__category_parent=54)
+        colors = Color.objects.filter(color_group__product__product_category__category_parent=54)
+
+        context = {
+            "categories": categories,
+            "products": biofa,
+            "colors": colors,
+        }
+        return render(request, 'simple_page/price_list_biofa.html', context)
