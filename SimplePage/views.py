@@ -1,19 +1,20 @@
 import json
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-from Product.models import ProductAttribute, ProductCategory, Product, Color, ProductOptionPrice, OptionGroup
+from Product.models import ProductAttribute, ProductCategory, Product, Color
+from Product.services import last_products
 
 from SimplePage.models import SimplePage
-from SimplePage.services import update_price
+from SimplePage.services import update_price, parcer_cosca_product, create_new_item
 
 
 def page(request, page_url):
     """Обычная страница на сайте. Например, контакты, о нас и т.п."""
-    selected_page = SimplePage.objects.filter(simple_page_url = page_url)[0]
+    selected_page = SimplePage.objects.filter(simple_page_url=page_url)[0]
     context = {
         'page': selected_page,
     }
@@ -35,6 +36,7 @@ def find_attr(request):
     }
     return render(request, 'simple_page/find_attr.html', context)
 
+
 @login_required(login_url='/admin/login/')
 @csrf_exempt
 def price_list_biofa(request):
@@ -53,3 +55,19 @@ def price_list_biofa(request):
             "colors": colors,
         }
         return render(request, 'simple_page/price_list_biofa.html', context)
+
+
+@login_required(login_url='/admin/login/')
+def scraping_cosca(request):
+    if request.method == 'POST':
+        if json.loads(request.body).get('url'):
+            url = json.loads(request.body)['url']
+            return JsonResponse(parcer_cosca_product(url))
+        elif json.loads(request.body).get('new_item'):
+            data = json.loads(request.body)['new_item']
+            return create_new_item(data)
+        else:
+            return HttpResponse(500)
+
+    return render(request, 'simple_page/cosca.html', {'last_items': Product.objects.filter(product_show=True).filter(product_vendor_id=11).order_by('-id')[:1]
+})

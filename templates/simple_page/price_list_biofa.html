@@ -7,28 +7,28 @@
 
     {% for category in categories %}
         <h2>{{ category.category_title }}</h2>
-        <table class="table table-bordered table-sm">
+        <table class="table table-bordered table-sm w-100" style="table-layout: fixed">
             {% for product in products %}
                 {% if product.product_category == category %}
                     <tr>
-                        <td width="200">
+                        <td style="width: 150px">
                             {{ product.product_title }}
                         </td>
-                        <td>
-                            {% for color_group in product.product_color.all %}
-                                <table class="table table-bordered table-sm">
-                                    {% for color in colors %}
-                                        {% if color.color_group == color_group %}
-                                            <tr>
-                                                <td>{{ color }}</td>
-                                            </tr>
-                                        {% endif %}
-                                    {% endfor %}
-                                </table>
-                            {% endfor %}
+                        <td style="height: 0; width: 200px">
+                            <div class="overflow-auto h-100">
+                                {% for color_group in product.product_color.all %}
+                                    <ul class="list-group list-group-flush">
+                                        {% for color in colors %}
+                                            {% if color.color_group == color_group %}
+                                                <li class="list-group-item small">{{ color }}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                {% endfor %}
+                            </div>
                         </td>
 
-                        <td>
+                        <td style="border-bottom: none; border-top: none; border-right: none">
                             {% if product.product_price_choice == '2' %}
                                 {% for option_group in product.product_price_options.all %}
                                     {% if option_group.option_type == '1' %}
@@ -36,17 +36,17 @@
                                             <tr>
                                                 <td>{{ option_group.product_price_option }}</td>
                                                 <td>{{ option_group.product_price_option_price }}</td>
-                                                <td>{{ option_group.product_price_option_extra_1|safe }}</td>
-                                                <td>{{ option_group.product_price_option_extra_2|safe }}</td>
+                                                <td class="small">{{ option_group.product_price_option_extra_1|safe }}</td>
+                                                <td class="small">{{ option_group.product_price_option_extra_2|safe }}</td>
                                                 <td>Новая цена</td>
                                                 <td>Цена р/м<sup>2</sup></td>
                                             </tr>
                                             {% for option in option_group.productoptionprice_set.all %}
                                                 <tr>
-                                                    <td>{{ option.product_option }}</td>
-                                                    <td>{{ option.product_option_price }}</td>
-                                                    <td>{{ option.product_option_extra_1 }}</td>
-                                                    <td>{{ option.product_option_extra_2 }}</td>
+                                                    <td style="white-space: nowrap">{{ option.product_option }}</td>
+                                                    <td style="white-space: nowrap">{{ option.product_option_price }}</td>
+                                                    <td style="white-space: nowrap">{{ option.product_option_extra_1 }}</td>
+                                                    <td style="white-space: nowrap">{{ option.product_option_extra_2 }}</td>
                                                     <td><input type="text" name="new_price"
                                                                data-price-id="{{ option.id }}"
                                                                data-group="{{ option_group.id }}"
@@ -56,6 +56,7 @@
                                                     <td><input type="text" name="new_price_rate"
                                                                data-price-id="{{ option.id }}"
                                                                data-group="{{ option_group.id }}"
+                                                               data-rate="{{ option.product_option_extra_1 }}"
                                                                class="form-control form-control-sm" style="width: 85px"
                                                                value="{{ option.product_option_extra_2 }}">
                                                     </td>
@@ -67,12 +68,15 @@
                                                 <td></td>
                                                 <td></td>
                                                 <td colspan="2">
-                                                    <span id="calculate_10__group_{{ option_group.id }}"
-                                                          class="text-muted small" style="cursor: pointer">Прибавить +10%</span><br>
-                                                    <span id="calculate_rate__group_{{ option_group.id }}"
-                                                          class="text-muted small" style="cursor: pointer">Пересчитать расход</span><br>
+                                                    <span data-group="{{ option_group.id }}"
+                                                          class="plus-10 text-muted small" style="cursor: pointer">Прибавить +10%</span><br>
+
+                                                    <span data-group="{{ option_group.id }}"
+                                                          class="recalculate text-muted small" style="cursor: pointer">Пересчитать расход</span><br>
+
                                                     <span data-group="{{ option_group.id }}"
                                                           class="apply-new-price text-success" style="cursor: pointer">Применить</span><br>
+
                                                     <span data-group="{{ option_group.id }}"
                                                           class="notification d-none small"
                                                           id="notification_{{ option_group.id }}"></span>
@@ -102,7 +106,9 @@
             {% endfor %}
         </table>
     {% endfor %}
-    <input id="apply_all" class="button btn-primary" type="button" value="Применить все">
+    <input id="plus_10_all" class="button btn-outline-primary btn-lg" type="button" value="Прибавить 10% всем">
+    <input id="recalculate_all" class="button btn-outline-primary btn-lg" type="button" value="Пересчитать все">
+    <input id="apply_all" class="button btn-primary btn-lg" type="button" value="Применить все">
     <span class="d-none small" id="apply_all_notification"></span>
 {% endblock content %}
 {# / Содержимое страницы #}
@@ -126,8 +132,6 @@
                                 new_price = input_item.value;
 
                                 new_price_rate = document.querySelector('input[data-group="' + group_id + '"][data-price-id="' + id + '"][name="new_price_rate"]').value
-                                {#if (input_item.getAttribute('name') === 'new_price_rate' && input_item.value !== "None") new_price_rate = input_item.value;#}
-                                {#console.log(id, new_price, new_price_rate);#}
                                 data[id] = {
                                     new_price,
                                     new_price_rate
@@ -159,14 +163,108 @@
                     }
                 })
 
+                // Пересчитать расход
+                let recalculate_buttons = document.querySelectorAll('.recalculate');
+                recalculate_buttons.forEach(function (button, index, array) {
+                    button.onclick = async function () {
+                        let group_id = button.getAttribute('data-group');
+
+                        let all_in_group = document.querySelectorAll('[data-group="' + group_id + '"]');
+                        let price;
+                        let new_price_rate;
+                        let rate;
+
+                        all_in_group.forEach(function (input_item, index, array) {
+                            let id = input_item.getAttribute('data-price-id');
+
+                            if (input_item.getAttribute('name') === 'new_price') {
+                                price = input_item.value;
+                                price = String(price).replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+                                input_item.value = price
+                            }
+
+                            if (input_item.getAttribute('name') === 'new_price_rate') {
+                                new_price_rate = input_item.value;
+                                rate = input_item.getAttribute('data-rate');
+
+                                if (new_price_rate.split(' / ').length === 1) {
+                                    if (input_item.value !== 'None')
+                                        input_item.value = parseInt(String(price).replace(/ /g, '') / rate);
+                                } else if (new_price_rate.split(' / ').length === 2)
+                                    input_item.value = parseInt(String(price).replace(/ /g, '') / rate.split(' / ')[0])
+                                        + "  /  " +
+                                        parseInt(String(price).replace(/ /g, '') / rate.split(' / ')[1]);
+                            }
+                        })
+                        let notification = document.querySelector('#notification_' + group_id)
+                        notification.classList.remove('d-none');
+                        notification.textContent = 'Обновлено'
+
+                        setTimeout(function () {
+                            notification.classList.add('d-none');
+                        }, 2000)
+                        button.textContent += ' (OK)'
+                    }
+                })
+
+                // Прибавить 10%
+                let plus_10 = document.querySelectorAll('.plus-10');
+                plus_10.forEach(function (button, index, array) {
+                    button.onclick = async function () {
+                        let group_id = button.getAttribute('data-group');
+
+                        let all_in_group = document.querySelectorAll('[data-group="' + group_id + '"]');
+                        let price;
+
+                        all_in_group.forEach(function (input_item, index, array) {
+
+                            if (input_item.getAttribute('name') === 'new_price') {
+                                price = parseInt(10 * String(input_item.value).replace(/ /g, '') / 100) + parseInt(String(input_item.value).replace(/ /g, ''));
+                                price = String(price).replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+                                input_item.value = price
+                            }
+                        })
+                        let notification = document.querySelector('#notification_' + group_id)
+                        notification.classList.remove('d-none');
+                        notification.textContent = 'Обновлено'
+
+                        setTimeout(function () {
+                            notification.classList.add('d-none');
+                        }, 2000)
+                        button.textContent += ' (OK)'
+                    }
+                })
+
+
+                let notification = document.querySelector('#apply_all_notification')
+
                 // Применить все
                 apply_all.onclick = function () {
                     let len = apply_buttons.length
-                    let notification = document.querySelector('#apply_all_notification')
                     notification.classList.remove('d-none')
                     apply_buttons.forEach(function (button, index, array) {
                         button.onclick();
-                        notification.textContent = 'Выполнено: ' + (index+1) + ' из ' + len;
+                        notification.textContent = 'Выполнено: ' + (index + 1) + ' из ' + len;
+                    })
+                }
+
+                // Пересчитать все
+                recalculate_all.onclick = function () {
+                    let len = recalculate_buttons.length
+                    notification.classList.remove('d-none')
+                    recalculate_buttons.forEach(function (button, index, array) {
+                        button.onclick();
+                        notification.textContent = 'Выполнено: ' + (index + 1) + ' из ' + len;
+                    })
+                }
+
+                // Прибавить всем
+                plus_10_all.onclick = function () {
+                    let len = plus_10.length
+                    notification.classList.remove('d-none')
+                    plus_10.forEach(function (button, index, array) {
+                        button.onclick();
+                        notification.textContent = 'Выполнено: ' + (index + 1) + ' из ' + len;
                     })
                 }
             }

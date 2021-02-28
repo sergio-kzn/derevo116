@@ -1,0 +1,356 @@
+{% extends 'base.html' %}
+{% block title %}Парсер товаров Cosca{% endblock title %}
+{% block custom_head %}{% endblock %}
+
+{# Содержимое страницы. Разное для всех приложений джанго   #}
+{% block content %}
+
+    <div>
+        <p class="float-right"><img src="{{ last_items.first.product_img.url }}" style="width: 100px">
+        <p class="small text-muted">Последний товар на сайте: {{ last_items.first.product_title }}
+        <p class="small text-muted"><a
+                href="http://localhost:8000/{{ last_items.first.product_category.category_parent.category_parent.category_url }}/{{ last_items.first.product_category.category_parent.category_url }}/{{ last_items.first.product_category.category_url }}/{{ last_items.first.product_url }}/"
+                target="_blank">(Посмотреть)</a>
+            <a href="/admin/Product/product/{{ last_items.first.id }}/change/" target="_blank">(Изменить)</a>
+            {#    http://localhost:8000/wallpappers/cosca-d_ecolingi/wallpapers-of-jute/spb003503-cosca-decolingi/#}
+    </div>
+
+    <div class="clearfix"></div>
+    <div class="my-1">
+        <label for="url">URL страницы с товаром</label>
+        <span class="mx-2 link-danger" style="cursor: pointer" onclick="url.value=''; navigator.clipboard.readText()
+    .then(text => {
+      url.value = text;
+    }); url.click();"><i class="fa fa-recycle"></i></span><input type="text" class="mx-1" id="url"
+                       value="">
+        <input id="send_url" class="button btn-primary" type="button" value="Отправить URL">
+        <span id="notification" class="d-none text-muted small mx-3"></span>
+    </div>
+
+    <div id="context"></div>
+
+    <form id="form">
+        <table class="table table-sm table-striped mt-2">
+            <tr>
+                <td>Категория</td>
+                <td><label>
+                    <input name="category" type="text"><span id="category_id" class="ml-2"></span>
+                </label></td>
+            </tr>
+            <tr>
+                <td>Поставщик (id)</td>
+                <td><input name="vendor" type="text" disabled></td>
+            </tr>
+            <tr>
+                <td>Артикул</td>
+                <td><input name="vendor_code" type="text"></td>
+            </tr>
+            <tr>
+                <td>Заголовок</td>
+                <td><input name="title" type="text" value="" class="w-100"></td>
+            </tr>
+            <tr>
+                <td>Ссылка</td>
+                <td><input name="url" type="text"></td>
+            </tr>
+            <tr>
+                <td>Наличие</td>
+                <td><input name="count" type="text"></td>
+            </tr>
+            <tr>
+                <td>Короткое описание</td>
+                <td><textarea name="short_description" rows="3" cols="50"></textarea></td>
+            </tr>
+            <tr>
+                <td>Атрибуты</td>
+                <td>
+                    <table class="table table-sm table-striped" id="attrs_table">
+                        <tr>
+                            {#                                                <td><input name="attr_key_0" type="text"></td>#}
+                            {#                                                <td><input name="attr_value_0" type="text"></td>#}
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>Изображение</td>
+                <td><input name="img" type="text"><span id="img_preview" class="ml-2"></span></td>
+            </tr>
+            <tr>
+                <td>Доп. изображения</td>
+                <td><input name="img_other" type="text" disabled="disabled"></td>
+            </tr>
+            <tr>
+                <td>Вкладки</td>
+                <td><input name="tabs" type="text" disabled></td>
+            </tr>
+            <tr>
+                <td>Тип цены</td>
+                <td>
+                    <label for="id_product_price_choice_0"><input type="radio" name="product_price_choice" value="1"
+                                                                  id="id_product_price_choice_0" checked="">
+                        Простая цена</label><br>
+                    <label for="id_product_price_choice_1"><input type="radio" name="product_price_choice" value="2"
+                                                                  id="id_product_price_choice_1">
+                        Цена с опциями</label>
+
+                </td>
+            </tr>
+            <tr>
+                <td>Цена</td>
+                <td><input name="price" type="text" value="0"><span class="ml-2 text-muted small"
+                                                                    id="price_from_url"></span></td>
+            </tr>
+            <tr>
+                <td>Опции цены</td>
+                <td>
+                    <table class="table table-sm table-striped">
+                        <tr>
+                            <td><input name="price_key_0" type="text" disabled></td>
+                            <td><input name="price_value_0" type="text"></td>
+                        </tr>
+                        <tr>
+                            <td><input name="price_key_1" type="text" disabled></td>
+                            <td><input name="price_value_1" type="text"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <div class="mx-5"><input id="clear_table" class="button btn-secondary mr-5" type="button" value="Сброс"
+                                 onclick="clear_table()"><input id="add_product" class="button btn-primary"
+                                                                type="button" value="Добавить товар" disabled>
+            <span id="notification_send_data" class="d-none text-muted small mx-3"></span></div>
+        <div id="admin_buttons" class="d-none my-3">
+            <p><a id="admin_buttons_view" href="#" target="_blank" class="link-success">Посмотреть товар</a>
+            <p><a id="admin_buttons_edit" href="#" target="_blank" class="link-secondary">Изменить товар</a>
+        </div>
+
+
+    </form>
+
+
+
+
+{% endblock content %}
+{# / Содержимое страницы #}
+
+{% block custom_footer %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+                // получаем csrftoken
+                function getCookie(name) {
+                    let cookieValue = null;
+                    if (document.cookie && document.cookie !== '') {
+                        const cookies = document.cookie.split(';');
+                        for (let i = 0; i < cookies.length; i++) {
+                            const cookie = cookies[i].trim();
+                            // Does this cookie string begin with the name we want?
+                            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                }
+
+                const csrftoken = getCookie('csrftoken');
+
+                clear_table = function () {
+                    // очищает все данные
+                    price_from_url.textContent = '';
+                    document.getElementById("id_product_price_choice_0").checked = true;
+                    form.price.disabled = false;
+                    form.price_value_0.value = "";
+                    form.price_value_1.value = "";
+
+                    let trs = document.querySelectorAll('#attrs_table tr');
+                    for (let row_index = trs.length; row_index > 0; row_index--) {
+                        {#trs[0].parentNode.removeChild(trs[0]);#}
+                        {#attrs_table.firstChild.remove()#}
+                        {#console.log('чистим таблицу', row_index, trs.length)#}
+                        document.getElementById("attrs_table").deleteRow(row_index - 1);
+                    }
+                    add_product.disabled = true;
+                }
+
+                send_url.onclick = async function () {
+                    // нажатие на кнопку "Отправить URL"
+                    clear_table();
+                    let notification_url = document.querySelector('#notification');
+                    notification_url.classList.remove('d-none');
+                    notification_url.textContent = 'Отправка...';
+
+                    let response = await fetch('/page/scraping_cosca/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json;charset=utf-8',
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: JSON.stringify({'url': url.value})
+                    });
+
+                    if (response.ok) {
+                        // получаем ответ от сервера, если URL отправлен верно
+                        notification_url.textContent = 'Отправлено успешно...';
+                        setTimeout(function () {
+                            notification_url.classList.add('d-none');
+                        }, 2000);
+
+                        document.querySelector('#add_product').classList.add('btn-primary');
+                        document.querySelector('#add_product').classList.remove('btn-outline-primary');
+
+                        let get_data = {}
+                        get_data = await response.json();
+                        form.category.value = get_data.category;
+                        document.querySelector('#category_id').textContent = 'id=' + get_data.category_id;
+                        form.vendor.value = get_data.vendor;
+                        form.vendor_code.value = get_data.vendor_code;
+                        sufix = ', ' + (parseFloat(get_data.attr["Ширина"].split(' ')[0], 10) / 1000);
+                        sufix += ' х ' + get_data.attr["Длина рулона"];
+                        form.title.value = get_data.title + sufix;
+                        form.url.value = get_data.url;
+                        form.count.value = get_data.count;
+                        form.short_description.value = get_data.short_description;
+                        let attrs_table = document.querySelector('#attrs_table');
+                        for (let i = 0; i < get_data.attr_count; i++) {
+                            let row = document.createElement('tr');
+                            let col1 = document.createElement('td');
+                            let col2 = document.createElement('td');
+                            attrs_table.appendChild(row);
+                            row.appendChild(col1);
+                            row.appendChild(col2);
+                            let input1 = document.createElement('input');
+                            let input2 = document.createElement('input');
+                            col1.appendChild(input1);
+                            col2.appendChild(input2);
+                            input1.name = "attr_key_" + i;
+                            input2.name = "attr_value_" + i;
+                            input1.type = 'text';
+                            input2.type = 'text';
+                        }
+                        let counter = 0;
+                        for (let key in get_data.attr) {
+                            document.querySelector("#form input[name='attr_key_" + counter + "']").value = key
+                            document.querySelector("#form input[name='attr_value_" + counter + "']").value = get_data.attr[key]
+                            counter++;
+                        }
+                        form.img.value = get_data.img;
+                        document.querySelector('#img_preview').innerHTML = '<img src="' + get_data.img + '" style="width: 70px">'
+                        form.img_other.value = get_data.other_img;
+                        form.price.value = get_data.price;
+                        {#tabs#}
+                        id_product_price_choice_0.onclick = function () {
+                            // выбор Простая цена
+                            form.price.value = get_data.price;
+                            price_from_url.textContent = '';
+                            form.price.disabled = false;
+                            sufix = ', ' + (parseFloat(get_data.attr["Ширина"].split(' ')[0], 10) / 1000);
+                            sufix += ' х ' + get_data.attr["Длина рулона"];
+                            form.title.value = get_data.title + sufix;
+                            let counter = 0;
+                            for (let key in get_data.attr) {
+                                if (document.querySelector("#form input[name='attr_key_" + counter + "']").value === 'Длина рулона')
+                                    document.querySelector("#form input[name='attr_value_" + counter + "']").value = get_data.attr[key]
+                                counter++;
+                            }
+                        }
+                        id_product_price_choice_1.onclick = function () {
+                            // выбор Цена с опциями
+                            form.price.value = 0;
+                            price_from_url.textContent = get_data.price;
+                            form.price.disabled = true;
+                            form.price_key_0.value = "5.5 м.";
+                            form.price_key_1.value = "10 м.";
+                            sufix = ', ' + (parseFloat(get_data.attr["Ширина"].split(' ')[0], 10) / 1000) + ' x ';
+                            sufix += '5.5 или 10м.';
+                            form.title.value = get_data.title + sufix;
+                            let counter = 0;
+                            for (let key in get_data.attr) {
+                                if (document.querySelector("#form input[name='attr_key_" + counter + "']").value === 'Длина рулона')
+                                    document.querySelector("#form input[name='attr_value_" + counter + "']").value = '5.5 или 10м.';
+                                counter++;
+                            }
+                        }
+
+
+                        add_product.disabled = false;
+                        add_product.onclick = async function () {
+                            let notification = document.querySelector('#notification_send_data');
+                            notification.classList.remove('d-none');
+                            notification.textContent = 'Отправка...';
+                            // Нажатие на "Добавить товар"
+                            let new_item = {}
+                            new_item['category'] = form.category.value;
+                            new_item['vendor'] = form.vendor.value;
+                            new_item['vendor_code'] = form.vendor_code.value;
+                            new_item['title'] = form.title.value;
+                            new_item['url'] = form.url.value;
+                            new_item['count'] = form.count.value;
+                            new_item['short_description'] = form.short_description.value;
+                            let max_counter = document.querySelectorAll('#attrs_table tr').length - 1;
+                            new_item['attrs'] = {};
+                            for (let counter = 0; counter < max_counter; counter++) {
+                                new_item['attrs'][document.querySelector("#form input[name='attr_key_" + counter + "']").value] =
+                                    document.querySelector("#form input[name='attr_value_" + counter + "']").value;
+                            }
+                            new_item['img'] = form.img.value;
+                            new_item['other_img'] = form.img_other.value;
+                            {#tabs#}
+                            if (id_product_price_choice_0.checked) {
+                                new_item['price'] = form.price.value;
+                                new_item['price_type'] = 1;
+                            } else {
+                                new_item['price'] = 0;
+                                new_item['price_type'] = 2;
+                                new_item['price_options'] = {};
+                                new_item['price_options'][5] = form.price_value_0.value;
+                                new_item['price_options'][10] = form.price_value_1.value;
+                            }
+
+                            let response = await fetch('/page/scraping_cosca/', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json;charset=utf-8',
+                                    'X-CSRFToken': csrftoken,
+                                },
+                                body: JSON.stringify({'new_item': new_item})
+                            });
+
+                            if (response.ok) {
+                                // Если товар отправлен успешно
+                                notification.textContent = 'Отправлено успешно...';
+                                setTimeout(function () {
+                                    notification.classList.add('d-none');
+                                }, 2000);
+
+                                document.querySelector('#admin_buttons').classList.remove('d-none');
+                                let links = await response.json();
+                                let id = links["id"];
+                                let url = links["url"];
+                                let a_view = document.querySelector('#admin_buttons_view');
+                                a_view.href = '/wallpappers/cosca-d_ecolingi/' + url;
+                                let a_edit = document.querySelector('#admin_buttons_edit');
+                                a_edit.href = '/admin/Product/product/' + id + '/change/';
+
+                                document.querySelector('#add_product').classList.remove('btn-primary');
+                                document.querySelector('#add_product').classList.add('btn-outline-primary');
+                            } else {
+                                // если после отправки товара сервер вернул ошибку
+                                notification.textContent = 'Ошибка! ';
+                                notification.textContent += JSON.stringify(await response.json());
+                            }
+                        }
+                        {# console.log(get_data) #}
+                    } else
+                        // если после отправки URL сервер вернул ошибку
+                        notification.textContent = 'Ошибка...';
+                }
+            }
+        );
+    </script>
+
+
+{% endblock custom_footer %}

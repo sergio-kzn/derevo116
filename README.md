@@ -36,17 +36,17 @@
 
 Делает превью картинок в шаблоне.
 
+4. beautifulsoup4-4.9.3
+
+[https://www.crummy.com/software/BeautifulSoup/bs4/doc.ru/bs4ru.html](https://www.crummy.com/software/BeautifulSoup/bs4/doc.ru/bs4ru.html)
+
+Помогает парсить страницы поставщиков
+
 ### FronEnd:
 
 Верстка выполнена с помощью **Bootstrap CSS v5.0.0-alpha2.**
 
 Корзина сделана на чистом **JavaScript**.
-
-Основной принцип работы JS:
-
-1.  отправка POST запросов с данными о заказе и товарах на сервер.
-2.  Сервер полученные данные обрабатывает и записывает в сессию.
-3.  Далее данные подставляются из сессии в шаблон.
 
 * * *
 
