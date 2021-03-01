@@ -71,3 +71,13 @@ def scraping_cosca(request):
 
     return render(request, 'simple_page/cosca.html', {'last_items': Product.objects.filter(product_show=True).filter(product_vendor_id=11).order_by('-id')[:1]
 })
+
+@login_required(login_url='/admin/login/')
+def images_to_gallery(request):
+    if request.method == 'POST':
+        images_raw = json.loads(request.body)['images']
+        print(images_raw)
+
+        return HttpResponse('Получено')
+
+    return render(request, 'simple_page/images_to_gallery.html', {})

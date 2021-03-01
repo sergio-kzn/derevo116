@@ -123,7 +123,7 @@
                             {% if product.product_img %}
                                 {% thumbnail product.product_img "300x300" padding=True format="WEBP" as im %}
                                     <a href="{{ product_url }}">
-                                        <img src="{{ im.url }}" class="img-fluid my-2"
+                                        <img src="{{ im.url }}" class="img-fluid mb-2"
                                              alt="{{ product.product_title }}">
                                     </a>
                                 {% endthumbnail %}

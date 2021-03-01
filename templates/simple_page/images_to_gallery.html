@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ page.simple_page_title }} - ООО Империал, г. Казань{% endblock title %}
+{% block custom_head %}
+    <!-- FancyBox3 CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.fancybox.min.css' %}">
+{% endblock %}
+
+{# Содержимое страницы. Разное для всех приложений джанго   #}
+{% block content %}
+    <div class="container mt-5">
+
+        <label class="w-100">Вставьте список из &lt;img&gt; элементов:
+            <textarea id="images" rows="3" class="w-100"
+                      placeholder='<p><img src="/media/django-summernote/2021-03-01/436ad1e9-fe9d-42fa-a4a5-8fa1cc0d6a53.jpg" style="width: 703px;"><img src="/media/django-summernote/2021-03-01/fa7c2023-4cbd-4397-8e02-f2e4bdf11319.jpg" style="width: 703px;"><br></p>'></textarea>
+        </label>
+        <input type="button" id="send" value="Отправить" class="button btn-primary">
+
+
+        <label class="w-100 mt-5">Результат:
+            <textarea id="result" rows="10" class="w-100"></textarea>
+        </label>
+
+    </div>
+{% endblock content %}
+{# / Содержимое страницы #}
+
+{% block custom_footer %}
+    <!-- FancyBox3 JS -->
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+    {#                    // http://fancyapps.com/fancybox/3/docs/#options#}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // получаем csrftoken
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            const csrftoken = getCookie('csrftoken');
+            send.onclick = async function () {
+                // нажатие на кнопку "Отправить"
+                let response = await fetch('/page/images_to_gallery/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({'images': images.value})
+                });
+
+                if (response.ok) {
+                    // получаем ответ от сервера, если URL отправлен верно
+                    let get_data = await response.text();
+                    result.value = get_data;
+                }
+                else {
+                    result.value = 'Ошибка!';
+
+                }
+            }
+        })
+    </script>
+{% endblock %}

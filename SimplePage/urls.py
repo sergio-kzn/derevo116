@@ -21,5 +21,6 @@ urlpatterns = [
     path('find_attr/', views.find_attr, name='find_attr'),
     path('price_list_biofa/', views.price_list_biofa, name='price_list_biofa'),
     path('scraping_cosca/', views.scraping_cosca, name='scraping_cosca'),
+    path('images_to_gallery/', views.images_to_gallery, name='images_to_gallery'),
     path('<slug:page_url>/', views.page, name='simple_page_url'),
 ]
