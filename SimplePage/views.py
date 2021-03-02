@@ -74,10 +74,4 @@ def scraping_cosca(request):
 
 @login_required(login_url='/admin/login/')
 def images_to_gallery(request):
-    if request.method == 'POST':
-        images_raw = json.loads(request.body)['images']
-        print(images_raw)
-
-        return HttpResponse('Получено')
-
     return render(request, 'simple_page/images_to_gallery.html', {})

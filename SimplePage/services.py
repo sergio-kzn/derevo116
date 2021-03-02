@@ -165,29 +165,25 @@ def create_new_item(data: dict) -> JsonResponse:
     # FIXME: Добавить проверку что такое изображение уже есть
     # if data['img'].split('/')[-1] in ...
     # print('Такое изображение уже есть')
+    # ИЗВИНИТЕ за следующий код. я не пониманию все эти преобразования, я просто скопировал это из интернета.
     print('Загружаем Изображение', end='\r')
     from PIL import Image
     import requests
     response = requests.get(data['img'], stream=True)
     response.raw.decode_content = True
     img = Image.open(response.raw)
-
     from io import BytesIO
     from django.core.files import File
-
     blob = BytesIO()
-    if data['img'].split('.')[-1] == 'jpg':
-        format = 'JPEG'
-    else:
-        format = 'JPEG'
-
+    format = 'JPEG'
+    # if data['img'].split('.')[-1].lower() == 'jpg':
+    #     format = 'JPEG'
     img.save(blob, format)
     new_item.product_img.save(data['img'].split('/')[-1], File(blob), save=False)
     print('Изображение загружено')
 
     attrs = dict(data['attrs'])
     product_tab = ProductTab.objects.get(id=22)  #Cosca Обои Преимущества
-
     new_tabs = []
     for attr_title, attr_value in attrs.items():
         if 'материал' in attr_title.lower():
@@ -233,11 +229,7 @@ def create_new_item(data: dict) -> JsonResponse:
                 new_tabs.append(ProductTab.objects.get(id=42))
             if 'папирус' in attr_value.lower():
                 new_tabs.append(ProductTab.objects.get(id=43))
-
     print(f'Вкладки: {new_tabs}')
-    # elif new_item.product_category.id == 88:  # Обои из бамбука
-    #     tab_from_category = ProductTab.objects.get(id=25)  # Cosca Обои Тростник Описание
-
 
     print('Данные обработаны')
     try:

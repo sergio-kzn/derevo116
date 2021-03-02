@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}{{ page.simple_page_title }} - ООО Империал, г. Казань{% endblock title %}
+{% block title %}Конвертер img{% endblock title %}
 {% block custom_head %}
     <!-- FancyBox3 CSS -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.fancybox.min.css' %}">
@@ -11,16 +11,45 @@
     <div class="container mt-5">
 
         <label class="w-100">Вставьте список из &lt;img&gt; элементов:
-            <textarea id="images" rows="3" class="w-100"
+            <textarea id="resource" rows="3" class="w-100"
                       placeholder='<p><img src="/media/django-summernote/2021-03-01/436ad1e9-fe9d-42fa-a4a5-8fa1cc0d6a53.jpg" style="width: 703px;"><img src="/media/django-summernote/2021-03-01/fa7c2023-4cbd-4397-8e02-f2e4bdf11319.jpg" style="width: 703px;"><br></p>'></textarea>
         </label>
-        <input type="button" id="send" value="Отправить" class="button btn-primary">
+        <input type="button" id="send" value="Отправить" class="btn btn-primary">
+        <table class="table my-5" id="table_for_edit_title">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Изображение</th>
+                <th scope="col">Подпись</th>
+                <th scope="col">Сортировка</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
 
+        <input type="button" id="apply" value="Применить" class="btn btn-primary mt-3 mb-5 d-block">
+
+        <label for="count_col">Кол-во столбцов</label>
+        <input type="range" class="form-range" min="1" max="10" id="count_col" value="3">
+
+        <label for="margin_col">Отсуп</label>
+        <input type="range" class="form-range" min="0" max="100" id="margin_col" value="0">
+        <div class="form-check mt-3">
+            <input class="form-check-input" type="checkbox" value="" id="title_col" checked>
+            <label class="form-check-label" for="title_col">Показывать подписи</label>
+        </div>
+
+        <div id="preview" class="my-5">
+
+        </div>
 
         <label class="w-100 mt-5">Результат:
             <textarea id="result" rows="10" class="w-100"></textarea>
         </label>
 
+        <p><span class="mx-2 link-danger" style="cursor: pointer" onclick="navigator.clipboard.writeText(result.value)">Копировать
+        </span>
     </div>
 {% endblock content %}
 {# / Содержимое страницы #}
@@ -33,44 +62,119 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // получаем csrftoken
-            function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    const cookies = document.cookie.split(';');
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim();
-                        // Does this cookie string begin with the name we want?
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
+            let parser = function (res) {
+                let images_raw_list = res.split('>');
+                let images_list = images_raw_list.filter(function (item) {
+                    return item.includes('<img');
+                });
+                let table = document.querySelector('#table_for_edit_title tbody');
+                images_list.forEach(function (item, i, arr) {
+                    let start = item.indexOf('src') + 5;
+                    let end = item.indexOf('"', start);
+                    {#arr[i] = item.slice(start, end);#}
+                    img_src = item.slice(start, end);
+                    start = item.indexOf('alt') + 5;
+                    end = item.indexOf('"', start);
+                    img_alt = item.slice(start, end);
 
-            const csrftoken = getCookie('csrftoken');
-            send.onclick = async function () {
-                // нажатие на кнопку "Отправить"
-                let response = await fetch('/page/images_to_gallery/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json;charset=utf-8',
-                        'X-CSRFToken': csrftoken
-                    },
-                    body: JSON.stringify({'images': images.value})
+                    let tr = document.createElement('tr');
+                    let td_number = document.createElement('td');
+                    let td_img = document.createElement('td');
+                    let img = document.createElement('img');
+                    let td_title = document.createElement('td');
+                    let input_title = document.createElement('input');
+                    let td_sort = document.createElement('td');
+                    let input_sort = document.createElement('input');
+
+                    td_number.innerText = i
+                    img.src = img_src;
+                    img.style.width = '150px';
+                    input_title.type = 'text';
+                    input_title.name = 'title';
+                    input_title.id = 'title_id_' + i;
+                    input_title.classList.add('form-control');
+                    input_title.value = img_alt;
+                    input_sort.type = 'text';
+                    input_sort.name = 'sort';
+                    input_sort.id = 'sort_id_' + i;
+                    input_sort.classList.add('form-control');
+                    input_sort.style.width = '100px';
+                    input_sort.value = (i + 1) * 10;
+
+                    table.appendChild(tr);
+                    tr.appendChild(td_number);
+                    tr.appendChild(td_img);
+                    td_img.appendChild(img);
+                    tr.appendChild(td_title);
+                    td_title.appendChild(input_title);
+                    tr.appendChild(td_sort);
+                    td_sort.appendChild(input_sort);
                 });
 
-                if (response.ok) {
-                    // получаем ответ от сервера, если URL отправлен верно
-                    let get_data = await response.text();
-                    result.value = get_data;
-                }
-                else {
-                    result.value = 'Ошибка!';
+            }
 
-                }
+            send.onclick = function () {
+                parser(resource.value)
+            };
+            send.onclick();
+
+            apply.onclick = function () {
+                preview.innerHTML = '';
+                result.value = '';
+                // 1. парсим таблицу
+                // 2. сортируем записи
+                // 3. превращаем запись в html '<img ...>'
+
+                let trs = document.querySelectorAll('#table_for_edit_title tbody tr');
+                images = [];
+                trs.forEach(function (item, i, arr) {
+                    let img = item.querySelectorAll('td')[1].firstChild;
+                    let title = item.querySelectorAll('td')[2].firstChild.value;
+                    let sort = Number(item.querySelectorAll('td')[3].firstChild.value);
+                    images.push({
+                        img,
+                        title,
+                        sort
+                    });
+                });
+
+                images.sort(function (a, b) {
+                    if (a.sort > b.sort) return 1;
+                    if (a.sort < b.sort) return -1;
+                    return 0;
+                });
+
+                cols = count_col.value;
+                margin = margin_col.value;
+                images_html = '<div class="row row-cols-' + (Number(cols) - 1) + ' row-cols-lg-' + cols + '">';
+                images.forEach(function (item, i, arr) {
+                    images_html += '<div class="col" style="padding: ' + margin + 'px; align-self: center">';
+                    images_html += '<a data-caption="' + item["title"] + '" data-fancybox="gallery" href="' + item.img.src + '">';
+                    images_html += '<img alt="' + item["title"] + '" class="img-fluid" src="' + item.img.src + '">';
+                    images_html += '</a>';
+                    if (title_col.checked) {
+                        images_html += '<div class="card-body pt-1">';
+                        images_html += '<p class="card-text">' + item["title"] + '</p>';
+                        images_html += '</div>'
+                    }
+                    images_html += '</div>';
+                    console.log(item);
+                });
+                images_html += '</div>';
+
+                preview.innerHTML = images_html;
+                result.value = images_html;
+            }
+            apply.onclick();
+
+            count_col.onchange = function () {
+                apply.onclick();
+            }
+            margin_col.onchange = function () {
+                apply.onclick();
+            }
+            title_col.onchange = function () {
+                apply.onclick();
             }
         })
     </script>
