@@ -10,6 +10,8 @@ class ProductCategory(models.Model):
     category_sort = models.IntegerField(verbose_name='Сортировка', default=0)
     category_url = models.SlugField(verbose_name='Ссылка url', unique=True)
     category_main_menu = models.BooleanField(verbose_name='Показывать в главном меню?', default=False)
+    category_description_before = models.TextField(verbose_name='Дополнительная информация ДО', blank=True, null=True, help_text='Отображается на странице категории, ПЕРЕД списком товаров')
+    category_description_after = models.TextField(verbose_name='Дополнительная информация ПОСЛЕ', blank=True, null=True, help_text='Отображается на странице категории, ПОСЛЕ списка товаров')
 
     class Meta:
         verbose_name = 'Категория'
@@ -152,8 +154,6 @@ class Product(models.Model):
     product_img = ImageField(verbose_name='Изображение товара',upload_to='products', blank=True, null=True, help_text='Основное изображение товара, рекомендуемый размер 1000х700 px')
     product_img_title = models.CharField(verbose_name='Подпись', max_length=100, blank=True, null=True, help_text='Подпись под изображением и alt')
     product_images = models.ManyToManyField(ProductImageGroup, verbose_name='Дополнительные изображения товара', blank=True)
-    # product_description_title = models.CharField(verbose_name='Название доп. вкладки', max_length=200, blank=True, null=True)
-    # product_description = models.TextField(verbose_name='Содержимое доп. вкладки', blank=True, null=True)
     product_content = models.TextField(verbose_name='Описание', blank=True, null=True)
     product_file = models.FileField(verbose_name='Прикрепить файл (Техническое руководство) pdf', upload_to='products/files', null=True, blank=True)
     product_count = models.CharField(verbose_name='Наличие товара', max_length=30, blank=True, null=True, default="В наличии более 10л.", help_text='В наличии более 10 л.<br>В наличии более 10 шт.<br>В наличии 1 шт.<br>Под заказ<br>Нет в наличии.')

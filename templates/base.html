@@ -91,7 +91,7 @@
                     href="#" role="button" id="dropdownMenuLink"
                     data-toggle="dropdown"
                     aria-expanded="false"><i class="fas fa-user"></i> Статус заказа</a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="find_order">
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="find_order" style="min-width: 300px">
                     <li><p class="dropdown-item disabled">Введите номер заказа</p></li>
                     <li class="mx-3">
                         <form action="{% url 'search_order' %}" method="get">
@@ -102,6 +102,7 @@
                                         class="fa fa-search"></i></button>
                             </div>
                         </form>
+                        <a href="/cart/search/" class="small">(Поиск по номеру телефона)</a>
                     </li>
                 </ul>
             </div>

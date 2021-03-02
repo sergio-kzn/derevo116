@@ -212,7 +212,7 @@
                     {{ product.product_price }}.00 &#x20bd;
                 {% elif product.product_price_choice == '2' %} {# ('2', 'Цена с опциями'),#}
                     {% for option in options_price %}
-                        {% if option.productoptionprice_set.first.product_option_price %}
+                        {% if option.productoptionprice_set.first.product_option_price and forloop.first %}
                             от {{ option.productoptionprice_set.first.product_option_price }}.00 &#x20bd;
                         {% endif %}
                     {% endfor %}
@@ -302,7 +302,7 @@
 
                                 {% elif option.option_type == '2' %} {# ('2', 'Buttons'),#}
                                     <div class="text-muted">{{ option.product_price_option|safe }}</div>
-                                    <div class="row row-cols-2 g-1 mb-3 mx-0">
+                                    <div class="row row-cols-2 g-1 mb-2 mx-0">
                                         {% for price in option.productoptionprice_set.all %}
                                             <div class="col mb-1 btn-group-sm">
                                                 <input type="radio" class="btn-check" name="options-{{ forloop.parentloop.counter }}" autocomplete="off"
@@ -314,7 +314,9 @@
                                                 >
                                                 <label class="btn btn btn-outline-secondary w-100 h-100 align-content-center"
                                                        onclick="select_input('{{ price.id }}', '{{ forloop.parentloop.counter }}');
-                                                               document.getElementById('extra-0-{{ forloop.parentloop.counter }}').innerHTML = '{{ option.product_price_option_price|default_if_none:""|safe }} {{ price.product_option_price|default_if_none:""|safe }}';
+                                                               {% if option.product_price_option_price %}
+                                                               document.getElementById('extra-0-{{ forloop.parentloop.counter }}').innerHTML = '{{ option.product_price_option_price|default_if_none:""|safe }}: {{ price.product_option_price|default_if_none:""|safe }} &#x20bd;';
+                                                               {% endif %}
                                                                document.getElementById('extra-1-{{ forloop.parentloop.counter }}').innerHTML = '{{ option.product_price_option_extra_1|default_if_none:""|safe }} {{ price.product_option_extra_1|default_if_none:""|safe }}';
                                                                document.getElementById('extra-2-{{ forloop.parentloop.counter }}').innerHTML = '{{ option.product_price_option_extra_2|default_if_none:""|safe }} {{ price.product_option_extra_2|default_if_none:""|safe }}'"
                                                        for="{{ price.id }}">{{ price.product_option.option_title }}</label>
@@ -323,11 +325,12 @@
                                     </div>
                                     <div class="text-muted small"
                                          id="extra-0-{{ forloop.counter }}">
-                                    {% if option.product_price_option_price %}
-                                        {{ option.product_price_option_price|safe }} {{ option.productoptionprice_set.first.product_option_price|safe }} &#x20bd;
-                                    {% endif %}
-                                        </div>
-                                        <div class="text-muted small"
+                                        {% if option.product_price_option_price %}
+                                            {{ option.product_price_option_price|safe }}:
+                                            {{ option.productoptionprice_set.first.product_option_price|safe }} &#x20bd;
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-muted small"
                                          id="extra-1-{{ forloop.counter }}">{{ option.product_price_option_extra_1|default_if_none:""|safe }} {{ option.productoptionprice_set.first.product_option_extra_1|default_if_none:""|safe }}</div>
                                     <div class="text-muted small"
                                          id="extra-2-{{ forloop.counter }}">{{ option.product_price_option_extra_2|default_if_none:""|safe }} {{ option.productoptionprice_set.first.product_option_extra_2|default_if_none:""|safe }}</div>

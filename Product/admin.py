@@ -52,9 +52,9 @@ class ProductCategoryList(admin.TabularInline):
     extra = 0
 
 
-class ProductCategoryAdmin(admin.ModelAdmin):
-    list_display = ['category_name', 'category_sort', 'category_main_menu']
-    list_editable = ['category_sort', 'category_main_menu']
+class ProductCategoryAdmin(SummernoteModelAdmin):
+    list_display = ['category_name', 'category_url', 'category_sort', 'category_main_menu']
+    list_editable = ['category_sort', 'category_url', 'category_main_menu']
     inlines = [ProductCategoryList]
 
 
@@ -409,8 +409,8 @@ class TabAdmin(SummernoteModelAdmin):
 
 class VendorAdmin(admin.ModelAdmin):
     """раздел с поставщиками в админке"""
-    list_display = ['vendor_title', 'vendor_sort']
-    list_editable = ['vendor_sort']
+    list_display = ['vendor_title', 'vendor_url', 'vendor_sort']
+    list_editable = ['vendor_sort', 'vendor_url']
 
 
 class OptionPriceAdmin(admin.ModelAdmin):

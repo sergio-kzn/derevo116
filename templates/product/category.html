@@ -102,6 +102,13 @@
         </div>
     </div>
 
+    {#  ОПИСАНИЕ КАТЕГОРИИ ДО #}
+    {% if current_category.category_description_before %}
+        <div class="mt-3 mb-5">
+        {{ current_category.category_description_before|safe }}
+        </div>
+    {% endif %}
+
     {# ТОВАРЫ #}
     <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-4 mb-5">
 
@@ -147,7 +154,7 @@
                             {% elif product.product_price_choice == '2' %} {# ('2', 'Цена с опциями'),#}
                                 {#                                {{ product.product_price_options.first.productoptionprice_set.first.product_option_price }}#}
                                 {% for option in product.product_price_options.all %}
-                                    {% if option.productoptionprice_set.first.product_option_price %}
+                                    {% if option.productoptionprice_set.first.product_option_price and forloop.first %}
                                         от {{ option.productoptionprice_set.first.product_option_price }}.00  &#x20bd;
                                     {% endif %}
                                 {% endfor %}
@@ -178,4 +185,12 @@
         {% endfor %}
 
     </div>
+
+    {#  ОПИСАНИЕ КАТЕГОРИИ ПОСЛЕ #}
+    {% if current_category.category_description_after %}
+        <div class="my-3">
+        {{ current_category.category_description_after|safe }}
+        </div>
+    {% endif %}
+
 {% endblock content_product %}
