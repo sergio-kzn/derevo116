@@ -42,9 +42,15 @@
 
 Помогает парсить страницы поставщиков
 
+5. loguru
+
+6. requests
+
+7. python -m pip install Pillow
+
 ### FronEnd:
 
-Верстка выполнена с помощью **Bootstrap CSS v5.0.0-alpha2.**
+Верстка выполнена с помощью **Bootstrap CSS v5**
 
 Корзина сделана на чистом **JavaScript**.
 

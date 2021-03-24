@@ -21,6 +21,7 @@ from . import views
 urlpatterns = [
 
     path('yandex_545a557cc12bb32d.html', views.yandex, name='yandex'),
+    path('facebook.csv', views.facebook_export_product_in_csv, name='facebook'),
     path('search/', views.search, name='search'),
     path('', views.index, name='main_page'),
 
